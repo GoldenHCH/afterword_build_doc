@@ -1,6 +1,8 @@
 <div class="backdrop" [class.backdrop--open]="open" (click)="onClose()"></div>
 <section
+  #panel
   class="panel"
+  [cdkTrapFocus]="open"
   [class.panel--open]="open"
   role="dialog"
   aria-modal="true"

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { first } from 'rxjs';
 
 import { AuthService } from '../core/services/auth.service';
 import { AlertBannerComponent } from '../shared/components/alert-banner/alert-banner.component';
@@ -27,11 +27,10 @@ import { ignoredSignInErrorCodes, signInCopy } from './sign-in.constants';
   templateUrl: './sign-in.component.html',
   styleUrl: './sign-in.component.scss',
 })
-export class SignInComponent implements OnInit, OnDestroy {
+export class SignInComponent implements OnInit {
   private readonly _authService = inject(AuthService);
   private readonly _router = inject(Router);
   private readonly _route = inject(ActivatedRoute);
-  private _userSubscription?: Subscription;
 
   public readonly copy = signInCopy;
   public isDemoOpen = false;
@@ -41,15 +40,11 @@ export class SignInComponent implements OnInit, OnDestroy {
   public demoPassword = '';
 
   public ngOnInit(): void {
-    this._userSubscription = this._authService.user$.subscribe((user) => {
+    this._authService.user$.pipe(first()).subscribe((user) => {
       if (user) {
         void this._router.navigateByUrl(this._returnUrl());
       }
     });
-  }
-
-  public ngOnDestroy(): void {
-    this._userSubscription?.unsubscribe();
   }
 
   public onToggleDemo(): void {
@@ -62,10 +57,6 @@ export class SignInComponent implements OnInit, OnDestroy {
   }
 
   public async onDemoSignIn(): Promise<void> {
-    if (!this.demoEmail || !this.demoPassword) {
-      return;
-    }
-
     await this._run(() => this._authService.signInWithDemo(this.demoEmail.trim(), this.demoPassword));
   }
 
@@ -79,6 +70,7 @@ export class SignInComponent implements OnInit, OnDestroy {
 
     try {
       await signIn();
+      await this._router.navigateByUrl(this._returnUrl());
     } catch (error) {
       console.error('Sign-in failed', error);
       this.errorMessage = this._messageFor(error);
