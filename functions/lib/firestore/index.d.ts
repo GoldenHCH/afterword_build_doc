@@ -39,6 +39,7 @@ declare namespace Afterword.Firestore {
       displayName: string;
       topics: string[];
       weight: number;
+      xUserId?: string;
       createdAt: Timestamp;
     }
   }
