@@ -1,0 +1,120 @@
+$nav-width: 200px;
+$top-bar-height: 56px;
+$bottom-nav-height: 60px;
+
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.top-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: $top-bar-height;
+  padding: 0 8px 0 16px;
+  border-top: 3px solid var(--aw-theme--accent);
+  border-bottom: 1px solid var(--aw-theme--ruling);
+  background: var(--aw-theme--background);
+}
+
+.top-bar-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+}
+
+.wordmark {
+  font-family: var(--aw-font-heading);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--aw-theme--text);
+  text-decoration: none;
+}
+
+.nav {
+  position: fixed;
+  z-index: 90;
+  display: flex;
+  background: var(--aw-theme--background);
+  left: 0;
+  top: $top-bar-height + 3px;
+  bottom: 0;
+  width: $nav-width;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 12px;
+  border-right: 1px solid var(--aw-theme--ruling);
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: var(--aw-theme--text-muted);
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+
+  &:hover {
+    color: var(--aw-theme--primary);
+  }
+
+  &--active {
+    background: var(--aw-theme--pill);
+    color: var(--aw-theme--primary);
+  }
+}
+
+.nav-icon {
+  flex: 0 0 auto;
+}
+
+.content {
+  padding: ($top-bar-height + 3px + 24px) 24px 40px ($nav-width + 32px);
+  max-width: 1000px;
+}
+
+@media (max-width: 768px) {
+  .nav {
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    height: $bottom-nav-height;
+    flex-direction: row;
+    gap: 0;
+    padding: 0;
+    border-right: 0;
+    border-top: 1px solid var(--aw-theme--ruling);
+  }
+
+  .nav-link {
+    flex: 1 1 0;
+    min-width: 0;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    padding: 6px 4px;
+    border-radius: 0;
+    font-size: 12px;
+
+    &--active {
+      background: transparent;
+    }
+  }
+
+  .content {
+    max-width: none;
+    padding: ($top-bar-height + 3px + 20px) 16px ($bottom-nav-height + 24px);
+  }
+}

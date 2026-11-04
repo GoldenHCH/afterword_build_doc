@@ -1,0 +1,21 @@
+<div class="backdrop" [class.backdrop--open]="open" (click)="onClose()"></div>
+<section
+  class="panel"
+  [class.panel--open]="open"
+  role="dialog"
+  aria-modal="true"
+  [attr.aria-label]="title"
+  [attr.aria-hidden]="!open"
+>
+  <header class="panel-header">
+    <h2 class="panel-title">{{ title }}</h2>
+    <button type="button" class="panel-close" aria-label="Close" [disabled]="!closable" (click)="onClose()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </header>
+  <div class="panel-body">
+    @if (open) {
+      <ng-content></ng-content>
+    }
+  </div>
+</section>

@@ -1,0 +1,9 @@
+<div class="alert" [class.alert--error]="kind === 'error'" [class.alert--info]="kind === 'info'" role="alert">
+  <mat-icon class="alert-icon">{{ kind === 'error' ? 'error_outline' : 'info_outline' }}</mat-icon>
+  <span class="alert-message">{{ message }}</span>
+  @if (dismissed.observed) {
+    <button type="button" class="alert-dismiss" aria-label="Dismiss" (click)="onDismiss()">
+      <mat-icon>close</mat-icon>
+    </button>
+  }
+</div>
