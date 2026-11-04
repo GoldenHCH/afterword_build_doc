@@ -1,4 +1,4 @@
-import { explainConfig, explainPrompts } from './brief.constants';
+import { explainConfig, explainPatterns, explainPrompts } from './brief.constants';
 import {
   IEntryWithText,
   IExplainNoteContext,
@@ -6,9 +6,6 @@ import {
   IExplainResponse,
   IExplainedEntry,
 } from './brief.interfaces';
-
-const FENCE_PATTERN = /```(?:json)?\s*([\s\S]*?)```/i;
-const DASH_PATTERN = /\s*[–—]\s*/g;
 
 export function buildSystemPrompt(): string {
   return explainPrompts.SYSTEM.replace('{{WHY_THIS_MAX_WORDS}}', String(explainConfig.WHY_THIS_MAX_WORDS)).replace(
@@ -47,7 +44,7 @@ export function buildExplainPrompt(note: IExplainNoteContext, entriesWithText: I
 }
 
 export function parseExplainResponse(text: string): IExplainResponse | null {
-  const fenced = FENCE_PATTERN.exec(text);
+  const fenced = explainPatterns.FENCE.exec(text);
   const candidate = (fenced ? fenced[1] : text).trim();
   const start = candidate.indexOf('{');
   const end = candidate.lastIndexOf('}');
@@ -161,5 +158,5 @@ export function applyExplanation(
 }
 
 function cleanSentence(text: string, maxWords: number): string {
-  return trimToWords(text.replace(DASH_PATTERN, ' - '), maxWords);
+  return trimToWords(text.replace(explainPatterns.DASH, ' - '), maxWords);
 }
