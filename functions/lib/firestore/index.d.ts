@@ -100,6 +100,7 @@ declare namespace Afterword.Firestore {
       sentAt?: Timestamp;
       providerMessageId?: string;
       error?: string;
+      warning?: string;
       sections: IBriefingSection[];
     }
   }

@@ -10,6 +10,11 @@ export interface IScorableItem {
   publishedAt: { toMillis(): number };
 }
 
+export interface IFallbackNote {
+  summary: string;
+  angle?: string | null;
+}
+
 export interface IScoredCandidate {
   itemId: string;
   item: Afterword.Firestore.Item.IItem;
@@ -25,9 +30,15 @@ export interface INoteCandidates<TCandidate> {
 export interface ISourceResult {
   drafts: IItemDraft[];
   succeeded: boolean;
+  label: string;
 }
 
 export interface IGatheredItem {
   itemId: string;
   item: Afterword.Firestore.Item.IItem;
+}
+
+export interface IGatheredNote {
+  items: IGatheredItem[];
+  failedSources: string[];
 }

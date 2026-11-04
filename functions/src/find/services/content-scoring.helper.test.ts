@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import { dedupeAcrossNotes, scoreItem } from './content-scoring.helper';
+import { buildReadingNote, buildWhyThis, dedupeAcrossNotes, scoreItem } from './content-scoring.helper';
 
 const now = new Date('2026-06-01T00:00:00Z');
 const daysAgo = (days: number): { toMillis(): number } => ({ toMillis: () => now.getTime() - days * 86_400_000 });
@@ -64,4 +64,35 @@ test('dedupeAcrossNotes keeps an item under the note where it scores highest, fi
     result.map((group) => group.candidates.map((candidate) => candidate.itemId)),
     [['tied', 'only-a'], ['shared']],
   );
+});
+
+test('buildWhyThis names the note angle and the shared keywords without a model', () => {
+  const candidate = {
+    itemId: 'paper_1',
+    item: {} as Afterword.Firestore.Item.IItem,
+    score: 1,
+    matchedKeywords: ['codebook', 'kappa'],
+  };
+  const noteWithAngle = { summary: 'Stuck on coding', angle: 'How to report intercoder reliability for reflexive analysis of interviews today?' };
+
+  assert.equal(
+    buildWhyThis(candidate, noteWithAngle),
+    'Matches your note on How to report intercoder reliability for reflexive analysis of interviews...: shares codebook, kappa',
+  );
+  assert.equal(
+    buildWhyThis({ ...candidate, matchedKeywords: [] }, noteWithAngle),
+    'Recent paper for your note on How to report intercoder reliability for reflexive analysis of interviews...',
+  );
+  assert.equal(
+    buildWhyThis(
+      { ...candidate, matchedKeywords: [], item: { sourceHandle: '@Some_Handle' } as Afterword.Firestore.Item.IItem },
+      { summary: 'Stuck on coding' },
+    ),
+    'Recent from @some_handle, for your note on Stuck on coding',
+  );
+});
+
+test('buildReadingNote puts rank one first and the rest after it', () => {
+  assert.equal(buildReadingNote(1), 'Start here');
+  assert.equal(buildReadingNote(2), 'Then this');
 });

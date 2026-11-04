@@ -160,9 +160,18 @@ export class SeedService {
   }
 
   private async _collectOpenAlexItems(items: Map<string, Afterword.Firestore.Item.IItem>, now: Date): Promise<void> {
-    const draftsPerNote = await Promise.all(this._notes.map((note) => this._openAlexSeedService.searchPapers(note.angle)));
+    const outcomes = await Promise.allSettled(this._notes.map((note) => this._openAlexSeedService.searchPapers(note.angle)));
 
-    for (const drafts of draftsPerNote) {
+    for (const [index, outcome] of outcomes.entries()) {
+      if (outcome.status === 'rejected') {
+        logger.warn('Live OpenAlex enrichment skipped for note', {
+          note: this._notes[index].key,
+          error: outcome.reason instanceof Error ? outcome.reason.message : String(outcome.reason),
+        });
+        continue;
+      }
+
+      const drafts = outcome.value;
       let added = 0;
 
       for (const draft of drafts) {

@@ -9,7 +9,7 @@ export class OpenAlexSeedService {
   public async searchPapers(angle: string): Promise<IItemDraft[]> {
     const fromPublicationDate = yearsBefore(new Date(), openAlexQuery.YEARS_BACK);
     const url = buildOpenAlexWorksUrl(angle, fromPublicationDate);
-    const response = await fetch(url);
+    const response = await fetch(url, { signal: AbortSignal.timeout(openAlexQuery.TIMEOUT_MS) });
 
     if (!response.ok) {
       logger.error('OpenAlex request failed', { status: response.status, url });

@@ -31,7 +31,7 @@ export class OpenAlexPaperSource implements IPaperSource {
   }
 
   private async _fetchWithRetry(url: string): Promise<Response> {
-    let response = await fetch(url);
+    let response = await fetch(url, { signal: AbortSignal.timeout(openAlexPaperSource.TIMEOUT_MS) });
 
     for (let attempt = 0; attempt < openAlexPaperSource.MAX_RETRIES && response.status === 429; attempt++) {
       const retryAfter = Number(response.headers.get('retry-after')) || openAlexPaperSource.DEFAULT_RETRY_WAIT_SECONDS;
@@ -42,7 +42,7 @@ export class OpenAlexPaperSource implements IPaperSource {
 
       logger.warn('OpenAlex rate limited, retrying', { retryAfter });
       await new Promise((resolve) => setTimeout(resolve, retryAfter * 1000));
-      response = await fetch(url);
+      response = await fetch(url, { signal: AbortSignal.timeout(openAlexPaperSource.TIMEOUT_MS) });
     }
 
     return response;

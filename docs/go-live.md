@@ -162,7 +162,7 @@ The assistant must connect with `demo@afterword.fyi`: that email maps to uid `de
 4. The briefing email arrives in the `demo@afterword.fyi` inbox from `briefing@afterword.fyi`.
 5. Save two papers: the button turns into **Saved**.
 6. Library shows those two, grouped under their note.
-7. In Claude, connected as `demo@afterword.fyi`: say "I'm stuck on intercoder reliability in my thematic analysis of interviews" (it calls `record_work`; a new note appears in Notes). Then "What did I save about intercoder reliability?" (it calls `search_library` and answers from the two saved papers).
+7. In Claude, connected as `demo@afterword.fyi`: say "I'm stuck on how many interviews I need before I can claim saturation in my qualitative study" (it calls `record_work`; a new note appears in Notes, a fourth next to the 3 seeded ones). Then "What did I save about intercoder reliability?" (it calls `search_library` and answers from the two saved papers).
 8. Fallback if any live step is down: `/briefings/briefing_demo_seed` is a ready briefing with hand-written lines.
 
 When all eight pass, tick the "Live" boxes in `plans/phase-06-last-mile.md` and put the verified URL in the README.

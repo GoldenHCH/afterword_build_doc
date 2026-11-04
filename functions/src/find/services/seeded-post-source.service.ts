@@ -16,9 +16,11 @@ export class SeededPostSource implements IPostSource {
       .get();
 
     const allowedHandles = new Set(query.handles);
+    const sinceMillis = query.since.getTime();
     const items = snapshot.docs.map((document) => document.data() as Afterword.Firestore.Item.IItem);
 
     return items
+      .filter((item) => item.publishedAt.toMillis() >= sinceMillis)
       .filter((item) => allowedHandles.size === 0 || (item.sourceHandle !== undefined && allowedHandles.has(item.sourceHandle)))
       .sort((first, second) => second.publishedAt.toMillis() - first.publishedAt.toMillis())
       .slice(0, query.limit)

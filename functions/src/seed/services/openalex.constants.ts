@@ -3,6 +3,7 @@ export const openAlexQuery = {
   MAILTO: 'hello@afterword.fyi',
   PER_PAGE: 10,
   YEARS_BACK: 3,
+  TIMEOUT_MS: 15_000,
   MAX_SEARCH_WORDS: 10,
   ABSTRACT_WORDS: 60,
   WORK_TYPES: ['article', 'conference-paper', 'preprint', 'book-chapter', 'book', 'review', 'dissertation', 'report'],
