@@ -39,8 +39,46 @@ declare namespace Afterword.Types {
     limit?: number;
   }
 
+  interface ISearchLibraryItem {
+    id: string;
+    itemId: string;
+    kind: Afterword.Firestore.Item.ItemKind;
+    title: string;
+    url: string;
+    authors: string[];
+    publishedAt: string;
+    sourceHandle?: string;
+    noteId?: string;
+    noteSummary?: string;
+    briefingId?: string;
+    keywords: string[];
+    whyThis: string;
+    savedAt: string;
+  }
+
   interface ISearchLibraryResponse {
-    items: ILibraryItem[];
+    items: ISearchLibraryItem[];
+  }
+
+  interface ISearchPapersRequest {
+    angle: string;
+    keywords?: string[];
+    limit?: number;
+  }
+
+  interface ISearchPapersResult {
+    externalId: string;
+    provider: Afterword.Firestore.Item.ItemProvider;
+    kind: 'paper';
+    title: string;
+    authors: string[];
+    url: string;
+    publishedAt: string;
+    text: string;
+  }
+
+  interface ISearchPapersResponse {
+    papers: ISearchPapersResult[];
   }
 
   interface ISeedDemoRequest {}

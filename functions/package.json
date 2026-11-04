@@ -12,7 +12,7 @@
     "email:preview": "node dist/brief/email-preview.js",
     "explain:dry": "node dist/brief/explain-dry-run.js",
     "demo:auth": "node dist/seed/create-demo-auth-user.js",
-    "test": "node --test dist/find/services/*.test.js dist/brief/*.test.js dist/notes/*.test.js dist/library/*.test.js"
+    "test": "node --test dist/find/services/*.test.js dist/brief/*.test.js dist/notes/*.test.js dist/library/*.test.js dist/mcp/*.test.js"
   },
   "dependencies": {
     "firebase-admin": "14.5.0",
