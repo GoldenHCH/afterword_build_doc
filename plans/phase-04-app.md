@@ -7,11 +7,11 @@
 ## Checklist
 
 ### Scaffold
-- [ ] Angular 21 standalone app in `app/` (Material, SCSS, yarn, `--exact`); Firebase Hosting target; `firebase deploy` works on day one `[HACK-14]`
-- [ ] Global class prefix `aw-`: rename `app-` in `rules/ui.md` and `styles.scss`; theme colors set once in `rules/scss.md`
-- [ ] Shared components the rules assume — `ScreenToolbarComponent`, `AlertBannerComponent`, `SidePanelComponent`, `LoadingService` — created in `shared/` the first time each is needed (`[ANG-05]`–`[ANG-07]`)
-- [ ] Google sign-in (`core/services/auth.service.ts`), auth guard, `/sign-in`; first sign-in creates `users/{uid}`
-- [ ] Routes: `/notes`, `/briefings` (redirects to the latest), `/briefings/:id`, `/library`; bottom nav on mobile, side nav on desktop
+- [x] Angular 21 standalone app in `app/` (Material, SCSS, yarn, `--exact`); Firebase Hosting target; `firebase deploy` works on day one `[HACK-14]` (hosting block and build done; the deploy itself still needs the Firebase CLI, login and the web config)
+- [x] Global class prefix `aw-`: rename `app-` in `rules/ui.md` and `styles.scss`; theme colors set once in `rules/scss.md`
+- [x] Shared components the rules assume — `ScreenToolbarComponent`, `AlertBannerComponent`, `SidePanelComponent`, `LoadingService` — created in `shared/` the first time each is needed (`[ANG-05]`–`[ANG-07]`)
+- [x] Google sign-in (`core/services/auth.service.ts`), auth guard, `/sign-in`; first sign-in creates `users/{uid}` (plus the demo email/password path)
+- [x] Routes: `/notes`, `/briefings`, `/briefings/:id`, `/library`; bottom nav on mobile, side nav on desktop (placeholder pages; `/briefings` redirecting to the latest briefing is the briefing session's job)
 
 ### Notes page (`app/src/app/notes/`)
 - [ ] `notes.service.ts`: live query of `notes` where `userId == me` and `status == open`, newest first; `resolve(noteId)`
@@ -27,7 +27,7 @@
 - [ ] No briefing yet → one sentence and the Build button. `status: failed` → its `error` in an alert banner plus the Build button. Page loads through `LoadingService` `[UI-01]`
 
 ### Library page (`app/src/app/library/`)
-- [ ] `library.service.ts`: live query of `library` where `userId == me`, newest first; `save(briefingId, itemId)` and `unsave(libraryItemId)` call the callables
+- [x] `library.service.ts`: live query of `library` where `userId == me`, newest first; `save(briefingId, itemId)` and `unsave(libraryItemId)` call the callables
 - [ ] Callables `saveItem` / `unsaveItem` in `functions/src/library/functions/`: `[FB-02]`; copy the entry's snapshot, `whyThis`, `noteId`, `noteSummary` and the note's `keywords` into `library/`; a repeat save returns the existing id
 - [ ] List grouped by `noteSummary`; each item: kind icon, linked title, `whyThis`, saved date, **Remove**; filter chips by kind
 - [ ] Empty state: "Save something from your briefing and it shows up here — and in your assistant."

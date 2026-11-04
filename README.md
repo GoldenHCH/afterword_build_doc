@@ -79,6 +79,23 @@ npx -y yarn@1.22.22 build
 
 `tsc` emits to `functions/dist` (the Cloud Functions entry point). The shared `.d.ts` files in `functions/lib/` are never emitted, so they stay apart from the build output.
 
+## Run the app locally
+
+The web app lives in `app/` (Angular 21, Material, Firebase modular SDK). No global yarn or ng is needed.
+
+```bash
+cd app
+npx -y yarn@1.22.22 install
+npx -y yarn@1.22.22 start
+```
+
+It serves on http://localhost:4200. `ng serve` uses `src/environments/environment.ts` (`useEmulators: true`); the production build swaps in `environment.prod.ts` (`useEmulators: false`).
+
+- **Firebase web config:** paste the values from Firebase console → Project settings → Your apps → Web app into `firebase` in both `app/src/environments/environment.ts` and `environment.prod.ts` (`apiKey`, `authDomain`, `appId`, `storageBucket`, `messagingSenderId`). `projectId` is already `afterword-hackathon`. These are public client identifiers, not secrets, so the placeholders and the real values are safe to commit. The security boundary is `firestore.rules`.
+- **Emulators:** with `useEmulators: true` the app talks to Auth 9099, Firestore 8080 and Functions 5001 on localhost. Start them with `firebase emulators:start` (needs the Firebase CLI and Java) or flip the flag to `false` to use the live project.
+- **Sign-in:** "Continue with Google" needs the Google provider enabled in the Firebase console; "Use the demo account" signs in as `demo@afterword.fyi` (uid `demo-researcher`) with the password set when the demo auth user was created.
+- **Build and deploy:** `npx -y yarn@1.22.22 build` emits `app/dist/afterword/browser`, which `firebase deploy --only hosting` serves; its predeploy step runs the build.
+
 ## Demo shortcuts
 
 `seedDemo` loads the demo account: the user, 3 notes, 10 X sources, the cached posts and papers, about 15 more papers fetched live from OpenAlex, and one `ready` briefing. It is safe to run twice (deterministic document ids, `set` with merge).

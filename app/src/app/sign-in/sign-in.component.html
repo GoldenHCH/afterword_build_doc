@@ -1,0 +1,44 @@
+<div class="page">
+  <div class="rule"></div>
+  <main class="card">
+    <h1 class="wordmark">Afterword</h1>
+    <p class="tagline">{{ copy.TAGLINE }}</p>
+
+    @if (errorMessage) {
+      <aw-alert-banner class="error" [message]="errorMessage" (dismissed)="errorMessage = ''"></aw-alert-banner>
+    }
+
+    <button mat-flat-button class="primary-action" type="button" [disabled]="isSigningIn" (click)="onGoogleSignIn()">
+      @if (isSigningIn && !isDemoOpen) {
+        <mat-spinner diameter="20"></mat-spinner>
+      } @else {
+        {{ copy.GOOGLE }}
+      }
+    </button>
+
+    @if (!isDemoOpen) {
+      <button mat-stroked-button class="secondary-action" type="button" (click)="onToggleDemo()">
+        {{ copy.DEMO }}
+      </button>
+    } @else {
+      <form class="demo-form" (ngSubmit)="onDemoSignIn()">
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" name="email" autocomplete="username" [(ngModel)]="demoEmail" required />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Password</mat-label>
+          <input matInput type="password" name="password" autocomplete="current-password" [(ngModel)]="demoPassword" required />
+        </mat-form-field>
+        <button mat-stroked-button class="secondary-action" type="submit" [disabled]="isSigningIn || !demoPassword">
+          @if (isSigningIn) {
+            <mat-spinner diameter="20"></mat-spinner>
+          } @else {
+            {{ copy.DEMO_SUBMIT }}
+          }
+        </button>
+        <button mat-button class="link-action" type="button" (click)="onToggleDemo()">Back</button>
+      </form>
+    }
+  </main>
+</div>

@@ -1,0 +1,16 @@
+<div class="toolbar">
+  @if (backLink) {
+    <a class="toolbar-back" [routerLink]="backLink" aria-label="Back">
+      <mat-icon>arrow_back</mat-icon>
+    </a>
+  }
+  <div class="toolbar-text">
+    <h1 class="toolbar-title">{{ title }}</h1>
+    @if (subtitle) {
+      <p class="toolbar-subtitle">{{ subtitle }}</p>
+    }
+  </div>
+  <div class="toolbar-actions">
+    <ng-content></ng-content>
+  </div>
+</div>
