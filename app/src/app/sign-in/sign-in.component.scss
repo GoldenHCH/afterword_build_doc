@@ -1,0 +1,56 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: var(--aw-theme--background);
+}
+
+.rule {
+  height: 3px;
+  background: var(--aw-theme--accent);
+}
+
+.page {
+  min-height: 100vh;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 64px 20px 40px;
+}
+
+.wordmark {
+  margin: 0;
+  font-family: var(--aw-font-heading);
+  font-size: 40px;
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--aw-theme--text);
+}
+
+.tagline {
+  margin: 0 0 8px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--aw-theme--text-muted);
+}
+
+.primary-action,
+.secondary-action {
+  width: 100%;
+}
+
+.demo-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.link-action {
+  align-self: center;
+  text-decoration: underline;
+}

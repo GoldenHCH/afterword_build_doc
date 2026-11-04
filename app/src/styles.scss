@@ -1,0 +1,238 @@
+@use '@angular/material' as mat;
+
+html {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: light,
+        primary: mat.$azure-palette,
+      ),
+      typography: (
+        plain-family: (system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif),
+        brand-family: ('Source Serif 4', Georgia, serif),
+        bold-weight: 600,
+        medium-weight: 500,
+        regular-weight: 400,
+      ),
+      density: 0,
+    )
+  );
+}
+
+:root {
+  --aw-theme--background: #fafbfc;
+  --aw-theme--surface: #f1f3f6;
+  --aw-theme--text: #1a1f27;
+  --aw-theme--text-muted: #556070;
+  --aw-theme--primary: #1c3a8e;
+  --aw-theme--primary-hover: #142c6e;
+  --aw-theme--accent: #c4343f;
+  --aw-theme--error: #a12a33;
+  --aw-theme--error-bg: #fbeeef;
+  --aw-theme--border: #6a7c96;
+  --aw-theme--ruling: #c7d5ea;
+  --aw-theme--pill: #e8ebef;
+  --aw-theme--on-pill: #3b4451;
+
+  --aw-font-heading: 'Source Serif 4', Georgia, serif;
+  --aw-font-body: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  @include mat.theme-overrides(
+    (
+      primary: #1c3a8e,
+      on-primary: #ffffff,
+      primary-container: #e8ebef,
+      on-primary-container: #1c3a8e,
+      secondary: #556070,
+      on-secondary: #ffffff,
+      secondary-container: #e8ebef,
+      on-secondary-container: #3b4451,
+      surface: #fafbfc,
+      on-surface: #1a1f27,
+      on-surface-variant: #556070,
+      surface-container-lowest: #ffffff,
+      surface-container-low: #fafbfc,
+      surface-container: #f1f3f6,
+      surface-container-high: #f1f3f6,
+      surface-container-highest: #e8ebef,
+      background: #fafbfc,
+      on-background: #1a1f27,
+      outline: #6a7c96,
+      outline-variant: #c7d5ea,
+      error: #a12a33,
+      on-error: #ffffff,
+      error-container: #fbeeef,
+      on-error-container: #a12a33,
+      surface-tint: #1c3a8e
+    )
+  );
+
+  @include mat.button-overrides(
+    (
+      filled-container-shape: 8px,
+      outlined-container-shape: 8px,
+      text-container-shape: 8px,
+      protected-container-shape: 8px,
+      filled-container-height: 44px,
+      outlined-container-height: 44px,
+    )
+  );
+  @include mat.form-field-overrides(
+    (
+      outlined-container-shape: 8px,
+    )
+  );
+  @include mat.progress-bar-overrides(
+    (
+      active-indicator-height: 3px,
+      track-height: 3px,
+    )
+  );
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--aw-theme--background);
+  color: var(--aw-theme--text);
+  font-family: var(--aw-font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--aw-theme--primary);
+  text-decoration: underline;
+
+  &:hover {
+    color: var(--aw-theme--primary-hover);
+  }
+}
+
+.cdk-overlay-container {
+  z-index: 1100;
+}
+
+.aw-link-plain {
+  text-decoration: none;
+}
+
+.aw-btn-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.aw-card-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 600px;
+}
+
+.aw-card {
+  border: 1px solid var(--aw-theme--ruling);
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: none;
+  transition: border-color 150ms ease;
+
+  &--clickable {
+    cursor: pointer;
+
+    &:hover {
+      border-color: var(--aw-theme--primary);
+    }
+  }
+}
+
+.aw-card-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.aw-card-icon {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--aw-theme--primary);
+  color: #ffffff;
+}
+
+.aw-card-content {
+  flex: 1 1 auto;
+  min-width: 0;
+
+  h4 {
+    margin: 0 0 4px;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--aw-theme--text-muted);
+  }
+}
+
+.aw-card-arrow {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  font-size: 24px;
+  color: var(--aw-theme--text-muted);
+}
+
+.aw-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.aw-page-header-left {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.aw-page-title {
+  margin: 0;
+  font-family: var(--aw-font-heading);
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.aw-page-subtitle {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: var(--aw-theme--text-muted);
+}
+
+.aw-page-action {
+  flex: 0 0 auto;
+
+  mat-icon {
+    margin-right: 8px;
+  }
+}
+
+@media (max-width: 599.98px) {
+  .aw-page-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

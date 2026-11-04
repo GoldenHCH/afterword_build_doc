@@ -1,0 +1,22 @@
+<header class="top-bar">
+  <a class="wordmark" routerLink="/notes">Afterword</a>
+  <button mat-icon-button type="button" aria-label="Sign out" (click)="onSignOut()">
+    <mat-icon>logout</mat-icon>
+  </button>
+  @if (isLoading$ | async) {
+    <mat-progress-bar class="top-bar-progress" mode="indeterminate"></mat-progress-bar>
+  }
+</header>
+
+<nav class="nav" aria-label="Main">
+  @for (item of navItems; track item.route) {
+    <a class="nav-link" [routerLink]="item.route" routerLinkActive="nav-link--active">
+      <mat-icon class="nav-icon">{{ item.icon }}</mat-icon>
+      <span class="nav-label">{{ item.label }}</span>
+    </a>
+  }
+</nav>
+
+<main class="content">
+  <router-outlet></router-outlet>
+</main>

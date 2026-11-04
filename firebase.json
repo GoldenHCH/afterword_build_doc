@@ -10,5 +10,26 @@
       "predeploy": ["npx -y yarn@1.22.22 --cwd \"$RESOURCE_DIR\" build"],
       "ignore": ["node_modules", ".git", "firebase-debug.log", "firebase-debug.*.log", "*.local"]
     }
-  ]
+  ],
+  "hosting": {
+    "public": "app/dist/afterword/browser",
+    "predeploy": ["npx -y yarn@1.22.22 --cwd app build"],
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      { "source": "/seedDemo", "function": "seedDemo" },
+      { "source": "/buildBriefingNow", "function": "buildBriefingNow" },
+      { "source": "/describeWork", "function": "describeWork" },
+      { "source": "/saveItem", "function": "saveItem" },
+      { "source": "/unsaveItem", "function": "unsaveItem" },
+      { "source": "**", "destination": "/index.html" }
+    ]
+  },
+  "emulators": {
+    "auth": { "port": 9099 },
+    "functions": { "port": 5001 },
+    "firestore": { "port": 8080 },
+    "hosting": { "port": 5000 },
+    "ui": { "enabled": true, "port": 4000 },
+    "singleProjectMode": true
+  }
 }

@@ -1,0 +1,69 @@
+<div class="page">
+  <div class="rule"></div>
+  <main class="card">
+    <h1 class="wordmark">Afterword</h1>
+    <p class="tagline">{{ copy.TAGLINE }}</p>
+
+    @if (errorMessage) {
+      <aw-alert-banner class="error" [message]="errorMessage" (dismissed)="errorMessage = ''"></aw-alert-banner>
+    }
+
+    <button mat-flat-button class="primary-action" type="button" [disabled]="isSigningIn" (click)="onGoogleSignIn()">
+      @if (isSigningIn && !isDemoOpen) {
+        <mat-spinner diameter="20"></mat-spinner>
+      } @else {
+        {{ copy.GOOGLE }}
+      }
+    </button>
+
+    @if (!isDemoOpen) {
+      <button mat-stroked-button class="secondary-action" type="button" (click)="onToggleDemo()">
+        {{ copy.DEMO }}
+      </button>
+    } @else {
+      <form class="demo-form" #demoForm="ngForm" novalidate (ngSubmit)="demoForm.valid && onDemoSignIn()">
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input
+            matInput
+            type="email"
+            name="email"
+            autocomplete="username"
+            required
+            email
+            #emailField="ngModel"
+            [(ngModel)]="demoEmail"
+          />
+          @if (emailField.hasError('required')) {
+            <mat-error>Enter your email.</mat-error>
+          } @else if (emailField.hasError('email')) {
+            <mat-error>Enter a valid email address.</mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Password</mat-label>
+          <input
+            matInput
+            type="password"
+            name="password"
+            autocomplete="current-password"
+            required
+            #passwordField="ngModel"
+            [(ngModel)]="demoPassword"
+          />
+          @if (passwordField.hasError('required')) {
+            <mat-error>Enter your password.</mat-error>
+          }
+        </mat-form-field>
+        <button mat-stroked-button class="secondary-action" type="submit" [disabled]="demoForm.invalid || isSigningIn">
+          @if (isSigningIn) {
+            <mat-spinner diameter="20"></mat-spinner>
+          } @else {
+            {{ copy.DEMO_SUBMIT }}
+          }
+        </button>
+        <button mat-button class="link-action" type="button" [disabled]="isSigningIn" (click)="onToggleDemo()">Back</button>
+      </form>
+    }
+  </main>
+</div>

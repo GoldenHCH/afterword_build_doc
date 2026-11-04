@@ -1,0 +1,90 @@
+<aw-side-panel [open]="open" [title]="copy.TITLE" [closable]="!isSubmitting" (closed)="onClose()">
+  @if (step === 'describe') {
+    <form class="describe-form" [formGroup]="describeForm" (ngSubmit)="onDescribe()">
+      <mat-form-field appearance="outline" class="describe-field">
+        <mat-label>{{ copy.TEXT_LABEL }}</mat-label>
+        <textarea matInput formControlName="text" rows="7"></textarea>
+        <mat-hint>{{ copy.TEXT_HINT }}</mat-hint>
+        @if (describeForm.controls.text.hasError('required')) {
+          <mat-error>{{ copy.TEXT_REQUIRED }}</mat-error>
+        } @else if (describeForm.controls.text.hasError('minlength')) {
+          <mat-error>{{ copy.TEXT_TOO_SHORT }}</mat-error>
+        } @else if (describeForm.controls.text.hasError('maxlength')) {
+          <mat-error>{{ copy.TEXT_TOO_LONG }}</mat-error>
+        }
+      </mat-form-field>
+
+      @if (saveError) {
+        <aw-alert-banner [message]="saveError" (dismissed)="saveError = ''"></aw-alert-banner>
+      }
+
+      <div class="describe-actions">
+        <button mat-flat-button type="submit" class="describe-submit" [disabled]="describeForm.invalid || isSubmitting">
+          @if (isSubmitting) {
+            <mat-spinner diameter="20"></mat-spinner>
+          } @else {
+            {{ copy.DESCRIBE_BUTTON }}
+          }
+        </button>
+        <button mat-button type="button" [disabled]="isSubmitting" (click)="onClose()">{{ copy.CANCEL_BUTTON }}</button>
+      </div>
+    </form>
+  } @else {
+    <form class="describe-form" [formGroup]="draftForm" (ngSubmit)="onSave()">
+      <mat-form-field appearance="outline" class="describe-field">
+        <mat-label>{{ copy.KIND_LABEL }}</mat-label>
+        <mat-select formControlName="kind">
+          @for (option of kindOptions; track option.value) {
+            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="describe-field">
+        <mat-label>{{ copy.SUMMARY_LABEL }}</mat-label>
+        <textarea matInput formControlName="summary" rows="2"></textarea>
+        @if (draftForm.controls.summary.hasError('required')) {
+          <mat-error>{{ copy.SUMMARY_REQUIRED }}</mat-error>
+        } @else if (draftForm.controls.summary.hasError('maxlength')) {
+          <mat-error>{{ copy.SUMMARY_TOO_LONG }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="describe-field">
+        <mat-label>{{ copy.DETAIL_LABEL }}</mat-label>
+        <textarea matInput formControlName="detail" rows="3"></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="describe-field">
+        <mat-label>{{ copy.ANGLE_LABEL }}</mat-label>
+        <input matInput formControlName="angle" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="describe-field">
+        <mat-label>{{ copy.KEYWORDS_LABEL }}</mat-label>
+        <input matInput formControlName="keywords" />
+        <mat-hint>{{ copy.KEYWORDS_HINT }}</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="describe-field">
+        <mat-label>{{ copy.PROJECT_LABEL }}</mat-label>
+        <input matInput formControlName="project" />
+      </mat-form-field>
+
+      @if (saveError) {
+        <aw-alert-banner [message]="saveError" (dismissed)="saveError = ''"></aw-alert-banner>
+      }
+
+      <div class="describe-actions">
+        <button mat-flat-button type="submit" class="describe-submit" [disabled]="draftForm.invalid || isSubmitting">
+          @if (isSubmitting) {
+            <mat-spinner diameter="20"></mat-spinner>
+          } @else {
+            {{ copy.SAVE_BUTTON }}
+          }
+        </button>
+        <button mat-button type="button" [disabled]="isSubmitting" (click)="onBack()">{{ copy.BACK_BUTTON }}</button>
+      </div>
+    </form>
+  }
+</aw-side-panel>

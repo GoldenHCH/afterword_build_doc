@@ -1,6 +1,6 @@
 # UI/UX Patterns
 
-Global classes use the `app-` prefix. Rename to a short project prefix at kickoff (e.g., `ss-`, `pl-`) and keep it consistent.
+Global classes and component selectors use the `aw-` prefix (Afterword). Keep it consistent.
 
 ## Loading States
 
@@ -10,49 +10,49 @@ Global classes use the `app-` prefix. Rename to a short project prefix at kickof
 
 ## Global Card Styles (`styles.scss`)
 
-Use the global `app-card` classes for consistent clickable card lists:
+Use the global `aw-card` classes for consistent clickable card lists:
 
 ```html
-<div class="app-card-grid">
-  <mat-card class="app-card app-card--clickable" appearance="outlined" routerLink="/path">
+<div class="aw-card-grid">
+  <mat-card class="aw-card aw-card--clickable" appearance="outlined" routerLink="/path">
     <mat-card-content>
-      <div class="app-card-header">
-        <div class="app-card-icon">
+      <div class="aw-card-header">
+        <div class="aw-card-icon">
           <mat-icon>icon_name</mat-icon>
         </div>
-        <div class="app-card-content">
+        <div class="aw-card-content">
           <h4>Card Title</h4>
           <p>Card description text</p>
         </div>
-        <mat-icon class="app-card-arrow">chevron_right</mat-icon>
+        <mat-icon class="aw-card-arrow">chevron_right</mat-icon>
       </div>
     </mat-card-content>
   </mat-card>
 </div>
 ```
 
-Note: Always use `appearance="outlined"` on mat-card for flat white cards with borders.
+Note: Always use `appearance="outlined"` on mat-card for flat white cards with borders (the global `.aw-card` class sets the border and removes the shadow).
 
 Classes:
-- `.app-card` - Base card with border, 12px radius, white background
-- `.app-card--clickable` - Adds hover effects (border color, shadow, translateY)
-- `.app-card-header` - Flexbox row layout with centered items
-- `.app-card-icon` - 48x48 circular icon container with primary background and white icon
-- `.app-card-content` - Flex content area with h4 title and p description
-- `.app-card-arrow` - Chevron arrow (gray, 24px)
-- `.app-card-grid` - Container with flex column, 12px gap, max-width 600px
+- `.aw-card` - Base card with a `--aw-theme--ruling` hairline border, 12px radius, white background, no shadow
+- `.aw-card--clickable` - Adds a hover effect: the border turns ink (`--aw-theme--primary`). No shadow, no movement — the design is flat
+- `.aw-card-header` - Flexbox row layout with centered items
+- `.aw-card-icon` - 48x48 circular icon container with primary background and white icon
+- `.aw-card-content` - Flex content area with h4 title and p description
+- `.aw-card-arrow` - Chevron arrow (gray, 24px)
+- `.aw-card-grid` - Container with flex column, 12px gap, max-width 600px
 
 ## Global Page Header Styles (`styles.scss`)
 
-Use the global `app-page-header` classes for page headers with actions:
+Use the global `aw-page-header` classes for page headers with actions:
 
 ```html
-<div class="app-page-header">
-  <div class="app-page-header-left">
-    <h1 class="app-page-title">Page Title</h1>
-    <p class="app-page-subtitle">Page description or subtitle</p>
+<div class="aw-page-header">
+  <div class="aw-page-header-left">
+    <h1 class="aw-page-title">Page Title</h1>
+    <p class="aw-page-subtitle">Page description or subtitle</p>
   </div>
-  <button mat-flat-button class="app-page-action">
+  <button mat-flat-button class="aw-page-action">
     <mat-icon>add</mat-icon>
     <span>Action</span>
   </button>
@@ -60,11 +60,27 @@ Use the global `app-page-header` classes for page headers with actions:
 ```
 
 Classes:
-- `.app-page-header` - Flexbox row with space-between, 24px bottom margin
-- `.app-page-header-left` - Flex container for title/subtitle
-- `.app-page-title` - Bold title (600 weight), no margins
-- `.app-page-subtitle` - Gray subtitle text
-- `.app-page-action` - Button container with icon styling
+- `.aw-page-header` - Flexbox row with space-between, 24px bottom margin
+- `.aw-page-header-left` - Flex container for title/subtitle
+- `.aw-page-title` - Serif title (Source Serif 4, 600 weight), no margins
+- `.aw-page-subtitle` - Gray subtitle text
+- `.aw-page-action` - Button container with icon styling
+
+## Shared Components (`app/src/app/shared/`, barrel `shared/index.ts`)
+
+- `aw-alert-banner` (`AlertBannerComponent`): inputs `message`, `kind: 'error' | 'info' = 'error'`; output `dismissed` (the X shows only when something listens).
+- `aw-screen-toolbar` (`ScreenToolbarComponent`): inputs `title`, `subtitle?`, `backLink?`; `<ng-content>` for right-side actions.
+- `aw-side-panel` (`SidePanelComponent`): inputs `open`, `title`, `closable = true`; output `closed`.
+- `aw-kind-label` (`KindLabelComponent`): input `kind: Afterword.Firestore.Note.NoteKind`.
+- `LoadingService`: `show()`, `hide()`, `isLoading$`; the shell shows a thin progress bar under the top bar.
+- `formatShortDate(timestamp)` in `shared/helpers/date.helper.ts`.
+
+## Look
+
+- Flat: no shadows, no gradients, no sparkle or robot iconography, no "AI-powered" copy.
+- The red rule (`--aw-theme--accent`, 3px) appears once per page as the top rule; elsewhere red means an error.
+- Links are underlined; ink (`--aw-theme--primary`) is the only interactive color.
+- Headings in Source Serif 4 (600), body in the system font stack.
 
 ## Forms
 
@@ -97,11 +113,11 @@ Classes:
   <button mat-button type="button" [disabled]="isSubmitting" (click)="onClose()">Cancel</button>
   ```
 
-- `[UI-14]` **Inline error on failure.** On submit error, set a `saveError` string and display it with `<app-alert-banner>` inside the panel (above the action buttons). Do not close the panel. Clear it on the next submit attempt or on close.
+- `[UI-14]` **Inline error on failure.** On submit error, set a `saveError` string and display it with `<aw-alert-banner>` inside the panel (above the action buttons). Do not close the panel. Clear it on the next submit attempt or on close.
 
   ```html
   @if (saveError) {
-    <app-alert-banner [message]="saveError" (dismissed)="saveError = ''"></app-alert-banner>
+    <aw-alert-banner [message]="saveError" (dismissed)="saveError = ''"></aw-alert-banner>
   }
   ```
 

@@ -1,0 +1,72 @@
+<aw-screen-toolbar [title]="copy.TITLE" [subtitle]="copy.SUBTITLE"></aw-screen-toolbar>
+
+@if (loadError) {
+  <aw-alert-banner [message]="loadError"></aw-alert-banner>
+} @else if (hasLoaded) {
+  @if (actionError) {
+    <div class="banner-gap">
+      <aw-alert-banner [message]="actionError" (dismissed)="actionError = ''"></aw-alert-banner>
+    </div>
+  }
+
+  @if (!hasItems) {
+    <div class="empty">
+      <p class="empty-text">{{ copy.EMPTY }}</p>
+      <a mat-stroked-button routerLink="/briefings" class="aw-link-plain">{{ copy.EMPTY_LINK }}</a>
+    </div>
+  } @else {
+    <mat-chip-listbox class="filters" aria-label="Filter by kind">
+      @for (option of filters; track option.value) {
+        <mat-chip-option
+          [selected]="filter === option.value"
+          (selectionChange)="onFilterChange($event, option.value)"
+          >{{ option.label }}</mat-chip-option
+        >
+      }
+    </mat-chip-listbox>
+
+    @if (groups.length === 0) {
+      <p class="filtered-empty">{{ filteredEmptyText }}</p>
+    }
+
+    @for (group of groups; track group.key) {
+      <section class="group">
+        <h2 class="group-title">{{ group.title }}</h2>
+        <div class="aw-card-grid">
+          @for (item of group.items; track item.id) {
+            <mat-card class="aw-card" appearance="outlined">
+              <mat-card-content>
+                <div class="item">
+                  <mat-icon class="item-icon" [attr.aria-label]="kindNames[item.kind]">{{ kindIcons[item.kind] }}</mat-icon>
+                  <div class="item-body">
+                    <a class="item-title" [href]="item.url" target="_blank" rel="noopener">{{ item.title }}</a>
+                    @if (byline(item)) {
+                      <p class="item-byline">{{ byline(item) }}</p>
+                    }
+                    <p class="item-why">{{ item.whyThis }}</p>
+                  </div>
+                </div>
+                <div class="item-footer">
+                  <p class="item-meta">Saved {{ formatDate(item.savedAt) }}</p>
+                  <button
+                    mat-stroked-button
+                    type="button"
+                    class="remove-button"
+                    [disabled]="isRemoving(item)"
+                    (click)="onRemove(item)"
+                  >
+                    @if (isRemoving(item)) {
+                      <mat-spinner diameter="20"></mat-spinner>
+                    } @else {
+                      {{ copy.REMOVE_BUTTON }}
+                    }
+                  </button>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          }
+        </div>
+      </section>
+    }
+  }
+}
