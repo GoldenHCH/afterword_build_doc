@@ -111,7 +111,7 @@ Live app: https://afterword-hackathon.web.app. Sign in with "Use the demo accoun
 ## Demo shortcuts
 
 - **Save link from the email:** `/briefings/<briefingId>?save=<itemId>` saves that item once the page loads, scrolls to the entry and removes the parameter from the URL. If you are signed out, sign in first and the link carries on. Example: https://afterword-hackathon.web.app/briefings/briefing_demo_seed?save=<itemId> (an `itemId` is in the seeded briefing's entries).
-- **Seeded briefing fallback:** if the live build is slow or fails on stage, open `/briefings/briefing_demo_seed`: 3 sections and 17 entries, already `ready`, with hand-written explanations. `buildBriefingNow` itself returns the seeded briefing with a `warning` when the model or email step is down.
+- **Seeded briefing fallback:** if the live build is slow, fails, or the button is never pressed on stage, open `/briefings/briefing_demo_seed`: 3 sections and 17 entries, already `ready`, with hand-written explanations. When the model or email step is down, `buildBriefingNow` still returns the newly built briefing with fallback text and a `warning`; the seeded briefing is the fallback only if the build itself fails or the button is never pressed.
 
 `seedDemo` loads the demo account: the user, 3 notes, 10 X sources, the cached posts and papers, about 15 more papers fetched live from OpenAlex, and one `ready` briefing. It is safe to run twice (deterministic document ids, `set` with merge).
 
@@ -136,7 +136,7 @@ It creates or updates `demo@afterword.fyi` (uid `demo-researcher`, email verifie
 
 - **Secrets:** `firebase functions:secrets:set ANTHROPIC_API_KEY` and `firebase functions:secrets:set RESEND_API_KEY`. The sender is `briefing@afterword.fyi`.
 - **Local checks, no Firebase project needed:** `cd functions && npx -y yarn@1.22.22 build && npx -y yarn@1.22.22 email:preview` writes `functions/tmp/briefing.html`. `npx -y yarn@1.22.22 explain:dry` runs the explain step and needs `ANTHROPIC_API_KEY` in the shell.
-- **On-stage fallback:** the seeded briefing `briefing_demo_seed` is already `ready` with hand-written lines. If the model or Resend is down, the app shows the seeded briefing and the demo shows the previously sent email. `buildBriefingNow` then returns a `warning` instead of failing.
+- **On-stage fallback:** the seeded briefing `briefing_demo_seed` is already `ready` with hand-written lines. If the model or Resend is down, `buildBriefingNow` returns the newly built briefing with fallback text and a `warning` instead of failing; the seeded briefing is the fallback only if the build itself fails or the button is never pressed, and the demo then shows the previously sent email.
 
 ## Per-project swaps
 

@@ -211,7 +211,7 @@ export class BriefingsPageComponent implements OnInit {
   private _onBriefing(result: IBriefingLoadResult): void {
     const latestId = result.briefing?.id;
 
-    if (!this.routeId && latestId) {
+    if (!this.routeId && latestId && !this.isBuilding) {
       if (!this._isRedirecting) {
         this._isRedirecting = true;
         void this._router.navigate(['/briefings', latestId], { replaceUrl: true, queryParamsHandling: 'preserve' });
@@ -252,22 +252,31 @@ export class BriefingsPageComponent implements OnInit {
       return;
     }
 
-    if (!savedByItemId.has(itemId)) {
-      await this._saveItem(briefingId, itemId);
+    const isSaved = savedByItemId.has(itemId) || (await this._saveItem(briefingId, itemId));
+
+    if (this._isDestroyed || this._route.snapshot.paramMap.get('id') !== briefingId) {
+      return;
     }
 
     setTimeout(() => this._scrollToEntry(itemId));
-    await this._clearSaveParam();
+
+    if (isSaved) {
+      await this._clearSaveParam();
+    }
   }
 
-  private async _saveItem(briefingId: string, itemId: string): Promise<void> {
+  private async _saveItem(briefingId: string, itemId: string): Promise<boolean> {
     this.pendingItemIds.add(itemId);
 
     try {
       await this._libraryService.save(briefingId, itemId);
+
+      return true;
     } catch (error) {
       console.error(error);
       this.actionError = toErrorMessage(error, briefingsCopy.SAVE_ERROR);
+
+      return false;
     } finally {
       this.pendingItemIds.delete(itemId);
     }
