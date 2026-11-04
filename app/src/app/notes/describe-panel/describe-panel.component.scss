@@ -1,0 +1,25 @@
+.cdk-overlay-container {
+  z-index: 1100;
+}
+
+.describe-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.describe-field {
+  width: 100%;
+}
+
+.describe-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.describe-submit {
+  min-width: 120px;
+}
