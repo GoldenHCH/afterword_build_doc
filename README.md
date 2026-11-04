@@ -86,6 +86,14 @@ npx -y yarn@1.22.22 build
 - **Dry run, no Firebase project needed:** `cd functions && npx -y yarn@1.22.22 build && npx -y yarn@1.22.22 seed:dry`. It does the live OpenAlex calls, writes to memory, and prints per-collection counts, the briefing size and a hash of the sorted document ids.
 - **Against a project:** the callable only accepts the demo uid (`demo-researcher`). Locally, `firebase functions:shell` then `seedDemo({}, { auth: { uid: 'demo-researcher' } })`. From the deployed app, call `seedDemo` while signed in as the demo user.
 
+### Briefing explain and email (phase 03)
+
+`buildBriefingNow` builds the briefing, asks the model for the `whyThis` and `readingNote` lines and the reading order, then emails the result. `weeklyBriefing` does the same for every user with an open note, every Monday at 07:00 (America/Denver).
+
+- **Secrets:** `firebase functions:secrets:set ANTHROPIC_API_KEY` and `firebase functions:secrets:set RESEND_API_KEY`. The sender is `briefing@afterword.fyi`.
+- **Local checks, no Firebase project needed:** `cd functions && npx -y yarn@1.22.22 build && npx -y yarn@1.22.22 email:preview` writes `functions/tmp/briefing.html`. `npx -y yarn@1.22.22 explain:dry` runs the explain step and needs `ANTHROPIC_API_KEY` in the shell.
+- **On-stage fallback:** the seeded briefing `briefing_demo_seed` is already `ready` with hand-written lines. If the model or Resend is down, the app shows the seeded briefing and the demo shows the previously sent email. `buildBriefingNow` then returns a `warning` instead of failing.
+
 ## Per-project swaps
 
 - `AGENTS.md` — Project Overview (a few lines only)

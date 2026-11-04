@@ -57,3 +57,9 @@ export interface IAnthropicMessagesResponse {
     output_tokens?: number;
   };
 }
+
+export interface ISendBriefingOutcome {
+  explained: boolean;
+  sent: boolean;
+  warning?: string;
+}
