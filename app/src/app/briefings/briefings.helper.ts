@@ -1,6 +1,6 @@
 import { FirebaseError } from 'firebase/app';
 
-import { backendErrorCodes, briefingsConfig, briefingsCopy, deadlineExceededCode } from './briefings.constants';
+import { backendCodeOnlyMessage, backendErrorCodes, briefingsConfig, briefingsCopy, deadlineExceededCode } from './briefings.constants';
 
 type IBriefing = Afterword.Firestore.Briefing.IBriefing;
 type IBriefingEntry = Afterword.Firestore.Briefing.IBriefingEntry;
@@ -48,7 +48,8 @@ export function toErrorMessage(error: unknown, fallback: string): string {
   }
 
   const hasBackendMessage = (Object.values(backendErrorCodes) as string[]).includes(error.code);
-  const isReadable = error.message.trim().length > 0 && error.message.trim().toLowerCase() !== 'internal';
+  const message = error.message.trim();
+  const isReadable = message.length > 0 && !backendCodeOnlyMessage.test(message);
 
   return hasBackendMessage && isReadable ? error.message : fallback;
 }

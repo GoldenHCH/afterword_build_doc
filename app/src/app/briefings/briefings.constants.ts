@@ -43,3 +43,5 @@ export const entryKindIcons = {
   paper: 'article',
   post: 'forum',
 } as const;
+
+export const backendCodeOnlyMessage = /^[a-z-]+( \[\d+\])?$/;
