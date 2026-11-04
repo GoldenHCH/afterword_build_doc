@@ -4,7 +4,7 @@
 
 <!-- Replace this section at kickoff. Keep it to a few lines — details live in brief/. -->
 
-**[Product Name]** is an Angular 21+ (standalone components), Angular Material, SCSS application backed by Firebase Cloud Functions (TypeScript) and Firestore, built for **[Hackathon Name]**.
+**Afterword** is an Angular 21+ (standalone components), Angular Material, SCSS application backed by Firebase Cloud Functions (TypeScript) and Firestore, built for **[Hackathon Name]**. It turns what a researcher is stuck on (captured by their AI assistant over the existing Afterword MCP) into a weekly briefing of papers (Paperclip) and X posts, in reading order, sent by email; the researcher saves what they like, and their AI searches that library back over MCP.
 
 **Key files:**
 - `brief/brief.md` — challenge, judging rubric, required features, demo script. Read it before touching any feature.
