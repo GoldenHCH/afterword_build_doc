@@ -12,7 +12,14 @@ service cloud.firestore {
 
     match /users/{userId} {
       allow read: if isOwner(userId);
-      allow write: if false;
+      allow create: if isOwner(userId)
+        && request.resource.data.email is string
+        && request.resource.data.displayName is string
+        && request.resource.data.keys().hasOnly(['email', 'displayName', 'createdAt']);
+      allow update: if isOwner(userId)
+        && request.resource.data.displayName is string
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['displayName']);
+      allow delete: if false;
     }
 
     match /notes/{noteId} {
