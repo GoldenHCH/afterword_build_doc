@@ -1,0 +1,384 @@
+{
+  "sections": [
+    {
+      "noteKey": "intercoder",
+      "entries": [
+        {
+          "kind": "paper",
+          "externalId": "10.29333/ajqr/14887",
+          "url": "https://doi.org/10.29333/ajqr/14887",
+          "title": "Inter-Coder Agreement in Qualitative Coding: Considerations for its Use",
+          "authors": [
+            "Sean N. Halpin"
+          ],
+          "publishedAt": "2024-07-26",
+          "sourceHandle": null,
+          "text": "The historically quantitative-dominated field of health sciences has increasingly embraced qualitative methods. However, calls for quantitative measures of rigor, such as Inter-coder Agreement (ICA), remain. The aim of this manuscript is to demystify ICA and provide practical guidance. I begin by describing considerations while planning for ICA, including differences between various ICA tests (i.e., percent…",
+          "provider": "openalex",
+          "rank": 1,
+          "score": 0.96,
+          "whyThis": "Your kappa of 0.41 is hard to defend; this explains which agreement statistics exist, how to set a threshold, and how to document codebook changes.",
+          "readingNote": "Start here: defines the agreement measures and thresholds"
+        },
+        {
+          "kind": "paper",
+          "externalId": "10.1093/heapro/daae049",
+          "url": "https://doi.org/10.1093/heapro/daae049",
+          "title": "A critical review of the reporting of reflexive thematic analysis in Health Promotion International",
+          "authors": [
+            "Virginia Braun",
+            "Victoria Clarke"
+          ],
+          "publishedAt": "2024-05-13",
+          "sourceHandle": null,
+          "text": "Using the concept of methodological congruence-where the different elements of a study 'fit' together-we explore both problematic and good practice in (reflexive) thematic analysis (TA) as reported in Health Promotion International (HPI). Aligning with the importance we place on 'owning your perspectives' we situate this exploration in relation to our understanding of the variation in…",
+          "provider": "openalex",
+          "rank": 2,
+          "score": 0.89,
+          "whyThis": "Written by the authors of reflexive TA: shows what congruent reporting looks like, so your rigor argument fits your method instead of borrowing kappa.",
+          "readingNote": "Next: the method's own view of quality"
+        },
+        {
+          "kind": "paper",
+          "externalId": "10.1140/epjds/s13688-025-00548-8",
+          "url": "https://doi.org/10.1140/epjds/s13688-025-00548-8",
+          "title": "Scaling hermeneutics: a guide to qualitative coding with LLMs for reflexive content analysis",
+          "authors": [
+            "Zackary Okun Dunivin"
+          ],
+          "publishedAt": "2025-04-02",
+          "sourceHandle": null,
+          "text": "Abstract Qualitative coding, or content analysis, is more than just labeling text: it is a reflexive interpretive practice that shapes research questions, refines theoretical insights, and illuminates subtle social dynamics. As large language models (LLMs) become increasingly adept at nuanced language tasks, questions arise about whether—and how—they can assist in large-scale coding without eroding the…",
+          "provider": "openalex",
+          "rank": 3,
+          "score": 0.82,
+          "whyThis": "Double-coding is slow; this keeps codebook refinement and lets an LLM apply codes, explaining each decision so you can audit disagreements.",
+          "readingNote": "Then: an LLM as scalable coder, with caveats"
+        },
+        {
+          "kind": "paper",
+          "externalId": "10.1007/978-3-031-98420-4_5",
+          "url": "https://doi.org/10.1007/978-3-031-98420-4_5",
+          "title": "Comparing a Human’s and a Multi-Agent System’s Thematic Analysis: Assessing Qualitative Coding Consistency",
+          "authors": [
+            "Sebastian Simon",
+            "Sreecharan Sankaranarayanan",
+            "Elham Tajik",
+            "Conrad Borchers",
+            "Bahar shahrokhian",
+            "Francesco Balzan",
+            "Sebastian Strauß",
+            "Sree Aurovindh Viswanathan",
+            "Amine Hatun Ataş",
+            "Mia Čarapina",
+            "Liang Li",
+            "Berkan Çelik"
+          ],
+          "publishedAt": "2025-01-01",
+          "sourceHandle": null,
+          "text": "Large Language Models (LLMs) have demonstrated fluency in text generation and reasoning tasks. Consequently, the field has probed the ability of LLMs to automate qualitative analysis, including inductive thematic analysis (iTA), previously achieved through human reasoning only. Studies using LLMs for iTA have yielded mixed results so far. LLMs have successfully been used for isolated…",
+          "provider": "openalex",
+          "rank": 4,
+          "score": 0.75,
+          "whyThis": "You need a way to report consistency; this proposes one, comparing an LLM multi-agent analysis with expert human coding via blind review.",
+          "readingNote": "Last paper: a worked consistency assessment"
+        },
+        {
+          "kind": "post",
+          "externalId": "2117445039211086096",
+          "url": "https://x.com/emollick/status/2117445039211086096",
+          "title": "Ethan Mollick on X",
+          "authors": [
+            "Ethan Mollick"
+          ],
+          "publishedAt": "2026-11-03T02:33:32.231Z",
+          "sourceHandle": "emollick",
+          "text": "This is a fantastic idea - a mass attempted replication of old findings of LLMs with new models. Much conventional wisdom is outdated.\n\nRecent models no longer invent citations and both hallucination rates & stereotyping has dropped. But they are still sycophantic & lean left.",
+          "provider": "x",
+          "rank": 5,
+          "score": 0.68,
+          "whyThis": "If you let an LLM act as second coder, note the point: newer models hallucinate less but remain sycophantic, so keep human checks.",
+          "readingNote": "Skim: context on trusting LLM readers"
+        },
+        {
+          "kind": "post",
+          "externalId": "2117659011373756509",
+          "url": "https://x.com/emollick/status/2117659011373756509",
+          "title": "Ethan Mollick on X",
+          "authors": [
+            "Ethan Mollick"
+          ],
+          "publishedAt": "2026-11-03T16:43:47.170Z",
+          "sourceHandle": "emollick",
+          "text": "We are in an era of flux & fighting over how AI should be used to review academic work\n\nBut it is worth proving to yourself that yes, AI used properly can be quite insightful at this, by asking GPT-6 Pro/Opus 5.5 High to give helpful, substantive feedback on one of your papers.",
+          "provider": "x",
+          "rank": 6,
+          "score": 0.61,
+          "whyThis": "A cheap test: ask a frontier model for substantive feedback on a draft of your methods and see which concerns your coder raises too.",
+          "readingNote": "Optional: a quick experiment to try"
+        }
+      ]
+    },
+    {
+      "noteKey": "vla-finetuning",
+      "entries": [
+        {
+          "kind": "paper",
+          "externalId": "10.48550/arxiv.2406.09246",
+          "url": "https://doi.org/10.48550/arxiv.2406.09246",
+          "title": "OpenVLA: An Open-Source Vision-Language-Action Model",
+          "authors": [
+            "Moo Jin Kim",
+            "Karl Pertsch",
+            "Siddharth Karamcheti",
+            "Ted G. Xiao",
+            "Ashwin Balakrishna",
+            "Suraj Nair",
+            "Rafael Rafailov",
+            "Ethan Foster",
+            "Lam, Grace",
+            "Pannag Sanketi",
+            "Quan Vuong",
+            "Thomas Kollar",
+            "Benjamin Burchfiel",
+            "Russ Tedrake",
+            "Dorsa Sadigh",
+            "Sergey Levine",
+            "Percy Liang",
+            "Chelsea Finn"
+          ],
+          "publishedAt": "2024-06-13",
+          "sourceHandle": null,
+          "text": "Large policies pretrained on a combination of Internet-scale vision-language data and diverse robot demonstrations have the potential to change how we teach robots new skills: rather than training new behaviors from scratch, we can fine-tune such vision-language-action (VLA) models to obtain robust, generalizable policies for visuomotor control. Yet, widespread adoption of VLAs for robotics has…",
+          "provider": "openalex",
+          "rank": 1,
+          "score": 0.96,
+          "whyThis": "Your base model. It reports fine-tuning OpenVLA beats Diffusion Policy by 20.4% and works with LoRA on consumer GPUs, close to your setup.",
+          "readingNote": "Start here: the base model and its fine-tuning"
+        },
+        {
+          "kind": "paper",
+          "externalId": "10.15607/rss.2025.xxi.017",
+          "url": "https://doi.org/10.15607/rss.2025.xxi.017",
+          "title": "Fine-Tuning Vision-Language-Action Models: Optimizing Speed and Success",
+          "authors": [
+            "Moo Jin Kim",
+            "Chelsea Finn",
+            "Percy Liang"
+          ],
+          "publishedAt": "2025-06-21",
+          "sourceHandle": null,
+          "text": "Recent vision-language-action models (VLAs) build upon pretrained vision-language models and leverage diverse robot datasets to demonstrate strong task execution, language following ability, and semantic generalization.Despite these successes, VLAs struggle with novel robot setups and require finetuning to achieve good performance, yet how to most effectively fine-tune them is unclear given many possible strategies.In this work,…",
+          "provider": "openalex",
+          "rank": 2,
+          "score": 0.89,
+          "whyThis": "Your 60% plateau may be a recipe problem: parallel decoding, action chunking and an L1 regression objective lifted OpenVLA from 76.5% to 97.1% on LIBERO.",
+          "readingNote": "Next: the recipe that targets your plateau"
+        },
+        {
+          "kind": "paper",
+          "externalId": "10.1109/icra57385.2026.11696052",
+          "url": "https://doi.org/10.1109/icra57385.2026.11696052",
+          "title": "Adaptive Capacity Allocation for Vision Language Action Fine-tuning",
+          "authors": [
+            "Donghoon Kim",
+            "Minji Bae",
+            "Unghui Nam",
+            "Gyeonghun Kim",
+            "Suyun Lee",
+            "Kyuhong Shim",
+            "Byonghyo Shim"
+          ],
+          "publishedAt": "2026-06-01",
+          "sourceHandle": null,
+          "text": "Vision language action models (VLAs) are increasingly used for Physical AI, but deploying a pre-trained VLA model to unseen environments, embodiments, or tasks still requires adaptation. Parameter-efficient fine-tuning (PEFT), especially LoRA, is common for VLA policies, yet the exposed capacity knob, the rank, does not transfer uniformly: robotics transfer exhibits a higher and task-varying intrinsic…",
+          "provider": "openalex",
+          "rank": 3,
+          "score": 0.82,
+          "whyThis": "Lowering LoRA rank may be hurting you; this argues VLAs need higher, task-varying rank, and its adaptive adapter gains up to 31.6%.",
+          "readingNote": "Then: LoRA rank, the knob you're turning"
+        },
+        {
+          "kind": "paper",
+          "externalId": "10.1109/lra.2025.3544909",
+          "url": "https://doi.org/10.1109/lra.2025.3544909",
+          "title": "TinyVLA: Toward Fast, Data-Efficient Vision-Language-Action Models for Robotic Manipulation",
+          "authors": [
+            "Junjie Wen",
+            "Yichen Zhu",
+            "Jinming Li",
+            "Minjie Zhu",
+            "Zhibin Tang",
+            "Kun Wu",
+            "Zhiyuan Xu",
+            "Ning Liu",
+            "Ran Cheng",
+            "Chaomin Shen",
+            "Yaxin Peng",
+            "Feifei Feng",
+            "Jian Tang"
+          ],
+          "publishedAt": "2025-02-24",
+          "sourceHandle": null,
+          "text": "Vision-Language-Action (VLA) models have shown remarkable potential in visuomotor control and instruction comprehension through end-to-end learning processes. However, current VLA models face significant challenges: they are slow during inference and require extensive pre-training on large amounts of robotic data, making real-world deployment difficult. In this letter, we introduce a new family of compact vision-language-action models,…",
+          "provider": "openalex",
+          "rank": 4,
+          "score": 0.75,
+          "whyThis": "Before your diffusion-policy baseline: TinyVLA pairs a compact VLA with a diffusion decoder and beats OpenVLA on speed and data efficiency.",
+          "readingNote": "Last: a data-efficient alternative to compare against"
+        },
+        {
+          "kind": "post",
+          "externalId": "2117479583511716285",
+          "url": "https://x.com/svlevine/status/2117479583511716285",
+          "title": "Sergey Levine on X",
+          "authors": [
+            "Sergey Levine"
+          ],
+          "publishedAt": "2026-11-03T04:50:48.234Z",
+          "sourceHandle": "svlevine",
+          "text": "RL can help collect good data, whether you're doing BC or RL. It can also stack two cubes on top of another cube.\n\nFun paper with @qiyang_li @zhiyuan_zhou_ @CharlesXu0124 on how RL can assist with robot data collection! https://t.co/HXVZ8tA8pK",
+          "provider": "x",
+          "rank": 5,
+          "score": 0.68,
+          "whyThis": "Supports your data-quality suspicion: his group shows RL can help during data collection, whether you train with BC or RL.",
+          "readingNote": "Skim: data quality over model choice"
+        },
+        {
+          "kind": "post",
+          "externalId": "2108673441314566158",
+          "url": "https://x.com/chelseabfinn/status/2108673441314566158",
+          "title": "Chelsea Finn on X",
+          "authors": [
+            "Chelsea Finn"
+          ],
+          "publishedAt": "2026-10-09T21:38:20.324Z",
+          "sourceHandle": "chelseabfinn",
+          "text": "As robots become more reliable, DAgger becomes far less efficient.\n\neg 90% success means the person spends >90% of the time passively watching the robot\n\nKey idea: failures come from similar initial states & we can focus learning on these states!\n\nPaper: https://t.co/kzsIufeRy1 https://t.co/cu5E6iK3nM",
+          "provider": "x",
+          "rank": 6,
+          "score": 0.61,
+          "whyThis": "If you add corrections, the thread argues failures cluster in similar initial states, so focus new demos there instead of collecting uniformly.",
+          "readingNote": "Skim: where to spend your next demos"
+        }
+      ]
+    },
+    {
+      "noteKey": "mamba-recall",
+      "entries": [
+        {
+          "kind": "paper",
+          "externalId": "10.48550/arxiv.2312.00752",
+          "url": "https://doi.org/10.48550/arxiv.2312.00752",
+          "title": "Mamba: Linear-Time Sequence Modeling with Selective State Spaces",
+          "authors": [
+            "Albert Gu",
+            "Tri Dao"
+          ],
+          "publishedAt": "2023-12-01",
+          "sourceHandle": null,
+          "text": "Foundation models, now powering most of the exciting applications in deep learning, are almost universally based on the Transformer architecture and its core attention module. Many subquadratic-time architectures such as linear attention, gated convolution and recurrent models, and structured state space models (SSMs) have been developed to address Transformers' computational inefficiency on long sequences, but…",
+          "provider": "openalex",
+          "rank": 1,
+          "score": 0.96,
+          "whyThis": "The foundation for your question: selective SSMs scale linearly and match Transformers twice their size, so you need to know what that benchmark leaves out.",
+          "readingNote": "Start here: the model everyone compares against"
+        },
+        {
+          "kind": "paper",
+          "externalId": "10.48550/arxiv.2406.07887",
+          "url": "https://doi.org/10.48550/arxiv.2406.07887",
+          "title": "An Empirical Study of Mamba-based Language Models",
+          "authors": [
+            "Roger Waleffe",
+            "Wonmin Byeon",
+            "Duncan Riach",
+            "Brandon Norick",
+            "Vijay Anand Korthikanti",
+            "Tri Dao",
+            "Albert Gu",
+            "Ali Hatamizadeh",
+            "Singh, Sudhakar",
+            "Deepak Narayanan",
+            "Garvit Kulshreshtha",
+            "Vartika Singh",
+            "Jared Casper",
+            "Jan Kautz",
+            "Mohammad Shoeybi",
+            "Bryan Catanzaro"
+          ],
+          "publishedAt": "2024-06-12",
+          "sourceHandle": null,
+          "text": "Selective state-space models (SSMs) like Mamba overcome some of the shortcomings of Transformers, such as quadratic computational complexity with sequence length and large inference-time memory requirements from the key-value cache. Moreover, recent studies have shown that SSMs can match or exceed the language modeling capabilities of Transformers, making them an attractive alternative. In a controlled…",
+          "provider": "openalex",
+          "rank": 2,
+          "score": 0.89,
+          "whyThis": "Settles much of your doubt at 8B scale: pure SSMs lag on copying, in-context learning and long-context tasks, while the hybrid beats the Transformer.",
+          "readingNote": "Next: a controlled 8B comparison on recall"
+        },
+        {
+          "kind": "paper",
+          "externalId": "10.18653/v1/2025.babylm-main.27",
+          "url": "https://doi.org/10.18653/v1/2025.babylm-main.27",
+          "title": "Understanding and Enhancing Mamba-Transformer Hybrids for Memory Recall and Language Modeling",
+          "authors": [
+            "Hyunji Lee",
+            "Wenhao Yu",
+            "Hongming Zhang",
+            "Kaixin Ma",
+            "Jiyeon Kim",
+            "Dong Yu",
+            "Minjoon Seo"
+          ],
+          "publishedAt": "2025-01-01",
+          "sourceHandle": null,
+          "text": "Hybrid models that combine state space models (SSMs) with attention mechanisms have shown strong performance by leveraging the efficiency of SSMs and the high recall ability of attention.However, the architectural design choices behind these hybrid models remain insufficiently understood.In this work, we analyze hybrid architectures through the lens of memory utilization and overall performance, and…",
+          "provider": "openalex",
+          "rank": 3,
+          "score": 0.82,
+          "whyThis": "If you pick a hybrid, this shows sequential hybrids win on short contexts and parallel ones on longer contexts, and how paraphrase training boosts recall.",
+          "readingNote": "Then: how hybrids close the recall gap"
+        },
+        {
+          "kind": "paper",
+          "externalId": "10.18653/v1/2025.emnlp-main.235",
+          "url": "https://doi.org/10.18653/v1/2025.emnlp-main.235",
+          "title": "Recall with Reasoning: Chain-of-Thought Distillation for Mamba’s Long-Context Memory and Extrapolation",
+          "authors": [
+            "Junyu Ma",
+            "Tianqing Fang",
+            "Zhisong Zhang",
+            "Hongming Zhang",
+            "Haitao Mi",
+            "Dong Yu"
+          ],
+          "publishedAt": "2025-01-01",
+          "sourceHandle": null,
+          "text": "Mamba's theoretical infinite-context potential is limited in practice when sequences far exceed training lengths.This work explores unlocking Mamba's long-context memory ability by a simple-yet-effective method, Recall with Reasoning (RwR), by distilling chain-ofthought (CoT) summarization from a teacher model.Specifically, RwR prepends these summarization as CoT prompts during fine-tuning, teaching Mamba to actively recall and reason over…",
+          "provider": "openalex",
+          "rank": 4,
+          "score": 0.75,
+          "whyThis": "Your worry that Mamba forgets far-back details is confirmed beyond training length; this shows a fine-tuning fix without changing architecture.",
+          "readingNote": "Last: a fine-tuning fix for long-range memory"
+        },
+        {
+          "kind": "post",
+          "externalId": "2115531348161028374",
+          "url": "https://x.com/tri_dao/status/2115531348161028374",
+          "title": "Tri Dao on X",
+          "authors": [
+            "Tri Dao"
+          ],
+          "publishedAt": "2026-10-28T19:49:12.730Z",
+          "sourceHandle": "tri_dao",
+          "text": "Super interesting result: H-Net learns to dynamically tokenize variable names in coding data as separate tokens, and it scales much better on code compared to BPE https://t.co/36qA6tASbg",
+          "provider": "x",
+          "rank": 5,
+          "score": 0.68,
+          "whyThis": "From Mamba's co-author: H-Net learns to tokenize code dynamically and scales better than BPE. Not about recall; skim to see where the authors are heading.",
+          "readingNote": "Skim: current direction of the Mamba authors"
+        }
+      ]
+    }
+  ]
+}

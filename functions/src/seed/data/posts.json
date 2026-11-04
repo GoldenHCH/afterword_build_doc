@@ -1,0 +1,79 @@
+[
+  {
+    "externalId": "2115531348161028374",
+    "url": "https://x.com/tri_dao/status/2115531348161028374",
+    "handle": "tri_dao",
+    "authors": [
+      "Tri Dao"
+    ],
+    "text": "Super interesting result: H-Net learns to dynamically tokenize variable names in coding data as separate tokens, and it scales much better on code compared to BPE https://t.co/36qA6tASbg",
+    "publishedAt": "2026-10-28T19:49:12.730Z",
+    "provider": "x"
+  },
+  {
+    "externalId": "2117479583511716285",
+    "url": "https://x.com/svlevine/status/2117479583511716285",
+    "handle": "svlevine",
+    "authors": [
+      "Sergey Levine"
+    ],
+    "text": "RL can help collect good data, whether you're doing BC or RL. It can also stack two cubes on top of another cube.\n\nFun paper with @qiyang_li @zhiyuan_zhou_ @CharlesXu0124 on how RL can assist with robot data collection! https://t.co/HXVZ8tA8pK",
+    "publishedAt": "2026-11-03T04:50:48.234Z",
+    "provider": "x"
+  },
+  {
+    "externalId": "2112762529701405127",
+    "url": "https://x.com/svlevine/status/2112762529701405127",
+    "handle": "svlevine",
+    "authors": [
+      "Sergey Levine"
+    ],
+    "text": "Turns out that simply extracting policies with supervised learning conditioned on the advantage can get state of the art results in RL, as long as we get a few important details right! https://t.co/fZsaoIcUgs",
+    "publishedAt": "2026-10-21T04:26:54.967Z",
+    "provider": "x"
+  },
+  {
+    "externalId": "2110125641819668636",
+    "url": "https://x.com/chelseabfinn/status/2110125641819668636",
+    "handle": "chelseabfinn",
+    "authors": [
+      "Chelsea Finn"
+    ],
+    "text": "The Pi API is officially in beta! 🤖\n\nMany people have already been using it to fine-tune π models for their robots -- below are a few\n\nWe’re hoping to expand testing significantly. Let us know if you are interested!\n\nBlog: https://t.co/JBTahDOmg7\nSignup: https://t.co/pIVpvdGxCN",
+    "publishedAt": "2026-10-13T21:48:51.905Z",
+    "provider": "x"
+  },
+  {
+    "externalId": "2108673441314566158",
+    "url": "https://x.com/chelseabfinn/status/2108673441314566158",
+    "handle": "chelseabfinn",
+    "authors": [
+      "Chelsea Finn"
+    ],
+    "text": "As robots become more reliable, DAgger becomes far less efficient.\n\neg 90% success means the person spends >90% of the time passively watching the robot\n\nKey idea: failures come from similar initial states & we can focus learning on these states!\n\nPaper: https://t.co/kzsIufeRy1 https://t.co/cu5E6iK3nM",
+    "publishedAt": "2026-10-09T21:38:20.324Z",
+    "provider": "x"
+  },
+  {
+    "externalId": "2117445039211086096",
+    "url": "https://x.com/emollick/status/2117445039211086096",
+    "handle": "emollick",
+    "authors": [
+      "Ethan Mollick"
+    ],
+    "text": "This is a fantastic idea - a mass attempted replication of old findings of LLMs with new models. Much conventional wisdom is outdated.\n\nRecent models no longer invent citations and both hallucination rates & stereotyping has dropped. But they are still sycophantic & lean left.",
+    "publishedAt": "2026-11-03T02:33:32.231Z",
+    "provider": "x"
+  },
+  {
+    "externalId": "2117659011373756509",
+    "url": "https://x.com/emollick/status/2117659011373756509",
+    "handle": "emollick",
+    "authors": [
+      "Ethan Mollick"
+    ],
+    "text": "We are in an era of flux & fighting over how AI should be used to review academic work\n\nBut it is worth proving to yourself that yes, AI used properly can be quite insightful at this, by asking GPT-6 Pro/Opus 5.5 High to give helpful, substantive feedback on one of your papers.",
+    "publishedAt": "2026-11-03T16:43:47.170Z",
+    "provider": "x"
+  }
+]
