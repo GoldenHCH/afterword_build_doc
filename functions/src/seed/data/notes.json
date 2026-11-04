@@ -1,0 +1,29 @@
+[
+  {
+    "key": "intercoder",
+    "kind": "stuck",
+    "summary": "Stuck on intercoder reliability in reflexive thematic analysis of my interview transcripts.",
+    "detail": "I'm coding 24 semi-structured interviews with a second coder. Cohen's kappa came out at 0.41 on the first pass, but reflexive TA says agreement isn't the goal. I can't tell how to report rigor without contradicting my own method.",
+    "angle": "How can intercoder reliability or agreement be reported credibly for reflexive thematic analysis of interviews, including when an LLM acts as a second coder?",
+    "keywords": ["intercoder reliability", "reflexive thematic analysis", "qualitative coding", "interview transcripts", "cohen's kappa", "codebook", "llm-assisted coding"],
+    "project": "Interview study on remote research teams"
+  },
+  {
+    "key": "vla-finetuning",
+    "kind": "working_on",
+    "summary": "Fine-tuning OpenVLA with LoRA on about 500 teleoperated demos for tabletop pick-and-place on a Franka arm.",
+    "detail": "Success rate stalls near 60% on unseen object placements. I'm trying action chunking and a lower LoRA rank, and I suspect data quality matters more than model choice. Next step is a diffusion policy baseline.",
+    "angle": "Which fine-tuning recipes and data-collection strategies make vision-language-action models reliable on small real-robot demonstration sets?",
+    "keywords": ["vision-language-action", "openvla", "robot manipulation", "lora fine-tuning", "action chunking", "imitation learning", "teleoperation data"],
+    "project": "Tabletop manipulation with a Franka arm"
+  },
+  {
+    "key": "mamba-recall",
+    "kind": "question",
+    "summary": "Do Mamba-style state space models lose recall on long contexts compared with attention, and do hybrids fix it?",
+    "detail": "Reading about Mamba, Jamba and hybrids for a long-document project. Benchmarks say linear-time models match transformers on perplexity, but I keep seeing claims they forget details far back in the context. What is actually settled?",
+    "angle": "How does the long-context recall of Mamba and other state space models compare with transformers, and do hybrid architectures close the gap?",
+    "keywords": ["mamba", "state space models", "long-context recall", "hybrid architectures", "attention", "language modeling"],
+    "project": null
+  }
+]

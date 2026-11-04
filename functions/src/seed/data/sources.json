@@ -1,0 +1,12 @@
+[
+  { "handle": "_albertgu", "displayName": "Albert Gu", "topics": ["state space models", "mamba", "sequence modeling", "hybrid architectures"], "weight": 0.9 },
+  { "handle": "tri_dao", "displayName": "Tri Dao", "topics": ["mamba", "state space models", "flashattention", "long-context recall", "gpu kernels"], "weight": 0.9 },
+  { "handle": "svlevine", "displayName": "Sergey Levine", "topics": ["robot learning", "reinforcement learning", "vision-language-action", "imitation learning", "robot manipulation"], "weight": 0.9 },
+  { "handle": "chelseabfinn", "displayName": "Chelsea Finn", "topics": ["robot learning", "vision-language-action", "imitation learning", "fine-tuning", "robot manipulation"], "weight": 0.9 },
+  { "handle": "DrJimFan", "displayName": "Jim Fan", "topics": ["robotics", "vision-language-action", "embodied agents", "foundation models"], "weight": 0.7 },
+  { "handle": "rasbt", "displayName": "Sebastian Raschka", "topics": ["llm architectures", "mixture of experts", "state space models", "fine-tuning", "reasoning models"], "weight": 0.8 },
+  { "handle": "karpathy", "displayName": "Andrej Karpathy", "topics": ["llms", "fine-tuning", "ai assistants", "evaluation"], "weight": 0.7 },
+  { "handle": "srush_nlp", "displayName": "Sasha Rush", "topics": ["llms", "sequence modeling", "state space models", "deep learning education"], "weight": 0.6 },
+  { "handle": "emollick", "displayName": "Ethan Mollick", "topics": ["ai in research", "qualitative research", "llm evaluation", "ai assistants"], "weight": 0.6 },
+  { "handle": "ylecun", "displayName": "Yann LeCun", "topics": ["world models", "self-supervised learning", "robotics", "llm limitations"], "weight": 0.5 }
+]
