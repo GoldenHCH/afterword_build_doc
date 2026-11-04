@@ -67,6 +67,18 @@ One giant `AGENTS.md` eats context on every turn. Here `AGENTS.md` is a short in
     └── git.md             # GIT — commits, PRs
 ```
 
+## Build
+
+No global yarn is needed. From the repo root:
+
+```bash
+cd functions
+npx -y yarn@1.22.22 install
+npx -y yarn@1.22.22 build
+```
+
+`tsc` emits to `functions/dist` (the Cloud Functions entry point). The shared `.d.ts` files in `functions/lib/` are never emitted, so they stay apart from the build output.
+
 ## Per-project swaps
 
 - `AGENTS.md` — Project Overview (a few lines only)
