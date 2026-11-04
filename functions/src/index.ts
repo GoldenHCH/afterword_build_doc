@@ -6,3 +6,4 @@ if (getApps().length === 0) {
 
 export { seedDemo } from './seed/functions/seed-demo.function';
 export { buildBriefingNow } from './find/functions/build-briefing-now.function';
+export { weeklyBriefing } from './brief/functions/weekly-briefing.function';
