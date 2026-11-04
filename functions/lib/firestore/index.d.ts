@@ -28,6 +28,8 @@ declare namespace Afterword.Firestore {
       source: NoteSource;
       createdAt: Timestamp;
       resolvedAt?: Timestamp;
+      lastFetchedAt?: Timestamp;
+      lastFetchedItemIds?: string[];
     }
   }
 
