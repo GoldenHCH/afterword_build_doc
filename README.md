@@ -138,6 +138,43 @@ It creates or updates `demo@afterword.fyi` (uid `demo-researcher`, email verifie
 - **Local checks, no Firebase project needed:** `cd functions && npx -y yarn@1.22.22 build && npx -y yarn@1.22.22 email:preview` writes `functions/tmp/briefing.html`. `npx -y yarn@1.22.22 explain:dry` runs the explain step and needs `ANTHROPIC_API_KEY` in the shell.
 - **On-stage fallback:** the seeded briefing `briefing_demo_seed` is already `ready` with hand-written lines. If the model or Resend is down, `buildBriefingNow` returns the newly built briefing with fallback text and a `warning` instead of failing; the seeded briefing is the fallback only if the build itself fails or the button is never pressed, and the demo then shows the previously sent email.
 
+### MCP connector (phase 05)
+
+The assistant talks to Afterword over a remote MCP connector. It lives in a different repo, `Newsletter-for-Researchers` (`api/mcp.js`), deployed on Vercel at https://afterword.fyi/mcp. It reads and writes the same Firestore notes the app shows, and calls two HTTP functions in this repo for papers and the Library.
+
+**Connect it**
+
+- Claude Code: `claude mcp add --transport http afterword https://afterword.fyi/mcp`, then `/mcp` to sign in.
+- claude.ai: Customize → Connectors → Add custom connector, with the URL `https://afterword.fyi/mcp`.
+
+**Tools**
+
+- `find_papers`: papers for a bottleneck, through the same paper source as the briefing (`searchPapers`).
+- `record_work`: saves what the researcher is working on, stuck on or asking, as an open note.
+- `get_work_context`: lists the open notes (and points to `search_library` for saved items).
+- `resolve_work`: marks a note solved, so it leaves the next briefing.
+- `forget_work`: deletes one note or all of them.
+- `search_library`: "what did I save about X?" searches the researcher's Library (`searchLibrary`).
+
+**HTTP functions** (`functions/src/mcp/`, reachable through hosting rewrites at `https://afterword-hackathon.web.app/searchPapers` and `/searchLibrary`)
+
+- `POST /searchPapers` takes `{ angle, keywords?, limit? }` and returns `{ papers }`.
+- `POST /searchLibrary` takes `{ userId, query?, noteId?, limit? }` and returns `{ items }`, newest first, ranked by how many words of `query` appear in the title, the why line, the note summary and the keywords.
+- Both accept POST only and need the header `x-afterword-key` to equal the secret `MCP_SHARED_KEY`. Set it with `firebase functions:secrets:set MCP_SHARED_KEY` and put the same value on Vercel. A missing or wrong key gets `401`.
+
+**Vercel environment variables for the connector**
+
+- `FIREBASE_SERVICE_ACCOUNT`: the service-account JSON for project `afterword-hackathon`. Never put it in a repo.
+- `AFTERWORD_API_ORIGIN`: `https://afterword-hackathon.web.app`
+- `MCP_SHARED_KEY`: the same value as the Firebase secret.
+
+**How a connection maps to a Firebase uid:** by email. The connected Afterword account's email is looked up in Firebase Auth (`getUserByEmail`, created if missing). So the demo must connect the assistant with `demo@afterword.fyi`, which maps to uid `demo-researcher`; connect with any other email and the notes land in a different account.
+
+**Demo steps** (same as Demo flow above)
+
+1. **Tell the assistant what you're stuck on.** In Claude (or Cursor), say "I'm stuck on intercoder reliability in my thematic analysis of interviews." The assistant calls `record_work` and answers "Saved to Afterword."
+7. **Back in the assistant.** Ask "What did I save about intercoder reliability?" The assistant calls `search_library` and answers from the Library. Then "Mark that solved." calls `resolve_work`; the note drops out of next week's briefing.
+
 ## Per-project swaps
 
 - `AGENTS.md` — Project Overview (a few lines only)

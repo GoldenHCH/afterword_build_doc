@@ -21,6 +21,8 @@
       { "source": "/describeWork", "function": "describeWork" },
       { "source": "/saveItem", "function": "saveItem" },
       { "source": "/unsaveItem", "function": "unsaveItem" },
+      { "source": "/searchPapers", "function": "searchPapers" },
+      { "source": "/searchLibrary", "function": "searchLibrary" },
       { "source": "**", "destination": "/index.html" }
     ]
   },
