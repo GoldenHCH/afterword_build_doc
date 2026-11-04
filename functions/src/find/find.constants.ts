@@ -1,3 +1,4 @@
+import { noteKinds } from '../shared/note.constants';
 import { PaperSourceName, PostSourceName } from './find.types';
 
 export const contentSources: { PAPER: PaperSourceName; POST: PostSourceName } = {
@@ -11,6 +12,7 @@ export const findLimits = {
   PAPERS_KEPT_PER_NOTE: 5,
   POSTS_KEPT_PER_NOTE: 3,
   PAPER_YEARS_BACK: 3,
+  PAPER_YEARS_BACK_FOUNDATIONAL: 8,
   POST_DAYS_BACK: 14,
   FETCH_COOLDOWN_HOURS: 24,
 } as const;
@@ -19,10 +21,13 @@ export const seededPostWindow = {
   DAYS_BACK: 180,
 } as const;
 
+export const foundationalNoteKinds: readonly string[] = [noteKinds.STUCK, noteKinds.QUESTION];
+
 export const scoringWeights = {
-  RECENCY: 0.4,
+  RECENCY: 0.15,
   KEYWORD_OVERLAP: 0.4,
-  SOURCE: 0.2,
+  SOURCE: 0.15,
+  SOURCE_RANK: 0.3,
   RECENCY_HORIZON_DAYS: 365,
   PAPER_SOURCE_WEIGHT: 0.7,
 } as const;

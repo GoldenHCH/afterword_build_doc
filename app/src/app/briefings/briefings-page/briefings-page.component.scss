@@ -28,7 +28,23 @@
   margin-bottom: var(--aw-space-4);
 }
 
+.failed-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--aw-space-3);
+  margin-top: var(--aw-space-3);
+}
+
 .failed-banner {
+  flex: 1 1 320px;
+}
+
+.failed-retry {
+  flex: 0 0 auto;
+}
+
+.saved-notice {
   margin-top: var(--aw-space-3);
 }
 
@@ -181,7 +197,7 @@
 .save-button {
   --mat-button-outlined-outline-color: var(--aw-theme--primary);
 
-  min-width: 112px;
+  min-width: 176px;
 
   &--saved {
     --mat-button-outlined-outline-color: var(--aw-theme--pill);
@@ -197,14 +213,32 @@
 
   .build-mobile {
     display: block;
-    margin-bottom: var(--aw-space-5);
+    margin-bottom: var(--aw-space-3);
 
     .build-button {
       width: 100%;
     }
   }
 
-  .section-header,
+  .intro {
+    margin-bottom: var(--aw-space-3);
+    font-size: var(--aw-text-sm);
+    line-height: 1.4;
+  }
+
+  .section {
+    margin-bottom: var(--aw-space-4);
+  }
+
+  .section-header {
+    padding: var(--aw-space-3) var(--aw-space-4);
+  }
+
+  .section-title {
+    margin-top: var(--aw-space-2);
+    font-size: var(--aw-text-lg);
+  }
+
   .entry {
     padding: var(--aw-space-4);
   }

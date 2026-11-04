@@ -4,7 +4,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
   Observable,
   ReplaySubject,
@@ -46,6 +46,7 @@ type ILibraryItem = Afterword.Firestore.Library.ILibraryItem;
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    RouterLink,
     AlertBannerComponent,
     KindLabelComponent,
     ScreenToolbarComponent,
@@ -67,6 +68,8 @@ export class BriefingsPageComponent implements OnInit {
   private _isRedirecting = false;
   private _isDestroyed = false;
   private _handledSaveKey = '';
+  private _lastReady: IBriefing | null = null;
+  private _stageTimer: ReturnType<typeof setInterval> | null = null;
 
   public readonly copy = briefingsCopy;
   public readonly kindIcons = entryKindIcons;
@@ -82,6 +85,7 @@ export class BriefingsPageComponent implements OnInit {
   );
 
   public briefing: IBriefing | null = null;
+  public shown: IBriefing | null = null;
   public sections: IBriefingSection[] = [];
   public routeId: string | null = null;
   public isLoaded = false;
@@ -89,12 +93,42 @@ export class BriefingsPageComponent implements OnInit {
   public loadError = '';
   public actionError = '';
   public infoMessage = '';
+  public savedNoticeItemId = '';
+  public buildElapsedSeconds = 0;
   public readonly pendingItemIds = new Set<string>();
 
   public get subtitle(): string {
-    return this.briefing?.builtAt
-      ? `${briefingsCopy.SUBTITLE_BUILT} ${formatShortDate(this.briefing.builtAt)}`
-      : briefingsCopy.SUBTITLE_EMPTY;
+    if (this.isBuildDisabled) {
+      return briefingsCopy.SUBTITLE_BUILDING;
+    }
+
+    if (!this.shown?.builtAt) {
+      return briefingsCopy.SUBTITLE_EMPTY;
+    }
+
+    const built = `${briefingsCopy.SUBTITLE_BUILT} ${formatShortDate(this.shown.builtAt)}.`;
+
+    return this.shown.sentAt ? `${built} ${briefingsCopy.SUBTITLE_EMAILED}` : built;
+  }
+
+  public get buildLabel(): string {
+    return this.shown ? briefingsCopy.BUILD_AGAIN_LABEL : briefingsCopy.BUILD_LABEL;
+  }
+
+  public get buildStatus(): string {
+    if (!this.isBuilding) {
+      return briefingsCopy.BUILDING;
+    }
+
+    const stages: readonly string[] = briefingsCopy.BUILD_STAGES;
+    const startTimes: readonly number[] = briefingsConfig.STAGE_SECONDS;
+    const stage = startTimes.filter((startsAt) => this.buildElapsedSeconds >= startsAt).length - 1;
+
+    return stages[stage] ?? briefingsCopy.BUILDING;
+  }
+
+  public get failedMessage(): string {
+    return this.briefing?.error || (this.shown ? briefingsCopy.FAILED_FALLBACK_KEPT : briefingsCopy.FAILED_FALLBACK);
   }
 
   public get isBuildDisabled(): boolean {
@@ -104,6 +138,7 @@ export class BriefingsPageComponent implements OnInit {
   public ngOnInit(): void {
     this._destroyRef.onDestroy(() => {
       this._isDestroyed = true;
+      this._stopStageTimer();
       this._hideLoading();
     });
 
@@ -114,6 +149,12 @@ export class BriefingsPageComponent implements OnInit {
         tap((routeId) => {
           this.routeId = routeId;
           this.infoMessage = this._briefingsService.takePendingWarning();
+          this.savedNoticeItemId = '';
+
+          if (!this.isBuilding) {
+            this._lastReady = null;
+          }
+
           this._showLoading();
         }),
         switchMap((routeId) => this._watchBriefing(routeId)),
@@ -142,6 +183,8 @@ export class BriefingsPageComponent implements OnInit {
     this.isBuilding = true;
     this.actionError = '';
     this.infoMessage = '';
+    this.savedNoticeItemId = '';
+    this._startStageTimer();
 
     try {
       const response = await this._briefingsService.buildNow();
@@ -158,11 +201,12 @@ export class BriefingsPageComponent implements OnInit {
       this.actionError = toErrorMessage(error, briefingsCopy.BUILD_ERROR);
     } finally {
       this.isBuilding = false;
+      this._stopStageTimer();
     }
   }
 
   public async onToggleSave(entry: IBriefingEntry, savedItem: ILibraryItem | undefined): Promise<void> {
-    const briefingId = this.briefing?.id;
+    const briefingId = this.shown?.id;
 
     if (!briefingId || this.pendingItemIds.has(entry.itemId)) {
       return;
@@ -171,12 +215,15 @@ export class BriefingsPageComponent implements OnInit {
     this.actionError = '';
 
     if (savedItem?.id) {
+      this.savedNoticeItemId = '';
       await this._unsaveItem(entry.itemId, savedItem.id);
 
       return;
     }
 
-    await this._saveItem(briefingId, entry.itemId);
+    if ((await this._saveItem(briefingId, entry.itemId)) && this.shown?.id === briefingId) {
+      this.savedNoticeItemId = entry.itemId;
+    }
   }
 
   public entryId(itemId: string): string {
@@ -220,9 +267,16 @@ export class BriefingsPageComponent implements OnInit {
       return;
     }
 
+    if (result.briefing?.status === 'ready') {
+      this._lastReady = result.briefing;
+    } else if (!result.briefing) {
+      this._lastReady = null;
+    }
+
     this.briefing = result.briefing;
     this.loadError = result.loadError;
-    this.sections = toSortedSections(result.briefing);
+    this.shown = this._pickShown(result.briefing);
+    this.sections = toSortedSections(this.shown);
     this.isLoaded = true;
     this._hideLoading();
 
@@ -252,10 +306,15 @@ export class BriefingsPageComponent implements OnInit {
       return;
     }
 
-    const isSaved = savedByItemId.has(itemId) || (await this._saveItem(briefingId, itemId));
+    const wasSaved = savedByItemId.has(itemId);
+    const isSaved = wasSaved || (await this._saveItem(briefingId, itemId));
 
     if (this._isDestroyed || this._route.snapshot.paramMap.get('id') !== briefingId) {
       return;
+    }
+
+    if (isSaved && !wasSaved) {
+      this.savedNoticeItemId = itemId;
     }
 
     setTimeout(() => this._scrollToEntry(itemId));
@@ -306,6 +365,27 @@ export class BriefingsPageComponent implements OnInit {
       queryParamsHandling: 'merge',
       replaceUrl: true,
     });
+  }
+
+  private _pickShown(briefing: IBriefing | null): IBriefing | null {
+    if (briefing?.status === 'ready') {
+      return briefing;
+    }
+
+    return briefing?.status === 'failed' ? this._lastReady : null;
+  }
+
+  private _startStageTimer(): void {
+    this._stopStageTimer();
+    this.buildElapsedSeconds = 0;
+    this._stageTimer = setInterval(() => (this.buildElapsedSeconds += 1), 1000);
+  }
+
+  private _stopStageTimer(): void {
+    if (this._stageTimer) {
+      clearInterval(this._stageTimer);
+      this._stageTimer = null;
+    }
   }
 
   private _showLoading(): void {

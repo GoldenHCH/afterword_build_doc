@@ -64,6 +64,7 @@
                 <mat-error>Enter your password.</mat-error>
               }
             </mat-form-field>
+            <p class="password-hint">{{ copy.PASSWORD_HINT }}</p>
             <button mat-flat-button class="primary-action" type="submit" [disabled]="demoForm.invalid || isSigningIn">
               @if (isSigningIn) {
                 <mat-spinner diameter="20"></mat-spinner>
@@ -77,18 +78,6 @@
           </form>
         }
       </div>
-
-      <section class="steps" [attr.aria-label]="copy.STEPS_LABEL">
-        <p class="aw-kicker">{{ copy.STEPS_LABEL }}</p>
-        <ol class="steps-list">
-          @for (step of steps; track step; let index = $index) {
-            <li class="step">
-              <span class="step-number">{{ index + 1 }}</span>
-              <span class="step-text">{{ step }}</span>
-            </li>
-          }
-        </ol>
-      </section>
     </main>
 
     <aside class="sample" aria-label="A sample briefing">
@@ -113,5 +102,17 @@
         </ol>
       </div>
     </aside>
+
+    <section class="steps" [attr.aria-label]="copy.STEPS_LABEL">
+      <p class="aw-kicker">{{ copy.STEPS_LABEL }}</p>
+      <ol class="steps-list">
+        @for (step of steps; track step; let index = $index) {
+          <li class="step">
+            <span class="step-number">{{ index + 1 }}</span>
+            <span class="step-text">{{ step }}</span>
+          </li>
+        }
+      </ol>
+    </section>
   </div>
 </div>

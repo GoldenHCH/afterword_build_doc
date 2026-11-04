@@ -7,6 +7,10 @@
   </button>
 </aw-screen-toolbar>
 
+@if (hasLoaded && !loadError && notes.length > 0) {
+  <p class="build-cue"><a routerLink="/briefings">{{ copy.BUILD_LINK }}</a></p>
+}
+
 @if (loadError) {
   <aw-alert-banner [message]="loadError"></aw-alert-banner>
 } @else if (!hasLoaded) {
@@ -22,7 +26,10 @@
     <section class="aw-empty">
       <p class="aw-kicker">{{ copy.EMPTY_KICKER }}</p>
       <h2 class="aw-empty-title">{{ copy.EMPTY_TITLE }}</h2>
-      <p class="aw-empty-text">{{ copy.EMPTY }}</p>
+      <p class="aw-empty-text">
+        {{ copy.EMPTY_CONNECT_BEFORE }}
+        <a [href]="copy.CONNECT_URL" target="_blank" rel="noopener">{{ copy.CONNECT_LINK }}</a>{{ copy.EMPTY_AFTER_LINK }}
+      </p>
       <p class="aw-empty-example">{{ copy.EMPTY_EXAMPLE }}</p>
     </section>
   }

@@ -1,6 +1,6 @@
 export const emailConfig = {
   FROM: 'Afterword <briefing@afterword.fyi>',
-  APP_URL: 'https://afterword-fyi.web.app',
+  APP_URL: 'https://afterword.fyi',
   RESEND_URL: 'https://api.resend.com/emails',
   MAX_HTML_BYTES: 100000,
   TIMEOUT_MS: 15000,

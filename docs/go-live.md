@@ -4,7 +4,7 @@ From an empty Google account to the live demo: the web app, the briefing email a
 
 Steps marked **OWNER** need your Google login, billing or your own keys; nobody else can do them.
 
-Project id: `afterword-fyi`. Live app: https://afterword-fyi.web.app. Connector: https://afterword.fyi/mcp.
+Project id: `afterword-fyi`. Live app: https://afterword.fyi (served by the Vercel project in the Newsletter repo, which builds `app/` from this repo's `main`). Firebase Hosting origin (MCP functions): https://afterword-fyi.web.app. Connector: https://afterword.fyi/mcp.
 
 ## Before you start
 
@@ -23,7 +23,7 @@ Project id: `afterword-fyi`. Live app: https://afterword-fyi.web.app. Connector:
 1. Build → Firestore Database → Create database → **Native mode**, production rules, a location near you (for example `nam5`). The location cannot be changed later. `firebase deploy` replaces the rules in step 7.
 2. Build → Authentication → Get started → Sign-in method:
    - **Email/Password**: enable it. Required: the demo account signs in this way.
-   - **Google**: optional. Enable it if you want the "Continue with Google" button to work. `afterword-fyi.web.app` is an authorized domain by default.
+   - **Google**: optional. Enable it if you want the "Continue with Google" button to work. `afterword-fyi.web.app` is an authorized domain by default; add `afterword.fyi` under Authentication → Settings → Authorized domains.
 
 ## 3. Log in to Firebase **OWNER**
 
@@ -93,7 +93,7 @@ This installs and builds `functions/` and `app/` itself (the predeploy hooks in 
 - A permissions or "API not ready" error right after enabling APIs usually clears if you run the same command again a minute later.
 - Indexes build in the background after deploy; the first Notes/Library load can show an error for a minute or two until they are `Enabled` (Firestore → Indexes).
 
-Check: https://afterword-fyi.web.app loads and shows the sign-in page.
+Check: https://afterword-fyi.web.app loads and shows the sign-in page (https://afterword.fyi serves the same build once the Newsletter repo deploys).
 
 ## 8. Create the demo auth user
 
@@ -158,7 +158,7 @@ The assistant must connect with `demo@afterword.fyi`: that email maps to uid `de
 
 ## 11. Smoke test
 
-1. Open https://afterword-fyi.web.app on a phone-sized window. Use the demo account: `demo@afterword.fyi` plus the password from step 8. You land on Notes.
+1. Open https://afterword.fyi on a phone-sized window. Use the demo account: `demo@afterword.fyi` plus the password from step 8. You land on Notes.
 2. Notes shows **3** open notes.
 3. Briefing page: **Build my briefing now**. After a minute or two it opens a new briefing with items grouped under each note and a line on why each matters. A blue warning means the model or email fell back; a red banner means the build failed (check `npx -y firebase-tools@14 functions:log --only buildBriefingNow`).
 4. The briefing email arrives in the `demo@afterword.fyi` inbox from `briefing@afterword.fyi`.

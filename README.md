@@ -2,7 +2,9 @@
 
 Afterword turns what a researcher is stuck on this week into a briefing of the papers and posts that move it forward, in reading order, and a saved library their AI can reach over MCP.
 
-**Live:** https://afterword-fyi.web.app
+**Live:** https://afterword.fyi
+
+Papers come from OpenAlex today (Paperclip sits behind the same seam, off until `contentSources.PAPER` is set to `paperclip` and a key is set); X posts are a curated snapshot of real posts.
 
 Stack: Angular 21 (standalone) with Angular Material in `app/`, Firebase Cloud Functions v2 (TypeScript) and Firestore in `functions/`, an MCP connector in a separate repo (see MCP connector below). The path from an empty Google account to the live demo is [`docs/go-live.md`](docs/go-live.md).
 
@@ -15,13 +17,13 @@ Stack: Angular 21 (standalone) with Angular Material in `app/`, Firebase Cloud F
 
 ## Demo flow
 
-Live app: https://afterword-fyi.web.app. Sign in with "Use the demo account" (`demo@afterword.fyi`, uid `demo-researcher`; setup under Demo account sign-in below), which has 3 open notes and one seeded briefing.
+Live app: https://afterword.fyi. Sign in with "Use the demo account" (`demo@afterword.fyi`, uid `demo-researcher`; setup under Demo account sign-in below), which has 3 open notes and one seeded briefing.
 
 1. **Tell the assistant what you're stuck on.** In Claude (or Cursor), say "I'm stuck on how many interviews I need before I can claim saturation in my qualitative study." The assistant calls `record_work` and answers "Saved to Afterword."
 2. **Notes.** Open the app. The Notes page now lists the new saturation note next to the 3 seeded ones, with its angle and keywords. The **Describe instead** box does the same job without the assistant.
-3. **Build my briefing now.** On the Briefing page, click the button. It shows a spinner for a minute or two while it fetches papers (OpenAlex by default; Paperclip when switched on in `functions/src/find/find.constants.ts`) and the seeded X posts, scores them and writes the explanations, then opens the new briefing: items grouped under each note, numbered in reading order, each with one line on why it matters for that bottleneck. A blue note above the briefing means a warning: the briefing is real, but the model explanations or the email fell back (for example the model or Resend was down). It is not a failure; the briefing is still usable. A red banner means the build itself failed.
+3. **Build a new briefing.** On the Briefing page, click the button (it reads **Build my briefing now** when there is no briefing yet). It shows a progress note and skeleton for a minute or two while it fetches papers (OpenAlex by default; Paperclip when switched on in `functions/src/find/find.constants.ts`) and the seeded X posts, scores them and writes the explanations, then opens the new briefing: items grouped under each note, numbered in reading order, each with one line on why it matters for that bottleneck. A blue note above the briefing means a warning: the briefing is real, but the model explanations or the email fell back (for example the model or Resend was down). It is not a failure; the briefing is still usable. A red banner means the build itself failed.
 4. **The email.** Open the inbox for the demo account: the same briefing arrived from `briefing@afterword.fyi`. Each item has a Save link that opens the app on that entry.
-5. **Save two papers.** Click **Save** on two papers. The button turns into **Saved** (click it again to remove the item).
+5. **Save two papers.** Click **Save** on two papers. The button turns into **Saved to Library** and a note offers a link to the Library (click the button again to remove the item).
 6. **Library.** Open the Library: both papers are there, grouped under the note they answered.
 7. **Back in the assistant.** Ask "What did I save about intercoder reliability?" The assistant calls `search_library` and answers from the Library. Then "Mark that solved." calls `resolve_work`; the note drops out of next week's briefing.
 
@@ -56,8 +58,8 @@ It serves on http://localhost:4200. `ng serve` uses `src/environments/environmen
 
 ## Demo shortcuts
 
-- **Save link from the email:** `/briefings/<briefingId>?save=<itemId>` saves that item once the page loads, scrolls to the entry and removes the parameter from the URL. If you are signed out, sign in first and the link carries on. Example: https://afterword-fyi.web.app/briefings/briefing_demo_seed?save=<itemId> (an `itemId` is in the seeded briefing's entries).
-- **Seeded briefing fallback:** if the live build is slow, fails, or the button is never pressed on stage, open `/briefings/briefing_demo_seed`: 3 sections and 17 entries, already `ready`, with hand-written explanations. When the model or email step is down, `buildBriefingNow` still returns the newly built briefing with fallback text and a `warning`; the seeded briefing is the fallback only if the build itself fails or the button is never pressed.
+- **Save link from the email:** `/briefings/<briefingId>?save=<itemId>` saves that item once the page loads, scrolls to the entry and removes the parameter from the URL. If you are signed out, sign in first and the link carries on. Example: https://afterword.fyi/briefings/briefing_demo_seed?save=<itemId> (an `itemId` is in the seeded briefing's entries).
+- **Seeded briefing fallback:** if the live build is slow, fails, or the button is never pressed on stage, open `/briefings/briefing_demo_seed`: 3 sections and 14 entries, already `ready`, with hand-written explanations. When the model or email step is down, `buildBriefingNow` still returns the newly built briefing with fallback text and a `warning`; the seeded briefing is the fallback only if the build itself fails or the button is never pressed.
 
 `seedDemo` loads the demo account: the user, 3 notes, 10 X sources, the cached posts and papers, about 15 more papers fetched live from OpenAlex, and one `ready` briefing. It is safe to run twice (deterministic document ids, `set` with merge).
 
