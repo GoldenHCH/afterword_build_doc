@@ -5,8 +5,13 @@
 
 .toolbar {
   display: flex;
+  flex-wrap: nowrap;
   align-items: flex-start;
   gap: 12px;
+
+  @media (max-width: 599.98px) {
+    flex-wrap: wrap;
+  }
 }
 
 .toolbar-back {
@@ -50,5 +55,20 @@
 
   &:empty {
     display: none;
+  }
+}
+
+@media (max-width: 599.98px) {
+  .toolbar-actions {
+    flex: 1 1 100%;
+    order: 1;
+
+    &:empty {
+      display: none;
+    }
+  }
+
+  :host ::ng-deep .toolbar-actions > * {
+    flex: 1 1 auto;
   }
 }
