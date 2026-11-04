@@ -5,6 +5,7 @@
 
 .alert {
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-start;
   gap: var(--aw-space-3);
   padding: var(--aw-space-3) var(--aw-space-3) var(--aw-space-3) var(--aw-space-4);
@@ -41,13 +42,25 @@
 }
 
 .alert-message {
-  flex: 1 1 auto;
+  flex: 1 1 0;
   min-width: 0;
   padding-top: 0;
   overflow-wrap: anywhere;
 }
 
+.alert-extra {
+  order: 3;
+  flex: 1 1 100%;
+  margin: calc(-1 * var(--aw-space-1)) 0 0 32px;
+  font-weight: 600;
+
+  &:empty {
+    display: none;
+  }
+}
+
 .alert-dismiss {
+  order: 2;
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
