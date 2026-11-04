@@ -4,6 +4,7 @@ import { buildOpenAlexWorksUrl, toPaperDraft } from '../../seed/services/openale
 import { IOpenAlexWorksResponse } from '../../seed/services/openalex.interfaces';
 import { openAlexPaperSource } from './openalex-paper-source.constants';
 import { IItemDraft } from './item-draft.types';
+import { keepWithinQuery } from './paper-draft.helper';
 import { IPaperQuery, IPaperSource } from './paper-source.interfaces';
 
 export class OpenAlexPaperSource implements IPaperSource {
@@ -19,9 +20,10 @@ export class OpenAlexPaperSource implements IPaperSource {
     }
 
     const body = (await response.json()) as IOpenAlexWorksResponse;
-    const drafts = (body.results ?? [])
-      .map((work) => toPaperDraft(work))
-      .filter((draft): draft is IItemDraft => draft !== null);
+    const drafts = keepWithinQuery(
+      (body.results ?? []).map((work) => toPaperDraft(work)).filter((draft): draft is IItemDraft => draft !== null),
+      query,
+    );
 
     logger.info('OpenAlex papers fetched', { returned: body.results?.length ?? 0, usable: drafts.length });
 

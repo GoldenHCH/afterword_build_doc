@@ -5,6 +5,7 @@ import { PAPERCLIP_API_KEY } from '../../secrets.constants';
 import { firstWords, formatIsoDate, normalizeDoi } from '../../seed/services/openalex.helper';
 import { itemKinds, itemProviders } from '../../shared/item.constants';
 import { IItemDraft } from './item-draft.types';
+import { keepWithinQuery } from './paper-draft.helper';
 import { paperclipApi } from './paperclip.constants';
 import { IPaperclipHit, IPaperclipSearchRequest, IPaperclipSearchResponse } from './paperclip.interfaces';
 import { IPaperQuery, IPaperSource } from './paper-source.interfaces';
@@ -37,17 +38,23 @@ export class PaperclipPaperSource implements IPaperSource {
     }
 
     const body = (await response.json()) as IPaperclipSearchResponse;
-    const hits = body.papers ?? [];
-    const drafts = hits
-      .map((hit) => this._toDraft(hit, query.publishedAfter))
-      .filter((draft): draft is IItemDraft => draft !== null);
+
+    if (!Array.isArray(body.papers)) {
+      throw new Error('Paperclip response had no papers array');
+    }
+
+    const hits = body.papers;
+    const drafts = keepWithinQuery(
+      hits.map((hit) => this._toDraft(hit)).filter((draft): draft is IItemDraft => draft !== null),
+      query,
+    );
 
     logger.info('Paperclip papers fetched', { returned: hits.length, usable: drafts.length });
 
     return drafts;
   }
 
-  private _toDraft(hit: IPaperclipHit, publishedAfter: Date): IItemDraft | null {
+  private _toDraft(hit: IPaperclipHit): IItemDraft | null {
     const title = hit.title?.trim();
     const doi = normalizeDoi(hit.doi);
     const publishedDate = hit.published_date ?? (hit.year ? `${hit.year}-01-01` : null);
@@ -60,7 +67,7 @@ export class PaperclipPaperSource implements IPaperSource {
 
     const publishedAt = new Date(publishedDate);
 
-    if (Number.isNaN(publishedAt.getTime()) || publishedAt < publishedAfter) {
+    if (Number.isNaN(publishedAt.getTime())) {
       return null;
     }
 

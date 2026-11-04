@@ -7,15 +7,3 @@ export const paperclipApi = {
   ABSTRACT_WORDS: 60,
   TIMEOUT_MS: 20000,
 } as const;
-
-export const paperclipFields = {
-  HITS: 'papers',
-  ID: 'id',
-  TITLE: 'title',
-  URL: 'url',
-  DOI: 'doi',
-  ABSTRACT: 'abstract',
-  PUBLISHED_DATE: 'published_date',
-  YEAR: 'year',
-  AUTHORS: 'authors',
-} as const;
