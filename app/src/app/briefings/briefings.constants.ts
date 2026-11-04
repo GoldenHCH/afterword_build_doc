@@ -27,7 +27,8 @@ export const briefingsCopy = {
   INTRO: 'Read each section top to bottom. Save what helps; your assistant can search it later.',
   NOT_FOUND: 'We could not find that briefing. Build a new one from your open notes.',
   BUILDING: 'Your briefing is being built. About a minute or two.',
-  FAILED_FALLBACK: 'We could not reach the paper search in time. Your notes and last briefing are safe. Try again.',
+  FAILED_FALLBACK: 'We could not reach the paper search in time. Your notes are safe. Try again.',
+  FAILED_FALLBACK_KEPT: 'We could not reach the paper search in time. Your notes and last briefing are safe. Try again.',
   NO_ENTRIES: 'This briefing has no entries. None of your open notes turned up anything to read yet.',
   LOAD_ERROR: 'We could not load your briefing. Refresh the page and try again.',
   BUILD_ERROR: 'We could not build your briefing. Please try again.',
@@ -68,5 +69,3 @@ export const entryKindIcons = {
 } as const;
 
 export const backendCodeOnlyMessage = /^[a-z-]+( \[\d+\])?$/;
-
-export const noNotesBackendMessage = /no open notes/i;

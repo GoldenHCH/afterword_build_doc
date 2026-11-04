@@ -27,7 +27,7 @@ import {
   SkeletonListComponent,
   formatShortDate,
 } from '../../shared';
-import { briefingsConfig, briefingsCopy, entryKindIcons, noNotesBackendMessage } from '../briefings.constants';
+import { briefingsConfig, briefingsCopy, entryKindIcons } from '../briefings.constants';
 import { entryDomId, findEntry, formatByline, toErrorMessage, toSortedSections } from '../briefings.helper';
 import { IBriefingLoadResult } from '../briefings.interfaces';
 import { BriefingsService } from '../services/briefings.service';
@@ -128,9 +128,7 @@ export class BriefingsPageComponent implements OnInit {
   }
 
   public get failedMessage(): string {
-    const error = this.briefing?.error ?? '';
-
-    return noNotesBackendMessage.test(error) ? error : briefingsCopy.FAILED_FALLBACK;
+    return this.briefing?.error || (this.shown ? briefingsCopy.FAILED_FALLBACK_KEPT : briefingsCopy.FAILED_FALLBACK);
   }
 
   public get isBuildDisabled(): boolean {
@@ -152,6 +150,11 @@ export class BriefingsPageComponent implements OnInit {
           this.routeId = routeId;
           this.infoMessage = this._briefingsService.takePendingWarning();
           this.savedNoticeItemId = '';
+
+          if (!this.isBuilding) {
+            this._lastReady = null;
+          }
+
           this._showLoading();
         }),
         switchMap((routeId) => this._watchBriefing(routeId)),
@@ -218,7 +221,7 @@ export class BriefingsPageComponent implements OnInit {
       return;
     }
 
-    if (await this._saveItem(briefingId, entry.itemId)) {
+    if ((await this._saveItem(briefingId, entry.itemId)) && this.shown?.id === briefingId) {
       this.savedNoticeItemId = entry.itemId;
     }
   }
@@ -266,6 +269,8 @@ export class BriefingsPageComponent implements OnInit {
 
     if (result.briefing?.status === 'ready') {
       this._lastReady = result.briefing;
+    } else if (!result.briefing) {
+      this._lastReady = null;
     }
 
     this.briefing = result.briefing;
@@ -304,12 +309,12 @@ export class BriefingsPageComponent implements OnInit {
     const wasSaved = savedByItemId.has(itemId);
     const isSaved = wasSaved || (await this._saveItem(briefingId, itemId));
 
-    if (isSaved && !wasSaved) {
-      this.savedNoticeItemId = itemId;
-    }
-
     if (this._isDestroyed || this._route.snapshot.paramMap.get('id') !== briefingId) {
       return;
+    }
+
+    if (isSaved && !wasSaved) {
+      this.savedNoticeItemId = itemId;
     }
 
     setTimeout(() => this._scrollToEntry(itemId));

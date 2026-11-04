@@ -60,11 +60,11 @@
                 #passwordField="ngModel"
                 [(ngModel)]="demoPassword"
               />
-              <mat-hint>{{ copy.PASSWORD_HINT }}</mat-hint>
               @if (passwordField.hasError('required')) {
                 <mat-error>Enter your password.</mat-error>
               }
             </mat-form-field>
+            <p class="password-hint">{{ copy.PASSWORD_HINT }}</p>
             <button mat-flat-button class="primary-action" type="submit" [disabled]="demoForm.invalid || isSigningIn">
               @if (isSigningIn) {
                 <mat-spinner diameter="20"></mat-spinner>

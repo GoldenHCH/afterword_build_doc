@@ -29,7 +29,7 @@
   <aw-skeleton-list [count]="2" [label]="copy.BUILDING_LABEL"></aw-skeleton-list>
 }
 
-@if (infoMessage) {
+@if (infoMessage && briefing?.status !== 'failed') {
   <aw-alert-banner class="banner" kind="info" [message]="infoMessage" (dismissed)="infoMessage = ''"></aw-alert-banner>
 }
 
@@ -135,7 +135,7 @@
                           </div>
                         }
                       </button>
-                      @if (savedNoticeItemId === entry.itemId) {
+                      @if (savedItem && savedNoticeItemId === entry.itemId) {
                         <aw-alert-banner
                           class="saved-notice"
                           kind="info"

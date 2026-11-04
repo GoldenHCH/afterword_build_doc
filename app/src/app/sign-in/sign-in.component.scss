@@ -106,6 +106,13 @@
   gap: var(--aw-space-1);
 }
 
+.password-hint {
+  margin: calc(-1 * var(--aw-space-1)) 0 0;
+  font-size: var(--aw-text-sm);
+  line-height: 1.45;
+  color: var(--aw-theme--text-muted);
+}
+
 .demo-form .primary-action {
   margin-top: var(--aw-space-3);
 }
