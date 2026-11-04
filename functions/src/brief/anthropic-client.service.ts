@@ -1,10 +1,17 @@
 import { explainConfig, explainErrors } from './brief.constants';
-import { IAnthropicMessagesResponse, IModelCompletion } from './brief.interfaces';
+import { IAnthropicMessagesResponse, IModelCallOptions, IModelCompletion } from './brief.interfaces';
 
 export class AnthropicClientService {
-  public async complete(apiKey: string, system: string, userContent: string): Promise<IModelCompletion> {
+  public async complete(
+    apiKey: string,
+    system: string,
+    userContent: string,
+    options: IModelCallOptions = {},
+  ): Promise<IModelCompletion> {
+    const maxTokens = options.maxTokens ?? explainConfig.MAX_TOKENS;
+    const timeoutMs = options.timeoutMs ?? explainConfig.TIMEOUT_MS;
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), explainConfig.TIMEOUT_MS);
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
     const startedAt = Date.now();
 
     try {
@@ -17,7 +24,7 @@ export class AnthropicClientService {
         },
         body: JSON.stringify({
           model: explainConfig.MODEL,
-          max_tokens: explainConfig.MAX_TOKENS,
+          max_tokens: maxTokens,
           system,
           messages: [{ role: 'user', content: userContent }],
         }),
@@ -45,7 +52,7 @@ export class AnthropicClientService {
       };
     } catch (error) {
       if (controller.signal.aborted) {
-        throw new Error(`${explainErrors.TIMED_OUT} after ${explainConfig.TIMEOUT_MS} ms`);
+        throw new Error(`${explainErrors.TIMED_OUT} after ${timeoutMs} ms`);
       }
 
       throw error;

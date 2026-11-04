@@ -6,6 +6,11 @@
 
 ## Checklist
 
+### Callables (functions/)
+- [x] `describeWork` in `functions/src/notes/` (model call, validated, retried once, nothing written; the app saves the note with `source: app`)
+- [x] `saveItem` / `unsaveItem` in `functions/src/library/`
+- [x] `npx -y yarn@1.22.22 demo:auth` creates the demo Auth user (see README, Demo account sign-in)
+
 ### Scaffold
 - [x] Angular 21 standalone app in `app/` (Material, SCSS, yarn, `--exact`); Firebase Hosting target; `firebase deploy` works on day one `[HACK-14]` (hosting block and build done; the deploy itself still needs the Firebase CLI, login and the web config)
 - [x] Global class prefix `aw-`: rename `app-` in `rules/ui.md` and `styles.scss`; theme colors set once in `rules/scss.md`
@@ -28,7 +33,7 @@
 
 ### Library page (`app/src/app/library/`)
 - [x] `library.service.ts`: live query of `library` where `userId == me`, newest first; `save(briefingId, itemId)` and `unsave(libraryItemId)` call the callables
-- [ ] Callables `saveItem` / `unsaveItem` in `functions/src/library/functions/`: `[FB-02]`; copy the entry's snapshot, `whyThis`, `noteId`, `noteSummary` and the note's `keywords` into `library/`; a repeat save returns the existing id
+- [x] Callables `saveItem` / `unsaveItem` in `functions/src/library/functions/`: `[FB-02]`; copy the entry's snapshot, `whyThis`, `noteId`, `noteSummary` and the note's `keywords` into `library/`; a repeat save returns the existing id
 - [ ] List grouped by `noteSummary`; each item: kind icon, linked title, `whyThis`, saved date, **Remove**; filter chips by kind
 - [ ] Empty state: "Save something from your briefing and it shows up here — and in your assistant."
 
