@@ -4,7 +4,7 @@ From an empty Google account to the live demo: the web app, the briefing email a
 
 Steps marked **OWNER** need your Google login, billing or your own keys; nobody else can do them.
 
-Project id: `afterword-hackathon`. Live app: https://afterword-hackathon.web.app. Connector: https://afterword.fyi/mcp.
+Project id: `afterword-fyi`. Live app: https://afterword-fyi.web.app. Connector: https://afterword.fyi/mcp.
 
 ## Before you start
 
@@ -15,7 +15,7 @@ Project id: `afterword-hackathon`. Live app: https://afterword-hackathon.web.app
 
 ## 1. Create the project **OWNER**
 
-1. https://console.firebase.google.com → Add project → name it so the project id is `afterword-hackathon` (if the id is taken, pick another and change it in `.firebaserc`, `app/src/environments/*.ts` and `AFTERWORD_API_ORIGIN` below).
+1. https://console.firebase.google.com → Add project → name it so the project id is `afterword-fyi` (if the id is taken, pick another and change it in `.firebaserc`, `app/src/environments/*.ts` and `AFTERWORD_API_ORIGIN` below).
 2. Project overview → the gear → Usage and billing → Modify plan → **Blaze** (pay as you go). Cloud Functions, Secret Manager and Cloud Scheduler will not deploy on Spark.
 
 ## 2. Turn on Firestore and Auth **OWNER**
@@ -23,7 +23,7 @@ Project id: `afterword-hackathon`. Live app: https://afterword-hackathon.web.app
 1. Build → Firestore Database → Create database → **Native mode**, production rules, a location near you (for example `nam5`). The location cannot be changed later. `firebase deploy` replaces the rules in step 7.
 2. Build → Authentication → Get started → Sign-in method:
    - **Email/Password**: enable it. Required: the demo account signs in this way.
-   - **Google**: optional. Enable it if you want the "Continue with Google" button to work. `afterword-hackathon.web.app` is an authorized domain by default.
+   - **Google**: optional. Enable it if you want the "Continue with Google" button to work. `afterword-fyi.web.app` is an authorized domain by default.
 
 ## 3. Log in to Firebase **OWNER**
 
@@ -32,7 +32,7 @@ npx -y firebase-tools@14 login
 npx -y firebase-tools@14 projects:list
 ```
 
-`projects:list` must show `afterword-hackathon`. `.firebaserc` already points the default project at it.
+`projects:list` must show `afterword-fyi`. `.firebaserc` already points the default project at it.
 
 ## 4. Paste the web config
 
@@ -73,16 +73,16 @@ If you close the shell before step 10, read the value back with `npx -y firebase
 
 ## 6. Download a service-account key **OWNER**
 
-Firebase console → Project settings → Service accounts → Generate new private key. Save the JSON as `~/afterword-keys/afterword-hackathon-sa.json`. Never put it in the repo. Steps 8, 9 and 10 use it.
+Firebase console → Project settings → Service accounts → Generate new private key. Save the JSON as `~/afterword-keys/afterword-fyi-sa.json`. Never put it in the repo. Steps 8, 9 and 10 use it.
 
 ```bash
-export GOOGLE_APPLICATION_CREDENTIALS="$HOME/afterword-keys/afterword-hackathon-sa.json"
+export GOOGLE_APPLICATION_CREDENTIALS="$HOME/afterword-keys/afterword-fyi-sa.json"
 ```
 
 ## 7. Build and deploy
 
 ```bash
-npx -y firebase-tools@14 deploy --only firestore,functions,hosting --project afterword-hackathon
+npx -y firebase-tools@14 deploy --only firestore,functions,hosting --project afterword-fyi
 ```
 
 This installs and builds `functions/` and `app/` itself (the predeploy hooks in `firebase.json`), deploys the rules and the 4 indexes, the 8 functions (all in `us-central1`, which the hosting rewrites need) and the web app.
@@ -91,7 +91,7 @@ This installs and builds `functions/` and `app/` itself (the predeploy hooks in 
 - A permissions or "API not ready" error right after enabling APIs usually clears if you run the same command again a minute later.
 - Indexes build in the background after deploy; the first Notes/Library load can show an error for a minute or two until they are `Enabled` (Firestore → Indexes).
 
-Check: https://afterword-hackathon.web.app loads and shows the sign-in page.
+Check: https://afterword-fyi.web.app loads and shows the sign-in page.
 
 ## 8. Create the demo auth user
 
@@ -127,7 +127,7 @@ Alternative, calling the deployed callable with the demo user's ID token (`WEB_A
 ID_TOKEN="$(curl -s "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=WEB_API_KEY" \
   -H 'Content-Type: application/json' \
   -d '{"email":"demo@afterword.fyi","password":"choose-a-password","returnSecureToken":true}' | node -pe 'JSON.parse(require("fs").readFileSync(0)).idToken')"
-curl -s "https://us-central1-afterword-hackathon.cloudfunctions.net/seedDemo" \
+curl -s "https://us-central1-afterword-fyi.cloudfunctions.net/seedDemo" \
   -H "Authorization: Bearer $ID_TOKEN" -H 'Content-Type: application/json' -d '{"data":{}}'
 ```
 
@@ -138,7 +138,7 @@ The connector is a separate repo, deployed on Vercel at https://afterword.fyi/mc
 ```bash
 cd ~/Desktop/Newsletter-for-Researchers
 vercel env add FIREBASE_SERVICE_ACCOUNT production < "$GOOGLE_APPLICATION_CREDENTIALS"
-printf '%s' 'https://afterword-hackathon.web.app' | vercel env add AFTERWORD_API_ORIGIN production
+printf '%s' 'https://afterword-fyi.web.app' | vercel env add AFTERWORD_API_ORIGIN production
 printf '%s' "$MCP_SHARED_KEY" | vercel env add MCP_SHARED_KEY production
 vercel --prod
 ```
@@ -156,7 +156,7 @@ The assistant must connect with `demo@afterword.fyi`: that email maps to uid `de
 
 ## 11. Smoke test
 
-1. Open https://afterword-hackathon.web.app on a phone-sized window. Use the demo account: `demo@afterword.fyi` plus the password from step 8. You land on Notes.
+1. Open https://afterword-fyi.web.app on a phone-sized window. Use the demo account: `demo@afterword.fyi` plus the password from step 8. You land on Notes.
 2. Notes shows **3** open notes.
 3. Briefing page: **Build my briefing now**. After a minute or two it opens a new briefing with items grouped under each note and a line on why each matters. A blue warning means the model or email fell back; a red banner means the build failed (check `npx -y firebase-tools@14 functions:log --only buildBriefingNow`).
 4. The briefing email arrives in the `demo@afterword.fyi` inbox from `briefing@afterword.fyi`.

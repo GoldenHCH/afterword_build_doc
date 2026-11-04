@@ -91,14 +91,14 @@ npx -y yarn@1.22.22 start
 
 It serves on http://localhost:4200. `ng serve` uses `src/environments/environment.ts` (`useEmulators: true`); the production build swaps in `environment.prod.ts` (`useEmulators: false`).
 
-- **Firebase web config:** for the hosted build, paste these from Firebase console → Project settings → Your apps → Web app into `firebase` in both `app/src/environments/environment.ts` and `environment.prod.ts`: `apiKey`, `appId` and `messagingSenderId`. `projectId` is already `afterword-hackathon`. `authDomain` (`<projectId>.firebaseapp.com`) and `storageBucket` are derived from the project id: `authDomain` defaults to that value in `app/src/app/core/firebase.ts` when left empty, and the app does not use Storage. With the emulators the empty `apiKey` is replaced by a dummy one. These are public client identifiers, not secrets, so the placeholders and the real values are safe to commit. The security boundary is `firestore.rules`.
+- **Firebase web config:** for the hosted build, paste these from Firebase console → Project settings → Your apps → Web app into `firebase` in both `app/src/environments/environment.ts` and `environment.prod.ts`: `apiKey`, `appId` and `messagingSenderId`. `projectId` is already `afterword-fyi`. `authDomain` (`<projectId>.firebaseapp.com`) and `storageBucket` are derived from the project id: `authDomain` defaults to that value in `app/src/app/core/firebase.ts` when left empty, and the app does not use Storage. With the emulators the empty `apiKey` is replaced by a dummy one. These are public client identifiers, not secrets, so the placeholders and the real values are safe to commit. The security boundary is `firestore.rules`.
 - **Emulators:** with `useEmulators: true` the app talks to Auth 9099, Firestore 8080 and Functions 5001 on localhost. Start them with `firebase emulators:start` (needs the Firebase CLI and Java) or flip the flag to `false` to use the live project.
 - **Sign-in:** "Continue with Google" needs the Google provider enabled in the Firebase console; "Use the demo account" signs in as `demo@afterword.fyi` (uid `demo-researcher`) with the password set when the demo auth user was created.
 - **Build and deploy:** `npx -y yarn@1.22.22 build` emits `app/dist/afterword/browser`, which `firebase deploy --only hosting` serves; its predeploy step installs and builds. The whole path from an empty Google account to the live demo (project, Blaze, Auth, secrets, deploy, demo user, seed, Vercel env vars, smoke test) is the checklist in [`docs/go-live.md`](docs/go-live.md).
 
 ## Demo flow
 
-Live app: https://afterword-hackathon.web.app. Sign in with "Use the demo account" (`demo@afterword.fyi`, uid `demo-researcher`; setup under Demo account sign-in below), which has 3 open notes and one seeded briefing.
+Live app: https://afterword-fyi.web.app. Sign in with "Use the demo account" (`demo@afterword.fyi`, uid `demo-researcher`; setup under Demo account sign-in below), which has 3 open notes and one seeded briefing.
 
 1. **Tell the assistant what you're stuck on.** In Claude (or Cursor), say "I'm stuck on intercoder reliability in my thematic analysis of interviews." The assistant calls `record_work` and answers "Saved to Afterword."
 2. **Notes.** Open the app. The Notes page lists the open note with its angle and keywords. The **Describe instead** box does the same job without the assistant.
@@ -110,7 +110,7 @@ Live app: https://afterword-hackathon.web.app. Sign in with "Use the demo accoun
 
 ## Demo shortcuts
 
-- **Save link from the email:** `/briefings/<briefingId>?save=<itemId>` saves that item once the page loads, scrolls to the entry and removes the parameter from the URL. If you are signed out, sign in first and the link carries on. Example: https://afterword-hackathon.web.app/briefings/briefing_demo_seed?save=<itemId> (an `itemId` is in the seeded briefing's entries).
+- **Save link from the email:** `/briefings/<briefingId>?save=<itemId>` saves that item once the page loads, scrolls to the entry and removes the parameter from the URL. If you are signed out, sign in first and the link carries on. Example: https://afterword-fyi.web.app/briefings/briefing_demo_seed?save=<itemId> (an `itemId` is in the seeded briefing's entries).
 - **Seeded briefing fallback:** if the live build is slow, fails, or the button is never pressed on stage, open `/briefings/briefing_demo_seed`: 3 sections and 17 entries, already `ready`, with hand-written explanations. When the model or email step is down, `buildBriefingNow` still returns the newly built briefing with fallback text and a `warning`; the seeded briefing is the fallback only if the build itself fails or the button is never pressed.
 
 `seedDemo` loads the demo account: the user, 3 notes, 10 X sources, the cached posts and papers, about 15 more papers fetched live from OpenAlex, and one `ready` briefing. It is safe to run twice (deterministic document ids, `set` with merge).
@@ -156,7 +156,7 @@ The assistant talks to Afterword over a remote MCP connector. It lives in a diff
 - `forget_work`: deletes one note or all of them.
 - `search_library`: "what did I save about X?" searches the researcher's Library (`searchLibrary`).
 
-**HTTP functions** (`functions/src/mcp/`, reachable through hosting rewrites at `https://afterword-hackathon.web.app/searchPapers` and `/searchLibrary`)
+**HTTP functions** (`functions/src/mcp/`, reachable through hosting rewrites at `https://afterword-fyi.web.app/searchPapers` and `/searchLibrary`)
 
 - `POST /searchPapers` takes `{ angle, keywords?, limit? }` and returns `{ papers }`.
 - `POST /searchLibrary` takes `{ userId, query?, noteId?, limit? }` and returns `{ items }`, newest first, ranked by how many words of `query` appear in the title, the why line, the note summary and the keywords.
@@ -164,8 +164,8 @@ The assistant talks to Afterword over a remote MCP connector. It lives in a diff
 
 **Vercel environment variables for the connector**
 
-- `FIREBASE_SERVICE_ACCOUNT`: the service-account JSON for project `afterword-hackathon`. Never put it in a repo. Exact `vercel env add` commands and the redeploy are step 10 of [`docs/go-live.md`](docs/go-live.md).
-- `AFTERWORD_API_ORIGIN`: `https://afterword-hackathon.web.app`
+- `FIREBASE_SERVICE_ACCOUNT`: the service-account JSON for project `afterword-fyi`. Never put it in a repo. Exact `vercel env add` commands and the redeploy are step 10 of [`docs/go-live.md`](docs/go-live.md).
+- `AFTERWORD_API_ORIGIN`: `https://afterword-fyi.web.app`
 - `MCP_SHARED_KEY`: the same value as the Firebase secret.
 
 **How a connection maps to a Firebase uid:** by email. The connected Afterword account's email is looked up in Firebase Auth (`getUserByEmail`, created if missing). So the demo must connect the assistant with `demo@afterword.fyi`, which maps to uid `demo-researcher`; connect with any other email and the notes land in a different account.

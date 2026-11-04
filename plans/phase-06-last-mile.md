@@ -21,7 +21,7 @@
 - [ ] Nothing reads as a default template
 
 ### Live (needs the owner: Google login, billing, keys)
-- [ ] Firebase project `afterword-hackathon` on Blaze, Firestore, Auth with Email/Password (+ Google), secrets set
+- [ ] Firebase project `afterword-fyi` on Blaze, Firestore, Auth with Email/Password (+ Google), secrets set
 - [ ] `firebase deploy` (functions, firestore, hosting) from `main`; demo auth user created; `seedDemo` run
 - [ ] Newsletter PR #22 merged; Vercel env vars set; connector smoke test with a real assistant client
 - [ ] UX-lead and sponsor persona reviews against the live URL; fix what loses a judge

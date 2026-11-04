@@ -4,7 +4,7 @@ export const environment: IEnvironment = {
   production: false,
   useEmulators: true,
   firebase: {
-    projectId: 'afterword-hackathon',
+    projectId: 'afterword-fyi',
     apiKey: '',
     authDomain: '',
     appId: '',
