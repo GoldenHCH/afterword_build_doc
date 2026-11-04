@@ -36,7 +36,11 @@ export function yearsBefore(date: Date, years: number): Date {
   return earlier;
 }
 
-export function buildOpenAlexWorksUrl(angle: string, fromPublicationDate: Date): string {
+export function buildOpenAlexWorksUrl(
+  angle: string,
+  fromPublicationDate: Date,
+  perPage: number = openAlexQuery.PER_PAGE,
+): string {
   const searchText = extractContentWords(angle, openAlexQuery.MAX_SEARCH_WORDS).join(' ');
   const filter = [
     `from_publication_date:${formatIsoDate(fromPublicationDate)}`,
@@ -48,7 +52,7 @@ export function buildOpenAlexWorksUrl(angle: string, fromPublicationDate: Date):
   return (
     `${openAlexQuery.BASE_URL}?search=${encodeURIComponent(searchText)}` +
     `&filter=${filter}` +
-    `&per-page=${openAlexQuery.PER_PAGE}` +
+    `&per-page=${perPage}` +
     `&select=${openAlexQuery.SELECT_FIELDS.join(',')}` +
     `&mailto=${openAlexQuery.MAILTO}`
   );
