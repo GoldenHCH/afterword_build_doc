@@ -6,7 +6,7 @@
 
 **Afterword for Paperclip** is a Paperclip plugin (TypeScript: Node worker + React 19 UI via `@paperclipai/plugin-sdk`) that reads what a researcher and their agents are working on in Paperclip issues and surfaces the five most relevant recent papers from OpenAlex on the issue itself, built for **[Hackathon Name]** in one night.
 
-The plugin code lives in its own repo scaffolded by `paperclipai plugin init`; this repo holds the brief, plans and rules.
+The plugin code lives in its own repo scaffolded by `paperclipai plugin init`; this repo holds the brief, plans and rules. The paper engine is Afterword itself (`GoldenHCH/Newsletter-for-Researchers`, afterword.fyi): the plugin calls its hosted connector and never calls OpenAlex or a model directly.
 
 **Key files:**
 - `brief/brief.md` — challenge, judging rubric, required features, demo script. Read it before touching any feature.
