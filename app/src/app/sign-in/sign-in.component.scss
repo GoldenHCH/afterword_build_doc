@@ -18,11 +18,13 @@
   grid-template-columns: minmax(0, 440px) minmax(0, 460px);
   justify-content: center;
   align-items: start;
-  gap: 72px;
+  column-gap: 72px;
   padding: 96px var(--aw-space-6) var(--aw-space-7);
 }
 
 .intro {
+  grid-column: 1;
+  grid-row: 1;
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -104,7 +106,13 @@
   gap: var(--aw-space-1);
 }
 
+.demo-form .primary-action {
+  margin-top: var(--aw-space-3);
+}
+
 .steps {
+  grid-column: 1;
+  grid-row: 2;
   margin-top: var(--aw-space-7);
   padding-top: var(--aw-space-5);
   border-top: 1px solid var(--aw-theme--ruling);
@@ -138,6 +146,8 @@
 }
 
 .sample {
+  grid-column: 2;
+  grid-row: 1 / span 2;
   min-width: 0;
   padding-top: var(--aw-space-2);
 }
@@ -233,14 +243,25 @@
 @media (max-width: 959.98px) {
   .layout {
     grid-template-columns: minmax(0, 480px);
-    gap: var(--aw-space-7);
+    row-gap: var(--aw-space-7);
     padding-top: 64px;
+  }
+
+  .intro,
+  .sample,
+  .steps {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .steps {
+    margin-top: 0;
   }
 }
 
 @media (max-width: 599.98px) {
   .layout {
-    gap: var(--aw-space-6);
+    row-gap: var(--aw-space-6);
     padding: 40px var(--aw-space-4) var(--aw-space-6);
   }
 
@@ -255,10 +276,6 @@
 
   .actions {
     max-width: none;
-  }
-
-  .steps {
-    margin-top: var(--aw-space-6);
   }
 
   .sample-note,

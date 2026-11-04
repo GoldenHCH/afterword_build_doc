@@ -1,11 +1,11 @@
 <ng-template #buildButton>
   <button mat-flat-button type="button" class="build-button" [disabled]="isBuildDisabled" (click)="onBuild()">
     @if (isBuilding) {
-      <mat-spinner diameter="20" aria-label="Building your briefing"></mat-spinner>
+      <mat-spinner diameter="20" [attr.aria-label]="copy.BUILDING_LABEL"></mat-spinner>
     } @else {
       <div class="aw-btn-content">
         <mat-icon>auto_stories</mat-icon>
-        <span>{{ copy.BUILD_LABEL }}</span>
+        <span>{{ buildLabel }}</span>
       </div>
     }
   </button>
@@ -24,8 +24,9 @@
 @if (isBuildDisabled) {
   <div class="building" role="status">
     <mat-spinner class="building-spinner" diameter="18" aria-hidden="true"></mat-spinner>
-    <span>{{ isBuilding ? copy.BUILD_PROGRESS : copy.BUILDING }}</span>
+    <span>{{ buildStatus }}</span>
   </div>
+  <aw-skeleton-list [count]="2" [label]="copy.BUILDING_LABEL"></aw-skeleton-list>
 }
 
 @if (infoMessage) {
@@ -36,98 +37,122 @@
   <aw-alert-banner class="banner" [message]="actionError" (dismissed)="actionError = ''"></aw-alert-banner>
 }
 
-@if (!isLoaded) {
-  <aw-skeleton-list [count]="3" [label]="copy.LOADING"></aw-skeleton-list>
-} @else {
-  @if (loadError) {
-    <aw-alert-banner [message]="loadError"></aw-alert-banner>
-  } @else if (!briefing) {
-    <section class="aw-empty">
-      <p class="aw-kicker">{{ routeId ? copy.NOT_FOUND_KICKER : copy.NO_BRIEFING_KICKER }}</p>
-      <h2 class="aw-empty-title">{{ copy.NO_BRIEFING_TITLE }}</h2>
-      <p class="aw-empty-text">{{ routeId ? copy.NOT_FOUND : copy.NO_BRIEFING_TEXT }}</p>
-    </section>
-  } @else if (briefing.status === 'failed') {
-    <section class="aw-empty">
-      <p class="aw-kicker">{{ copy.FAILED_KICKER }}</p>
-      <aw-alert-banner class="failed-banner" [message]="briefing.error || copy.FAILED_FALLBACK"></aw-alert-banner>
-      <p class="aw-empty-text">{{ copy.FAILED_TEXT }}</p>
-    </section>
-  } @else if (briefing.status === 'ready') {
-    @if (sections.length === 0) {
+@if (!isBuildDisabled) {
+  @if (!isLoaded) {
+    <aw-skeleton-list [count]="3" [label]="copy.LOADING"></aw-skeleton-list>
+  } @else {
+    @if (loadError) {
+      <aw-alert-banner [message]="loadError"></aw-alert-banner>
+    } @else if (!briefing) {
       <section class="aw-empty">
-        <p class="aw-kicker">{{ copy.NO_BRIEFING_KICKER }}</p>
-        <p class="aw-empty-text">{{ copy.NO_ENTRIES }}</p>
+        <p class="aw-kicker">{{ routeId ? copy.NOT_FOUND_KICKER : copy.NO_BRIEFING_KICKER }}</p>
+        <h2 class="aw-empty-title">{{ copy.NO_BRIEFING_TITLE }}</h2>
+        <p class="aw-empty-text">{{ routeId ? copy.NOT_FOUND : copy.NO_BRIEFING_TEXT }}</p>
       </section>
     } @else {
-      <p class="intro">{{ copy.INTRO }}</p>
-    }
-
-    @let savedByItemId = (savedByItemId$ | async) ?? emptySaved;
-
-    @for (section of sections; track section.noteId) {
-      <section class="section aw-card">
-        <header class="section-header">
-          <div class="section-kicker">
-            <aw-kind-label [kind]="section.noteKind"></aw-kind-label>
-            <span class="section-count">{{ section.entries.length }} {{ copy.TO_READ }}</span>
-          </div>
-          <h2 class="section-title">{{ section.noteSummary }}</h2>
-        </header>
-
-        <ol class="entry-list">
-          @for (entry of section.entries; track entry.itemId) {
-            @let savedItem = savedByItemId.get(entry.itemId);
-            <li class="entry" [id]="entryId(entry.itemId)">
-              <span class="entry-rank" aria-hidden="true">{{ entry.rank }}</span>
-              <div class="entry-body">
-                @if (entry.readingNote) {
-                  <p class="entry-reading">{{ entry.readingNote }}</p>
-                }
-                <h3 class="entry-title">
-                  <a [href]="entry.url" target="_blank" rel="noopener">{{ entry.title }}</a>
-                </h3>
-                <p class="entry-meta">
-                  <span class="entry-kind">
-                    <mat-icon class="entry-kind-icon" aria-hidden="true">{{ kindIcons[entry.kind] }}</mat-icon>
-                    {{ kindLabel(entry) }}
-                  </span>
-                  @if (byline(entry)) {
-                    <span class="entry-meta-item">{{ byline(entry) }}</span>
-                  }
-                  @if (publishedOn(entry)) {
-                    <span class="entry-meta-item">{{ publishedOn(entry) }}</span>
-                  }
-                </p>
-                <div class="entry-why">
-                  <p class="entry-why-label">{{ copy.WHY_THIS }}</p>
-                  <p class="entry-why-text">{{ entry.whyThis }}</p>
-                </div>
-                <div class="entry-actions">
-                  <button
-                    mat-stroked-button
-                    type="button"
-                    class="save-button"
-                    [class.save-button--saved]="!!savedItem"
-                    [attr.aria-pressed]="!!savedItem"
-                    [disabled]="pendingItemIds.has(entry.itemId)"
-                    (click)="onToggleSave(entry, savedItem)"
-                  >
-                    @if (pendingItemIds.has(entry.itemId)) {
-                      <mat-spinner diameter="20" aria-label="Updating"></mat-spinner>
-                    } @else {
-                      <div class="aw-btn-content">
-                        <mat-icon>{{ savedItem ? 'bookmark_added' : 'bookmark_border' }}</mat-icon>
-                        <span>{{ savedItem ? copy.SAVED : copy.SAVE }}</span>
-                      </div>
-                    }
-                  </button>
-                </div>
+      @if (briefing.status === 'failed') {
+        <section class="aw-empty failed">
+          <p class="aw-kicker">{{ copy.FAILED_KICKER }}</p>
+          <div class="failed-row">
+            <aw-alert-banner class="failed-banner" [message]="failedMessage"></aw-alert-banner>
+            <button mat-stroked-button type="button" class="failed-retry" (click)="onBuild()">
+              <div class="aw-btn-content">
+                <mat-icon>refresh</mat-icon>
+                <span>{{ copy.FAILED_RETRY }}</span>
               </div>
-            </li>
-          }
-        </ol>
-      </section>
+            </button>
+          </div>
+          <p class="aw-empty-text">{{ copy.FAILED_TEXT }}</p>
+        </section>
+      }
+
+      @if (shown) {
+        @if (sections.length === 0) {
+          <section class="aw-empty">
+            <p class="aw-kicker">{{ copy.NO_BRIEFING_KICKER }}</p>
+            <p class="aw-empty-text">{{ copy.NO_ENTRIES }}</p>
+          </section>
+        } @else {
+          <p class="intro">{{ copy.INTRO }}</p>
+        }
+
+        @let savedByItemId = (savedByItemId$ | async) ?? emptySaved;
+
+        @for (section of sections; track section.noteId) {
+          <section class="section aw-card">
+            <header class="section-header">
+              <div class="section-kicker">
+                <aw-kind-label [kind]="section.noteKind"></aw-kind-label>
+                <span class="section-count">{{ section.entries.length }} {{ copy.TO_READ }}</span>
+              </div>
+              <h2 class="section-title">{{ section.noteSummary }}</h2>
+            </header>
+
+            <ol class="entry-list">
+              @for (entry of section.entries; track entry.itemId) {
+                @let savedItem = savedByItemId.get(entry.itemId);
+                <li class="entry" [id]="entryId(entry.itemId)">
+                  <span class="entry-rank" aria-hidden="true">{{ entry.rank }}</span>
+                  <div class="entry-body">
+                    @if (entry.readingNote) {
+                      <p class="entry-reading">{{ entry.readingNote }}</p>
+                    }
+                    <h3 class="entry-title">
+                      <a [href]="entry.url" target="_blank" rel="noopener">{{ entry.title }}</a>
+                    </h3>
+                    <p class="entry-meta">
+                      <span class="entry-kind">
+                        <mat-icon class="entry-kind-icon" aria-hidden="true">{{ kindIcons[entry.kind] }}</mat-icon>
+                        {{ kindLabel(entry) }}
+                      </span>
+                      @if (byline(entry)) {
+                        <span class="entry-meta-item">{{ byline(entry) }}</span>
+                      }
+                      @if (publishedOn(entry)) {
+                        <span class="entry-meta-item">{{ publishedOn(entry) }}</span>
+                      }
+                    </p>
+                    <div class="entry-why">
+                      <p class="entry-why-label">{{ copy.WHY_THIS }}</p>
+                      <p class="entry-why-text">{{ entry.whyThis }}</p>
+                    </div>
+                    <div class="entry-actions">
+                      <button
+                        mat-stroked-button
+                        type="button"
+                        class="save-button"
+                        [class.save-button--saved]="!!savedItem"
+                        [attr.aria-pressed]="!!savedItem"
+                        [disabled]="pendingItemIds.has(entry.itemId)"
+                        (click)="onToggleSave(entry, savedItem)"
+                      >
+                        @if (pendingItemIds.has(entry.itemId)) {
+                          <mat-spinner diameter="20" aria-label="Updating"></mat-spinner>
+                        } @else {
+                          <div class="aw-btn-content">
+                            <mat-icon>{{ savedItem ? 'bookmark_added' : 'bookmark_border' }}</mat-icon>
+                            <span>{{ savedItem ? copy.SAVED : copy.SAVE }}</span>
+                          </div>
+                        }
+                      </button>
+                      @if (savedNoticeItemId === entry.itemId) {
+                        <aw-alert-banner
+                          class="saved-notice"
+                          kind="info"
+                          [message]="copy.SAVED_NOTICE"
+                          (dismissed)="savedNoticeItemId = ''"
+                        >
+                          <a routerLink="/library">{{ copy.VIEW_LIBRARY }}</a>
+                        </aw-alert-banner>
+                      }
+                    </div>
+                  </div>
+                </li>
+              }
+            </ol>
+          </section>
+        }
+      }
     }
   }
 }

@@ -60,6 +60,7 @@
                 #passwordField="ngModel"
                 [(ngModel)]="demoPassword"
               />
+              <mat-hint>{{ copy.PASSWORD_HINT }}</mat-hint>
               @if (passwordField.hasError('required')) {
                 <mat-error>Enter your password.</mat-error>
               }
@@ -77,18 +78,6 @@
           </form>
         }
       </div>
-
-      <section class="steps" [attr.aria-label]="copy.STEPS_LABEL">
-        <p class="aw-kicker">{{ copy.STEPS_LABEL }}</p>
-        <ol class="steps-list">
-          @for (step of steps; track step; let index = $index) {
-            <li class="step">
-              <span class="step-number">{{ index + 1 }}</span>
-              <span class="step-text">{{ step }}</span>
-            </li>
-          }
-        </ol>
-      </section>
     </main>
 
     <aside class="sample" aria-label="A sample briefing">
@@ -113,5 +102,17 @@
         </ol>
       </div>
     </aside>
+
+    <section class="steps" [attr.aria-label]="copy.STEPS_LABEL">
+      <p class="aw-kicker">{{ copy.STEPS_LABEL }}</p>
+      <ol class="steps-list">
+        @for (step of steps; track step; let index = $index) {
+          <li class="step">
+            <span class="step-number">{{ index + 1 }}</span>
+            <span class="step-text">{{ step }}</span>
+          </li>
+        }
+      </ol>
+    </section>
   </div>
 </div>

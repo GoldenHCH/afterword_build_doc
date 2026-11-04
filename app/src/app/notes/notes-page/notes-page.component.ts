@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { RouterLink } from '@angular/router';
 
 import { AlertBannerComponent } from '../../shared/components/alert-banner/alert-banner.component';
 import { KindLabelComponent } from '../../shared/components/kind-label/kind-label.component';
@@ -28,6 +29,7 @@ type INote = Afterword.Firestore.Note.INote;
     MatCardModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    RouterLink,
     ScreenToolbarComponent,
     SkeletonListComponent,
   ],
