@@ -2,7 +2,6 @@ import { getFirestore } from 'firebase-admin/firestore';
 
 import { collections } from '../../constants';
 import { rankLibraryItems, toSearchLibraryItem } from '../library-search.helper';
-import { mcpLimits } from '../mcp.constants';
 import { IParsedSearchLibrary } from '../mcp.interfaces';
 
 export class LibrarySearchService {
@@ -15,7 +14,7 @@ export class LibrarySearchService {
       libraryQuery = libraryQuery.where('noteId', '==', request.noteId);
     }
 
-    const snapshot = await libraryQuery.orderBy('savedAt', 'desc').limit(mcpLimits.LIBRARY_SCAN_LIMIT).get();
+    const snapshot = await libraryQuery.orderBy('savedAt', 'desc').get();
 
     const items = snapshot.docs.map((document) =>
       toSearchLibraryItem({ ...(document.data() as Afterword.Firestore.Library.ILibraryItem), id: document.id }),

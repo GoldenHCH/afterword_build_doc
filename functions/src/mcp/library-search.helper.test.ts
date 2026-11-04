@@ -46,13 +46,18 @@ test('drops zero-match items when a query is given', () => {
   assert.equal(ranked.length, 0);
 });
 
-test('without query words keeps every item newest first', () => {
-  const ranked = rankLibraryItems(items, ' a ', 10);
+test('a blank query keeps every item newest first', () => {
+  const ranked = rankLibraryItems(items, '   ', 10);
 
   assert.deepEqual(
     ranked.map((item) => item.id),
     ['new', 'mid', 'old'],
   );
+});
+
+test('a query made only of too-short words matches nothing', () => {
+  assert.equal(rankLibraryItems(items, 'R', 10).length, 0);
+  assert.equal(rankLibraryItems(items, ' a ', 10).length, 0);
 });
 
 test('slices to the limit after ranking', () => {

@@ -53,6 +53,10 @@ export function rankLibraryItems(
 ): Afterword.Types.ISearchLibraryItem[] {
   const queryWords = extractQueryWords(query);
 
+  if (query.trim().length > 0 && queryWords.length === 0) {
+    return [];
+  }
+
   const scored = items.map((item) => {
     const haystack = [item.title, item.whyThis, item.noteSummary ?? '', item.keywords.join(' ')].join(' ').toLowerCase();
     const matches = queryWords.filter((word) => haystack.includes(word)).length;
