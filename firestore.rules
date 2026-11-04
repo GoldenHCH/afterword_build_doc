@@ -32,10 +32,7 @@ service cloud.firestore {
 
     match /library/{libraryItemId} {
       allow read: if isOwner(resource.data.userId);
-      allow create: if isOwner(request.resource.data.userId);
-      allow update: if isOwner(resource.data.userId)
-        && request.resource.data.userId == resource.data.userId;
-      allow delete: if isOwner(resource.data.userId);
+      allow write: if false;
     }
 
     match /briefings/{briefingId} {

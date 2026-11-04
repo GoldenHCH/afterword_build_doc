@@ -11,6 +11,7 @@
     "seed:dry": "node dist/seed/dry-run.js",
     "email:preview": "node dist/brief/email-preview.js",
     "explain:dry": "node dist/brief/explain-dry-run.js",
+    "seed:live": "node dist/seed/seed-live.js",
     "demo:auth": "node dist/seed/create-demo-auth-user.js",
     "test": "node --test dist/find/services/*.test.js dist/brief/*.test.js dist/notes/*.test.js dist/library/*.test.js dist/mcp/*.test.js"
   },
