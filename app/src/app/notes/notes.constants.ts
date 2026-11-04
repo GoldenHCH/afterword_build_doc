@@ -22,6 +22,7 @@ export const describePanelCopy = {
   KIND_LABEL: 'Kind',
   SUMMARY_LABEL: 'Summary',
   SUMMARY_REQUIRED: 'A note needs a summary.',
+  SUMMARY_TOO_LONG: 'Keep the summary under 200 characters.',
   DETAIL_LABEL: 'Detail',
   ANGLE_LABEL: 'Angle',
   KEYWORDS_LABEL: 'Keywords',
@@ -57,3 +58,5 @@ export const humanCallableErrorCodes = [
   'functions/not-found',
   'functions/permission-denied',
 ] as const;
+
+export const codeOnlyMessagePattern = /^[a-z-]+( \[\d+\])?$/;

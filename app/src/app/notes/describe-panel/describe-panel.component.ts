@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewEncapsulation, inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,7 +10,7 @@ import { AlertBannerComponent } from '../../shared/components/alert-banner/alert
 import { SidePanelComponent } from '../../shared/components/side-panel/side-panel.component';
 import { describeLimits, describePanelCopy, noteKindOptions } from '../notes.constants';
 import { IDraftFormValue } from '../notes.interfaces';
-import { callableErrorMessage, draftToFormValue, formValueToDraft } from '../notes.helper';
+import { callableErrorMessage, draftToFormValue, formValueToDraft, trimmedMinLength, trimmedRequired } from '../notes.helper';
 import { NotesService } from '../services/notes.service';
 
 @Component({
@@ -28,7 +28,6 @@ import { NotesService } from '../services/notes.service';
   ],
   templateUrl: './describe-panel.component.html',
   styleUrl: './describe-panel.component.scss',
-  encapsulation: ViewEncapsulation.None,
 })
 export class DescribePanelComponent implements OnChanges {
   private readonly _formBuilder = inject(FormBuilder);
@@ -47,8 +46,8 @@ export class DescribePanelComponent implements OnChanges {
     text: [
       '',
       [
-        Validators.required,
-        Validators.minLength(describeLimits.MIN_TEXT_CHARS),
+        trimmedRequired,
+        trimmedMinLength(describeLimits.MIN_TEXT_CHARS),
         Validators.maxLength(describeLimits.MAX_TEXT_CHARS),
       ],
     ],
@@ -56,7 +55,7 @@ export class DescribePanelComponent implements OnChanges {
 
   public readonly draftForm = this._formBuilder.nonNullable.group({
     kind: ['working_on' as Afterword.Firestore.Note.NoteKind, Validators.required],
-    summary: ['', [Validators.required, Validators.maxLength(describeLimits.MAX_SUMMARY_CHARS)]],
+    summary: ['', [trimmedRequired, Validators.maxLength(describeLimits.MAX_SUMMARY_CHARS)]],
     detail: [''],
     angle: [''],
     keywords: [''],
