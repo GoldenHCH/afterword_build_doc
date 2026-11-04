@@ -8,7 +8,11 @@ import { emulatorConfig, placeholderApiKey } from './firebase.constants';
 
 const isFirstInitialization = getApps().length === 0;
 const firebaseApp = isFirstInitialization
-  ? initializeApp({ ...environment.firebase, apiKey: environment.firebase.apiKey || placeholderApiKey })
+  ? initializeApp({
+      ...environment.firebase,
+      apiKey: environment.firebase.apiKey || placeholderApiKey,
+      authDomain: environment.firebase.authDomain || `${environment.firebase.projectId}.firebaseapp.com`,
+    })
   : getApp();
 
 export const auth = getAuth(firebaseApp);

@@ -15,6 +15,8 @@ import { collections } from '../firebase.constants';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  private _profileEnsuredForUid: string | null = null;
+
   public readonly user$: Observable<User | null> = new Observable<User | null>((subscriber) =>
     onAuthStateChanged(
       auth,
@@ -34,16 +36,35 @@ export class AuthService {
 
   public async signInWithGoogle(): Promise<void> {
     const credential = await signInWithPopup(auth, new GoogleAuthProvider());
-    await this._ensureUserDocument(credential.user);
+    await this._completeSignIn(credential.user);
   }
 
   public async signInWithDemo(email: string, password: string): Promise<void> {
     const credential = await signInWithEmailAndPassword(auth, email, password);
-    await this._ensureUserDocument(credential.user);
+    await this._completeSignIn(credential.user);
+  }
+
+  public async ensureProfile(user: User): Promise<void> {
+    if (this._profileEnsuredForUid === user.uid) {
+      return;
+    }
+
+    await this._ensureUserDocument(user);
+    this._profileEnsuredForUid = user.uid;
   }
 
   public async signOut(): Promise<void> {
+    this._profileEnsuredForUid = null;
     await signOut(auth);
+  }
+
+  private async _completeSignIn(user: User): Promise<void> {
+    try {
+      await this.ensureProfile(user);
+    } catch (error) {
+      await this.signOut();
+      throw error;
+    }
   }
 
   private async _ensureUserDocument(user: User): Promise<void> {
