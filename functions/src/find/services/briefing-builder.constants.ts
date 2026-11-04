@@ -23,8 +23,9 @@ export const briefingWarnings = {
 export const fallbackLines = {
   ANGLE_MAX_WORDS: 10,
   MATCHES_TEMPLATE: 'Matches your note on {{ANGLE}}: shares {{KEYWORDS}}',
-  RECENT_POST_TEMPLATE: 'Recent from @{{HANDLE}}, for your note on {{ANGLE}}',
-  RECENT_PAPER_TEMPLATE: 'Recent paper for your note on {{ANGLE}}',
+  RECENT_POST_TEMPLATE: 'Recent from @{{HANDLE}}, who posts about {{TOPIC}}',
+  RECENT_POST_NO_TOPIC_TEMPLATE: 'Recent from @{{HANDLE}}, for your note on {{ANGLE}}',
+  PAPER_TEMPLATE: 'Paper for your note on {{ANGLE}}',
   START_HERE: 'Start here',
   THEN_THIS: 'Then this',
 } as const;

@@ -21,6 +21,7 @@ export interface IScoredCandidate {
   item: Afterword.Firestore.Item.IItem;
   score: number;
   matchedKeywords: string[];
+  handleTopic?: string;
 }
 
 export interface INoteCandidates<TCandidate> {

@@ -1,3 +1,5 @@
+import { itemKinds } from '../../shared/item.constants';
+import { NoteKind } from '../../shared/note.types';
 import { findLimits, foundationalNoteKinds, scoringWeights } from '../find.constants';
 import { briefingBuilder, fallbackLines, keywordMatching } from './briefing-builder.constants';
 import {
@@ -29,13 +31,22 @@ export function buildWhyThis(candidate: IScoredCandidate, note: IFallbackNote): 
   }
 
   if (candidate.item.sourceHandle) {
-    return fallbackLines.RECENT_POST_TEMPLATE.replace('{{HANDLE}}', () => normaliseHandle(candidate.item.sourceHandle ?? '')).replace(
+    const handle = normaliseHandle(candidate.item.sourceHandle);
+
+    if (candidate.handleTopic) {
+      return fallbackLines.RECENT_POST_TEMPLATE.replace('{{HANDLE}}', () => handle).replace(
+        '{{TOPIC}}',
+        () => candidate.handleTopic ?? '',
+      );
+    }
+
+    return fallbackLines.RECENT_POST_NO_TOPIC_TEMPLATE.replace('{{HANDLE}}', () => handle).replace(
       '{{ANGLE}}',
       () => describeNoteAngle(note),
     );
   }
 
-  return fallbackLines.RECENT_PAPER_TEMPLATE.replace('{{ANGLE}}', () => describeNoteAngle(note));
+  return fallbackLines.PAPER_TEMPLATE.replace('{{ANGLE}}', () => describeNoteAngle(note));
 }
 
 export function buildReadingNote(rank: number): string {
@@ -77,11 +88,33 @@ export function matchedKeywords(note: IScorableNote, item: IScorableItem): strin
   });
 }
 
+export function matchPostKeywords(note: IScorableNote, item: IScorableItem, handleTopics: string[]): string[] {
+  return matchedKeywords(note, { ...item, text: `${item.text} ${handleTopics.join(' ')}` });
+}
+
+export function selectPostCandidates(candidates: IScoredCandidate[], limit: number): IScoredCandidate[] {
+  const posts = candidates.filter((candidate) => candidate.item.kind === itemKinds.POST);
+  const matching = posts
+    .filter((candidate) => candidate.matchedKeywords.length > 0)
+    .sort((first, second) => second.score - first.score)
+    .slice(0, limit);
+
+  if (matching.length > 0) {
+    return matching;
+  }
+
+  const newestFirst = [...posts].sort(
+    (first, second) => second.item.publishedAt.toMillis() - first.item.publishedAt.toMillis(),
+  );
+
+  return newestFirst.slice(0, 1);
+}
+
 export function sourceRankScore(position: number, total: number): number {
   return total <= 0 ? 0 : (total - position) / total;
 }
 
-export function paperYearsBack(noteKind: string): number {
+export function paperYearsBack(noteKind: NoteKind): number {
   return foundationalNoteKinds.includes(noteKind)
     ? findLimits.PAPER_YEARS_BACK_FOUNDATIONAL
     : findLimits.PAPER_YEARS_BACK;

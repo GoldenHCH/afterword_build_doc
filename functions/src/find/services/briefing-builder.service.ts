@@ -16,12 +16,13 @@ import {
   buildReadingNote,
   buildWhyThis,
   dedupeAcrossNotes,
-  matchedKeywords,
+  matchPostKeywords,
   normaliseHandle,
   paperYearsBack,
   pickSources,
   sourceRankScore,
   scoreItem,
+  selectPostCandidates,
 } from './content-scoring.helper';
 import { IItemDraft } from './item-draft.types';
 import { ItemCacheService } from './item-cache.service';
@@ -39,6 +40,7 @@ export class BriefingBuilderService {
     logger.info('Briefing build started', { userId, notes: notes.length, sources: sources.length });
 
     const sourceWeights = new Map(sources.map((source) => [normaliseHandle(source.handle), source.weight]));
+    const sourceTopics = new Map(sources.map((source) => [normaliseHandle(source.handle), source.topics]));
     const gathered = await Promise.all(notes.map((note) => this._gatherItems(note, sources, now)));
 
     const scoredGroups: INoteCandidates<IScoredCandidate>[] = notes.map((note, index) => ({
@@ -49,13 +51,16 @@ export class BriefingBuilderService {
             ? scoringWeights.PAPER_SOURCE_WEIGHT
             : (sourceWeights.get(normaliseHandle(item.sourceHandle ?? '')) ?? 0);
 
-        const scorable = { ...item, sourceRank };
+        const handleTopics =
+          item.kind === itemKinds.POST ? (sourceTopics.get(normaliseHandle(item.sourceHandle ?? '')) ?? []) : [];
+        const scorable = { ...item, text: `${item.text} ${handleTopics.join(' ')}`, sourceRank };
 
         return {
           itemId,
           item,
           score: scoreItem(note, scorable, sourceWeight, now),
-          matchedKeywords: matchedKeywords(note, scorable),
+          matchedKeywords: matchPostKeywords(note, { ...item, sourceRank }, handleTopics),
+          ...(handleTopics.length > 0 ? { handleTopic: handleTopics[0] } : {}),
         };
       }),
     }));
@@ -229,9 +234,7 @@ export class BriefingBuilderService {
     const papers = byScoreDescending
       .filter((candidate) => candidate.item.kind === itemKinds.PAPER)
       .slice(0, findLimits.PAPERS_KEPT_PER_NOTE);
-    const posts = byScoreDescending
-      .filter((candidate) => candidate.item.kind === itemKinds.POST && candidate.matchedKeywords.length > 0)
-      .slice(0, findLimits.POSTS_KEPT_PER_NOTE);
+    const posts = selectPostCandidates(candidates, findLimits.POSTS_KEPT_PER_NOTE);
 
     const entries = [...papers, ...posts].map((candidate, index) => this._buildEntry(candidate, index + 1, note));
 

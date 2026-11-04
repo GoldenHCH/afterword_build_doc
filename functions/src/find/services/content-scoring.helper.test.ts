@@ -1,13 +1,20 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
+import notesJson from '../../seed/data/notes.json';
+import postsJson from '../../seed/data/posts.json';
+import sourcesJson from '../../seed/data/sources.json';
 import {
   buildReadingNote,
   buildWhyThis,
   dedupeAcrossNotes,
   matchedKeywords,
+  matchPostKeywords,
+  normaliseHandle,
   paperYearsBack,
+  pickSources,
   scoreItem,
+  selectPostCandidates,
   sourceRankScore,
   stemWord,
 } from './content-scoring.helper';
@@ -32,7 +39,7 @@ test('scoreItem counts keyword overlap case-insensitively across title and text'
   const full = { title: 'TRANSFORMER', text: 'about Attention', publishedAt: daysAgo(365) };
   const none = { title: 'Cooking', text: 'pasta', publishedAt: daysAgo(365) };
 
-  assert.ok(Math.abs(scoreItem(note, full, 0, now) - 0.35) < 1e-9);
+  assert.ok(Math.abs(scoreItem(note, full, 0, now) - 0.4) < 1e-9);
   assert.equal(scoreItem(note, none, 0, now), 0);
 });
 
@@ -57,11 +64,19 @@ test('scoreItem ranks a better source position above a fresher but lower-ranked 
   assert.ok(scoreItem(note, relevant, 0.7, now) > scoreItem(note, fresh, 0.7, now));
 });
 
+test('scoreItem lets a fresh keyword match beat an old unrelated item ranked first by the source', () => {
+  const sevenKeywords = { keywords: ['alpha', 'beta', 'gamma', 'delta', 'epsilon', 'zeta', 'eta'] };
+  const oldTopRanked = { title: 'Unrelated', text: '', publishedAt: daysAgo(900), sourceRank: 1 };
+  const freshMatch = { title: 'Alpha and beta', text: '', publishedAt: daysAgo(3), sourceRank: 0.25 };
+
+  assert.ok(scoreItem(sevenKeywords, freshMatch, 0.7, now) > scoreItem(sevenKeywords, oldTopRanked, 0.7, now));
+});
+
 test('scoreItem treats a missing or out-of-range source rank as zero or one', () => {
   const base = { title: 'Unrelated', text: '', publishedAt: daysAgo(365) };
 
   assert.equal(scoreItem(note, base, 0, now), 0);
-  assert.ok(Math.abs(scoreItem(note, { ...base, sourceRank: 3 }, 0, now) - 0.35) < 1e-9);
+  assert.ok(Math.abs(scoreItem(note, { ...base, sourceRank: 3 }, 0, now) - 0.3) < 1e-9);
 });
 
 test('sourceRankScore gives the first result 1 and falls toward 0', () => {
@@ -141,7 +156,7 @@ test('buildWhyThis names the note angle and the shared keywords without a model'
   );
   assert.equal(
     buildWhyThis({ ...candidate, matchedKeywords: [] }, noteWithAngle),
-    'Recent paper for your note on How to report intercoder reliability for reflexive analysis of interviews...',
+    'Paper for your note on How to report intercoder reliability for reflexive analysis of interviews...',
   );
   assert.equal(
     buildWhyThis(
@@ -150,9 +165,73 @@ test('buildWhyThis names the note angle and the shared keywords without a model'
     ),
     'Recent from @some_handle, for your note on Stuck on coding',
   );
+  assert.equal(
+    buildWhyThis(
+      {
+        ...candidate,
+        matchedKeywords: [],
+        handleTopic: 'ai in research',
+        item: { sourceHandle: '@Some_Handle' } as Afterword.Firestore.Item.IItem,
+      },
+      { summary: 'Stuck on coding' },
+    ),
+    'Recent from @some_handle, who posts about ai in research',
+  );
 });
 
 test('buildReadingNote puts rank one first and the rest after it', () => {
   assert.equal(buildReadingNote(1), 'Start here');
   assert.equal(buildReadingNote(2), 'Then this');
+});
+
+test('selectPostCandidates admits at least one seeded post for every seeded note, by match or by recency fallback', () => {
+  const sources = sourcesJson as unknown as Afterword.Firestore.Source.ISource[];
+
+  for (const seedNote of notesJson) {
+    const chosenHandles = new Set(pickSources(seedNote, sources).map((source) => normaliseHandle(source.handle)));
+    const candidates = postsJson
+      .filter((post) => chosenHandles.has(normaliseHandle(post.handle)))
+      .map((post) => {
+        const topics = sources.find((source) => normaliseHandle(source.handle) === normaliseHandle(post.handle))?.topics ?? [];
+        const item = {
+          kind: 'post',
+          title: '',
+          text: post.text,
+          sourceHandle: post.handle,
+          publishedAt: { toMillis: () => new Date(post.publishedAt).getTime() },
+        };
+
+        return {
+          itemId: post.externalId,
+          item: item as unknown as Afterword.Firestore.Item.IItem,
+          score: scoreItem(seedNote, { ...item, text: `${post.text} ${topics.join(' ')}` }, 0.7, now),
+          matchedKeywords: matchPostKeywords(seedNote, item, topics),
+        };
+      });
+
+    const admitted = selectPostCandidates(candidates, 3);
+
+    assert.ok(admitted.length >= 1, `note ${seedNote.key} admits no post`);
+  }
+});
+
+test('selectPostCandidates keeps only matching posts when any match, else the single newest post', () => {
+  const post = (itemId: string, matched: string[], daysOld: number): Parameters<typeof selectPostCandidates>[0][number] => ({
+    itemId,
+    item: { kind: 'post', publishedAt: daysAgo(daysOld) } as unknown as Afterword.Firestore.Item.IItem,
+    score: matched.length / 10,
+    matchedKeywords: matched,
+  });
+
+  assert.deepEqual(
+    selectPostCandidates([post('old-match', ['a'], 30), post('new-miss', [], 1)], 3).map((candidate) => candidate.itemId),
+    ['old-match'],
+  );
+  assert.deepEqual(
+    selectPostCandidates([post('older', [], 9), post('newest', [], 2), post('oldest', [], 40)], 3).map(
+      (candidate) => candidate.itemId,
+    ),
+    ['newest'],
+  );
+  assert.deepEqual(selectPostCandidates([], 3), []);
 });
