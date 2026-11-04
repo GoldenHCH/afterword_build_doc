@@ -39,13 +39,13 @@
 - [x] `IItemDraft` = `IItem` without `id` and `fetchedAt`
 
 ### Seed data (`functions/src/seed/`, callable `seedDemo`, demo uid only) `[HACK-17]`
-- [ ] The demo user
-- [ ] 3 notes: `stuck` — "Intercoder reliability in thematic analysis of interviews" with angle and keywords; one `working_on`; one `question`. Written the way a researcher says them, not like test data
-- [ ] 8–10 `sources`: the X handles the user names — `[handles]` until then — each with `topics` and a `weight`
-- [ ] ~15 papers fetched live from OpenAlex at seed time for the three angles (real titles, DOIs, dates, authors). Never typed in by hand
-- [ ] ~6 posts: real posts copied with their URL, handle and date, or posts from a demo account. Never invented text under a real person's name
-- [ ] One `briefings` document for the demo user, `status: ready`, three sections, `whyThis` and `readingNote` written by hand — this is the cached demo briefing `[AI-11]`
-- [ ] `yarn seed` (or a `firebase functions:shell` recipe) written into README's demo shortcuts `[HACK-18]`
+- [x] The demo user
+- [x] 3 notes: `stuck` — "Intercoder reliability in thematic analysis of interviews" with angle and keywords; one `working_on`; one `question`. Written the way a researcher says them, not like test data
+- [x] 8–10 `sources`: the X handles the user names — `[handles]` until then — each with `topics` and a `weight`
+- [x] ~15 papers fetched live from OpenAlex at seed time for the three angles (real titles, DOIs, dates, authors). Never typed in by hand
+- [x] ~6 posts: real posts copied with their URL, handle and date, or posts from a demo account. Never invented text under a real person's name
+- [x] One `briefings` document for the demo user, `status: ready`, three sections, `whyThis` and `readingNote` written by hand — this is the cached demo briefing `[AI-11]`
+- [x] `yarn seed` (or a `firebase functions:shell` recipe) written into README's demo shortcuts `[HACK-18]`
 
 ### Hand-off
 - [ ] Paste the collection names, type names and seam interfaces into the PR description — phases 02–05 copy from there, not from memory
@@ -55,4 +55,5 @@
 
 - [x] `yarn build` passes in `functions/`, and the shared types resolve from both `functions/` and `app/` (`app/src/types/firestore.d.ts` checked with `tsc --noEmit --strict --skipLibCheck` against `firebase`)
 - [ ] `seedDemo` run once: the Firestore console shows the demo user, 3 notes, the sources, the items and one `ready` briefing
+  - Blocked on creating the Firebase project; `seed:dry` proves the same writes in memory (49 documents).
 - [ ] Committed and PR opened

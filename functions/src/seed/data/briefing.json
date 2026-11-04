@@ -97,7 +97,7 @@
           "provider": "x",
           "rank": 5,
           "score": 0.68,
-          "whyThis": "If you let an LLM act as second coder, note his point: newer models hallucinate less but remain sycophantic, so keep human checks.",
+          "whyThis": "If you let an LLM act as second coder, note the point: newer models hallucinate less but remain sycophantic, so keep human checks.",
           "readingNote": "Skim: context on trusting LLM readers"
         },
         {
@@ -258,7 +258,7 @@
           "provider": "x",
           "rank": 6,
           "score": 0.61,
-          "whyThis": "If you add corrections, he argues failures cluster in similar initial states, so focus new demos there instead of collecting uniformly.",
+          "whyThis": "If you add corrections, the thread argues failures cluster in similar initial states, so focus new demos there instead of collecting uniformly.",
           "readingNote": "Skim: where to spend your next demos"
         }
       ]

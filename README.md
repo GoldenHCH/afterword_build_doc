@@ -79,6 +79,13 @@ npx -y yarn@1.22.22 build
 
 `tsc` emits to `functions/dist` (the Cloud Functions entry point). The shared `.d.ts` files in `functions/lib/` are never emitted, so they stay apart from the build output.
 
+## Demo shortcuts
+
+`seedDemo` loads the demo account: the user, 3 notes, 10 X sources, the cached posts and papers, about 15 more papers fetched live from OpenAlex, and one `ready` briefing. It is safe to run twice (deterministic document ids, `set` with merge).
+
+- **Dry run, no Firebase project needed:** `cd functions && npx -y yarn@1.22.22 build && npx -y yarn@1.22.22 seed:dry`. It does the live OpenAlex calls, writes to memory, and prints per-collection counts, the briefing size and a hash of the sorted document ids.
+- **Against a project:** the callable only accepts the demo uid (`demo-researcher`). Locally, `firebase functions:shell` then `seedDemo({}, { auth: { uid: 'demo-researcher' } })`. From the deployed app, call `seedDemo` while signed in as the demo user.
+
 ## Per-project swaps
 
 - `AGENTS.md` — Project Overview (a few lines only)
