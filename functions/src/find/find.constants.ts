@@ -2,7 +2,7 @@ import { noteKinds } from '../shared/note.constants';
 import { PaperSourceName, PostSourceName } from './find.types';
 
 export const contentSources: { PAPER: PaperSourceName; POST: PostSourceName } = {
-  PAPER: 'openalex',
+  PAPER: 'paperclip',
   POST: 'seed',
 };
 

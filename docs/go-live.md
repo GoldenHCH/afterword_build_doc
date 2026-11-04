@@ -45,7 +45,7 @@ These are public client identifiers, safe to commit. The security boundary is `f
 
 ## 5. Set the secrets **OWNER**
 
-Secrets live in Google Secret Manager; the CLI creates them. Only four exist as far as the deploy is concerned, and all four must be set before step 7, or the deploy stops and asks for the missing one.
+Secrets live in Google Secret Manager; the CLI creates them. Five exist as far as the deploy is concerned, and all five must be set before step 7, or the deploy stops and asks for the missing one.
 
 | Secret | Required | Used by | What happens if it is wrong or missing |
 |---|---|---|---|
@@ -53,15 +53,16 @@ Secrets live in Google Secret Manager; the CLI creates them. Only four exist as 
 | `RESEND_API_KEY` | yes | `buildBriefingNow`, `weeklyBriefing` | The briefing is built but no email goes out; the app shows a warning. |
 | `MCP_SHARED_KEY` | yes | `searchPapers`, `searchLibrary` | Every MCP call to these two functions gets `401`. Use the same value on Vercel (step 10). |
 | `OPENALEX_API_KEY` | yes | `searchPapers`, `buildBriefingNow`, `weeklyBriefing`, `seedDemo` | Required in production because OpenAlex throttles anonymous calls from cloud IPs (429); without it the paper source fails and the briefing falls back to posts only with a warning. |
-| `PAPERCLIP_API_KEY` | no | nothing | Not declared at all in this build: papers come from OpenAlex (`contentSources.PAPER = 'openalex'` in `functions/src/find/find.constants.ts`). To use Paperclip, set it to `'paperclip'`, set the secret, redeploy. If Paperclip then fails, search falls back to OpenAlex. |
+| `PAPERCLIP_API_KEY` | yes | `searchPapers`, `buildBriefingNow`, `weeklyBriefing` | Papers come from Paperclip (`contentSources.PAPER = 'paperclip'` in `functions/src/find/find.constants.ts`). Create the key at https://paperclip.gxl.ai/keys. If a Paperclip call fails, search falls back to OpenAlex. Set it back to `'openalex'` and redeploy to turn Paperclip off. |
 | `X_BEARER_TOKEN` | no | nothing | Not declared at all in this build: posts come from the seeded X posts (`contentSources.POST = 'seed'`). To read live X posts, set it to `'x'`, set the secret, redeploy. |
 
-The two optional secrets are only registered with the deploy when their source is switched on, so leaving them unset cannot fail a deploy.
+`PAPERCLIP_API_KEY` and `X_BEARER_TOKEN` are only registered with the deploy when their source is switched on. Paperclip is on in this build, so its key is required; leaving `X_BEARER_TOKEN` unset cannot fail a deploy.
 
 ```bash
 npx -y firebase-tools@14 functions:secrets:set ANTHROPIC_API_KEY
 npx -y firebase-tools@14 functions:secrets:set RESEND_API_KEY
 npx -y firebase-tools@14 functions:secrets:set OPENALEX_API_KEY
+npx -y firebase-tools@14 functions:secrets:set PAPERCLIP_API_KEY
 ```
 
 Each prompts for the value (input is hidden). For `MCP_SHARED_KEY`, generate one and keep it in this shell, because step 10 needs the same value:
