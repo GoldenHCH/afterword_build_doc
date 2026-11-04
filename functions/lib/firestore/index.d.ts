@@ -28,6 +28,8 @@ declare namespace Afterword.Firestore {
       source: NoteSource;
       createdAt: Timestamp;
       resolvedAt?: Timestamp;
+      lastFetchedAt?: Timestamp;
+      lastFetchedItemIds?: string[];
     }
   }
 
@@ -39,6 +41,7 @@ declare namespace Afterword.Firestore {
       displayName: string;
       topics: string[];
       weight: number;
+      xUserId?: string;
       createdAt: Timestamp;
     }
   }
