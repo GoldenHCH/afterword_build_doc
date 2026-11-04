@@ -53,6 +53,16 @@ export function parseDescribeWorkResponse(text: string): IDescribeWorkDraft | nu
     return null;
   }
 
+  if (!isOptionalText(detail) || !isOptionalText(angle) || !isOptionalText(project)) {
+    return null;
+  }
+
+  const hasAngle = typeof angle === 'string' && angle.trim().length > 0;
+
+  if (hasAngle && normalizeKeywords(keywords as string[]).length < describeWorkConfig.MIN_KEYWORDS) {
+    return null;
+  }
+
   return {
     kind: kind as Afterword.Firestore.Note.NoteKind,
     summary,
@@ -61,6 +71,10 @@ export function parseDescribeWorkResponse(text: string): IDescribeWorkDraft | nu
     keywords: keywords as string[],
     project: typeof project === 'string' ? project : null,
   };
+}
+
+function isOptionalText(value: unknown): boolean {
+  return value === undefined || value === null || typeof value === 'string';
 }
 
 export function normalizeDraft(draft: IDescribeWorkDraft): Afterword.Types.IDescribeWorkResponse['note'] {

@@ -96,7 +96,7 @@ npx -y yarn@1.22.22 build
 DEMO_PASSWORD='choose-a-password' npx -y yarn@1.22.22 demo:auth
 ```
 
-It creates or updates `demo@afterword.fyi` (uid `demo-researcher`, email verified) in the project `GOOGLE_APPLICATION_CREDENTIALS` points at, or in the Auth emulator when `FIREBASE_AUTH_EMULATOR_HOST` is set. The password must be at least 8 characters. In the app, the sign-in page has a "Use the demo account" path for `demo@afterword.fyi` with that password; call `seedDemo` while signed in as that user.
+It creates or updates `demo@afterword.fyi` (uid `demo-researcher`, email verified) in the project `GOOGLE_APPLICATION_CREDENTIALS` points at, or in the Auth emulator when `FIREBASE_AUTH_EMULATOR_HOST` is set. Against the emulator, also set `GCLOUD_PROJECT` (or `FIREBASE_CONFIG`) to the project id. The password must be at least 8 characters. In the app, the sign-in page has a "Use the demo account" path for `demo@afterword.fyi` with that password; call `seedDemo` while signed in as that user.
 
 ### Briefing explain and email (phase 03)
 
