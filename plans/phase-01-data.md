@@ -48,7 +48,7 @@
 - [x] `yarn seed` (or a `firebase functions:shell` recipe) written into README's demo shortcuts `[HACK-18]`
 
 ### Hand-off
-- [ ] Paste the collection names, type names and seam interfaces into the PR description — phases 02–05 copy from there, not from memory
+- [x] Paste the collection names, type names and seam interfaces into the PR description — phases 02–05 copy from there, not from memory. Written to `plans/phase-01-handoff.md`; paste or link it in the PR description
 - [x] `rules/typescript.md`: Firestore namespace set to `Afterword.Firestore` (per-project swap)
 
 ## Done when
