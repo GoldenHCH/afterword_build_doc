@@ -19,10 +19,10 @@
 - [x] Routes: `/notes`, `/briefings`, `/briefings/:id`, `/library`; bottom nav on mobile, side nav on desktop (placeholder pages; `/briefings` redirecting to the latest briefing is the briefing session's job)
 
 ### Notes page (`app/src/app/notes/`)
-- [ ] `notes.service.ts`: live query of `notes` where `userId == me` and `status == open`, newest first; `resolve(noteId)`
-- [ ] List: kind label (Stuck / Working on / Question), `summary`, `angle` muted, `keywords` as chips, a small icon for `source` (assistant vs. typed here); **Resolve** sets `status` and `resolvedAt`
-- [ ] **Describe instead** → `SidePanelComponent` with one textarea → callable `describeWork` (model: unstructured → structured; prompt in `notes.constants.ts`; output validated against `IDescribeWorkResponse`, retry once, then a friendly error `[AI-08]`) → the draft shown with editable summary and keywords → **Save note** writes with `source: app`. Async submit pattern `[UI-12]`–`[UI-15]`
-- [ ] Empty state: "Nothing here yet. Tell your assistant what you're stuck on, or describe it here." with the Describe button. Load failure → alert banner
+- [x] `notes.service.ts`: live query of `notes` where `userId == me` and `status == open`, newest first; `resolve(noteId)`
+- [x] List: kind label (Stuck / Working on / Question), `summary`, `angle` muted, `keywords` as chips, a small icon for `source` (assistant vs. typed here); **Resolve** sets `status` and `resolvedAt`
+- [x] **Describe instead** → `SidePanelComponent` with one textarea → callable `describeWork` (model: unstructured → structured; prompt in `notes.constants.ts`; output validated against `IDescribeWorkResponse`, retry once, then a friendly error `[AI-08]`) → the draft shown with editable summary and keywords → **Save note** writes with `source: app`. Async submit pattern `[UI-12]`–`[UI-15]`
+- [x] Empty state: "Nothing here yet. Tell your assistant what you're stuck on, or describe it here." with the Describe button. Load failure → alert banner
 
 ### Briefing page (`app/src/app/briefings/`)
 - [ ] `briefings.service.ts`: latest briefing for me; by id; `buildNow()` calls `buildBriefingNow`
@@ -34,8 +34,8 @@
 ### Library page (`app/src/app/library/`)
 - [x] `library.service.ts`: live query of `library` where `userId == me`, newest first; `save(briefingId, itemId)` and `unsave(libraryItemId)` call the callables
 - [x] Callables `saveItem` / `unsaveItem` in `functions/src/library/functions/`: `[FB-02]`; copy the entry's snapshot, `whyThis`, `noteId`, `noteSummary` and the note's `keywords` into `library/`; a repeat save returns the existing id
-- [ ] List grouped by `noteSummary`; each item: kind icon, linked title, `whyThis`, saved date, **Remove**; filter chips by kind
-- [ ] Empty state: "Save something from your briefing and it shows up here — and in your assistant."
+- [x] List grouped by `noteSummary`; each item: kind icon, linked title, `whyThis`, saved date, **Remove**; filter chips by kind
+- [x] Empty state: "Save something from your briefing and it shows up here — and in your assistant."
 
 ### Polish that is on the demo path
 - [ ] Every page: loading, empty, error `[HACK-15]`; checked at 375px `[HACK-16]`

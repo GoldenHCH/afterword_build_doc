@@ -1,2 +1,78 @@
-<aw-screen-toolbar title="Notes"></aw-screen-toolbar>
-<p>What you're stuck on, kept by your assistant and by you.</p>
+<aw-screen-toolbar [title]="copy.TITLE" [subtitle]="copy.SUBTITLE">
+  <button mat-flat-button type="button" class="describe-button" (click)="onOpenDescribe()">
+    <div class="aw-btn-content">
+      <mat-icon class="describe-icon">edit_note</mat-icon>
+      <span>{{ copy.DESCRIBE_BUTTON }}</span>
+    </div>
+  </button>
+</aw-screen-toolbar>
+
+@if (loadError) {
+  <aw-alert-banner [message]="loadError"></aw-alert-banner>
+} @else {
+  @if (actionError) {
+    <div class="banner-gap">
+      <aw-alert-banner [message]="actionError" (dismissed)="actionError = ''"></aw-alert-banner>
+    </div>
+  }
+
+  @if (hasLoaded && notes.length === 0) {
+    <div class="empty">
+      <p class="empty-text">{{ copy.EMPTY }}</p>
+      <button mat-flat-button type="button" (click)="onOpenDescribe()">{{ copy.DESCRIBE_BUTTON }}</button>
+    </div>
+  }
+
+  <div class="aw-card-grid">
+    @for (note of notes; track note.id) {
+      <mat-card class="aw-card" appearance="outlined">
+        <mat-card-content>
+          <div class="note-top">
+            <aw-kind-label [kind]="note.kind"></aw-kind-label>
+            <mat-icon
+              class="note-source"
+              [matTooltip]="sourceDisplay[note.source].tooltip"
+              [attr.aria-label]="sourceDisplay[note.source].tooltip"
+              >{{ sourceDisplay[note.source].icon }}</mat-icon
+            >
+          </div>
+          <h2 class="note-summary">{{ note.summary }}</h2>
+          @if (note.angle) {
+            <p class="note-angle">{{ note.angle }}</p>
+          }
+          @if (note.keywords.length > 0) {
+            <mat-chip-set class="note-keywords" aria-label="Keywords">
+              @for (keyword of note.keywords; track keyword) {
+                <mat-chip>{{ keyword }}</mat-chip>
+              }
+            </mat-chip-set>
+          }
+          <div class="note-footer">
+            <p class="note-meta">
+              @if (note.project) {
+                <span class="note-project">{{ note.project }}</span>
+                <span aria-hidden="true"> · </span>
+              }
+              {{ formatDate(note.createdAt) }}
+            </p>
+            <button
+              mat-stroked-button
+              type="button"
+              class="resolve-button"
+              [disabled]="isResolving(note)"
+              (click)="onResolve(note)"
+            >
+              @if (isResolving(note)) {
+                <mat-spinner diameter="20"></mat-spinner>
+              } @else {
+                {{ copy.RESOLVE_BUTTON }}
+              }
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+}
+
+<aw-describe-panel [open]="isDescribeOpen" (closed)="onCloseDescribe()"></aw-describe-panel>
