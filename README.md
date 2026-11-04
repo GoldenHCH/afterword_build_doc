@@ -4,13 +4,13 @@ Afterword turns what a researcher is stuck on this week into a briefing of the p
 
 **Live:** https://afterword.fyi
 
-Papers come from OpenAlex today (Paperclip sits behind the same seam, off until `contentSources.PAPER` is set to `paperclip` and a key is set); X posts are a curated snapshot of real posts.
+Papers come from Paperclip, with OpenAlex as the fallback when a Paperclip call fails; X posts are a curated snapshot of real posts.
 
 Stack: Angular 21 (standalone) with Angular Material in `app/`, Firebase Cloud Functions v2 (TypeScript) and Firestore in `functions/`, an MCP connector in a separate repo (see MCP connector below). The path from an empty Google account to the live demo is [`docs/go-live.md`](docs/go-live.md).
 
 ## What is live and what is seeded
 
-- **Papers:** live from OpenAlex. Paperclip sits behind the same seam and is switched on with `contentSources.PAPER` in `functions/src/find/find.constants.ts`.
+- **Papers:** live from Paperclip (`contentSources.PAPER` in `functions/src/find/find.constants.ts`). If Paperclip errors, the same search runs on OpenAlex.
 - **Posts:** the seeded list of researcher X accounts and posts (`contentSources.POST` is `seed`). The live X API source exists but is off. Seeded posts are filtered by a fixed window (`seededPostWindow` in `functions/src/find/find.constants.ts`, used by the briefing builder when `contentSources.POST` is `seed`) rather than the 14-day window used for live X, so the demo briefing is never empty.
 - **Explanations and email:** the model writes the one-line "why this" and the reading order, and Resend sends the email. If either is down, the briefing still builds with deterministic fallback lines and a blue warning.
 - **Source failures:** if a source times out or errors, the briefing is still built from the others and says which source was unreachable.
@@ -21,7 +21,7 @@ Live app: https://afterword.fyi. Sign in with "Use the demo account" (`demo@afte
 
 1. **Tell the assistant what you're stuck on.** In Claude (or Cursor), say "I'm stuck on how many interviews I need before I can claim saturation in my qualitative study." The assistant calls `record_work` and answers "Saved to Afterword."
 2. **Notes.** Open the app. The Notes page now lists the new saturation note next to the 3 seeded ones, with its angle and keywords. The **Describe instead** box does the same job without the assistant.
-3. **Build a new briefing.** On the Briefing page, click the button (it reads **Build my briefing now** when there is no briefing yet). It shows a progress note and skeleton for a minute or two while it fetches papers (OpenAlex by default; Paperclip when switched on in `functions/src/find/find.constants.ts`) and the seeded X posts, scores them and writes the explanations, then opens the new briefing: items grouped under each note, numbered in reading order, each with one line on why it matters for that bottleneck. A blue note above the briefing means a warning: the briefing is real, but the model explanations or the email fell back (for example the model or Resend was down). It is not a failure; the briefing is still usable. A red banner means the build itself failed.
+3. **Build a new briefing.** On the Briefing page, click the button (it reads **Build my briefing now** when there is no briefing yet). It shows a progress note and skeleton for a minute or two while it fetches papers (Paperclip, falling back to OpenAlex) and the seeded X posts, scores them and writes the explanations, then opens the new briefing: items grouped under each note, numbered in reading order, each with one line on why it matters for that bottleneck. A blue note above the briefing means a warning: the briefing is real, but the model explanations or the email fell back (for example the model or Resend was down). It is not a failure; the briefing is still usable. A red banner means the build itself failed.
 4. **The email.** Open the inbox for the demo account: the same briefing arrived from `briefing@afterword.fyi`. Each item has a Save link that opens the app on that entry.
 5. **Save two papers.** Click **Save** on two papers. The button turns into **Saved to Library** and a note offers a link to the Library (click the button again to remove the item).
 6. **Library.** Open the Library: both papers are there, grouped under the note they answered.
@@ -82,7 +82,7 @@ It creates or updates `demo@afterword.fyi` (uid `demo-researcher`, email verifie
 
 `buildBriefingNow` builds the briefing, asks the model for the `whyThis` and `readingNote` lines and the reading order, then emails the result. `weeklyBriefing` does the same for every user with an open note, every Monday at 07:00 (America/Denver).
 
-- **Secrets:** `firebase functions:secrets:set ANTHROPIC_API_KEY` and `firebase functions:secrets:set RESEND_API_KEY`, plus `MCP_SHARED_KEY` for the connector and `OPENALEX_API_KEY` (required in production because OpenAlex throttles cloud IPs; the key is sent as `api_key` next to `mailto`); all four are required before a deploy (see step 5 of [`docs/go-live.md`](docs/go-live.md)). `PAPERCLIP_API_KEY` and `X_BEARER_TOKEN` are optional and only declared when their source is switched on in `functions/src/find/find.constants.ts`. The sender is `briefing@afterword.fyi`.
+- **Secrets:** `firebase functions:secrets:set ANTHROPIC_API_KEY` and `firebase functions:secrets:set RESEND_API_KEY`, plus `MCP_SHARED_KEY` for the connector and `OPENALEX_API_KEY` (required in production because OpenAlex throttles cloud IPs; the key is sent as `api_key` next to `mailto`); plus `PAPERCLIP_API_KEY` (create it at https://paperclip.gxl.ai/keys); all five are required before a deploy (see step 5 of [`docs/go-live.md`](docs/go-live.md)). `PAPERCLIP_API_KEY` and `X_BEARER_TOKEN` are only declared when their source is switched on in `functions/src/find/find.constants.ts`; Paperclip is on, X is off. The sender is `briefing@afterword.fyi`.
 - **Local checks, no Firebase project needed:** `cd functions && npx -y yarn@1.22.22 build && npx -y yarn@1.22.22 email:preview` writes `functions/tmp/briefing.html`. `npx -y yarn@1.22.22 explain:dry` runs the explain step and needs `ANTHROPIC_API_KEY` in the shell.
 - **On-stage fallback:** the seeded briefing `briefing_demo_seed` is already `ready` with hand-written lines. If the model or Resend is down, `buildBriefingNow` returns the newly built briefing with fallback text and a `warning` instead of failing; the seeded briefing is the fallback only if the build itself fails or the button is never pressed, and the demo then shows the previously sent email.
 
