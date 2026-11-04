@@ -2,7 +2,6 @@ import { AsyncPipe, DOCUMENT, NgTemplateOutlet } from '@angular/common';
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -25,6 +24,7 @@ import {
   LibraryService,
   LoadingService,
   ScreenToolbarComponent,
+  SkeletonListComponent,
   formatShortDate,
 } from '../../shared';
 import { briefingsConfig, briefingsCopy, entryKindIcons } from '../briefings.constants';
@@ -44,12 +44,12 @@ type ILibraryItem = Afterword.Firestore.Library.ILibraryItem;
     AsyncPipe,
     NgTemplateOutlet,
     MatButtonModule,
-    MatCardModule,
     MatIconModule,
     MatProgressSpinnerModule,
     AlertBannerComponent,
     KindLabelComponent,
     ScreenToolbarComponent,
+    SkeletonListComponent,
   ],
   templateUrl: './briefings-page.component.html',
   styleUrl: './briefings-page.component.scss',

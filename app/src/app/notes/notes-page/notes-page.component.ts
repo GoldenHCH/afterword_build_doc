@@ -2,14 +2,13 @@ import { Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { AlertBannerComponent } from '../../shared/components/alert-banner/alert-banner.component';
 import { KindLabelComponent } from '../../shared/components/kind-label/kind-label.component';
 import { ScreenToolbarComponent } from '../../shared/components/screen-toolbar/screen-toolbar.component';
+import { SkeletonListComponent } from '../../shared/components/skeleton-list/skeleton-list.component';
 import { formatShortDate } from '../../shared/helpers/date.helper';
 import { LoadingService } from '../../shared/services/loading.service';
 import { DescribePanelComponent } from '../describe-panel/describe-panel.component';
@@ -27,11 +26,10 @@ type INote = Afterword.Firestore.Note.INote;
     KindLabelComponent,
     MatButtonModule,
     MatCardModule,
-    MatChipsModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    MatTooltipModule,
     ScreenToolbarComponent,
+    SkeletonListComponent,
   ],
   templateUrl: './notes-page.component.html',
   styleUrl: './notes-page.component.scss',
@@ -50,6 +48,16 @@ export class NotesPageComponent {
   public actionError = '';
   public isDescribeOpen = false;
   public resolvingNoteIds = new Set<string>();
+
+  public get subtitle(): string {
+    if (!this.hasLoaded || this.loadError || this.notes.length === 0) {
+      return notesCopy.SUBTITLE;
+    }
+
+    const countLabel = this.notes.length === 1 ? notesCopy.COUNT_ONE : notesCopy.COUNT_MANY;
+
+    return `${this.notes.length} ${countLabel}`;
+  }
 
   constructor() {
     this._loadingService.show();

@@ -1,6 +1,7 @@
-$nav-width: 200px;
+$nav-width: 208px;
 $top-bar-height: 56px;
-$bottom-nav-height: 60px;
+$rule-height: 3px;
+$bottom-nav-height: 64px;
 
 :host {
   display: block;
@@ -16,9 +17,9 @@ $bottom-nav-height: 60px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: $top-bar-height;
-  padding: 0 8px 0 16px;
-  border-top: 3px solid var(--aw-theme--accent);
+  height: $top-bar-height + $rule-height;
+  padding: 0 var(--aw-space-2) 0 var(--aw-space-5);
+  border-top: $rule-height solid var(--aw-theme--accent);
   border-bottom: 1px solid var(--aw-theme--ruling);
   background: var(--aw-theme--background);
 }
@@ -30,91 +31,149 @@ $bottom-nav-height: 60px;
   bottom: -1px;
 }
 
-.wordmark {
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  color: var(--aw-theme--text);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--aw-theme--text);
+  }
+}
+
+.brand-mark {
+  width: 28px;
+  height: 28px;
+
+  rect {
+    fill: var(--aw-theme--primary);
+  }
+
+  path {
+    fill: none;
+    stroke: #ffffff;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+  }
+}
+
+.brand-name {
   font-family: var(--aw-font-heading);
   font-size: 22px;
   font-weight: 600;
-  color: var(--aw-theme--text);
-  text-decoration: none;
+  letter-spacing: -0.01em;
+}
+
+.sign-out {
+  color: var(--aw-theme--text-muted);
 }
 
 .nav {
   position: fixed;
   z-index: 90;
-  display: flex;
-  background: var(--aw-theme--background);
-  left: 0;
-  top: $top-bar-height + 3px;
+  top: $top-bar-height + $rule-height;
   bottom: 0;
-  width: $nav-width;
+  left: 0;
+  display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: 16px 12px;
+  gap: var(--aw-space-1);
+  width: $nav-width;
+  padding: var(--aw-space-5) var(--aw-space-3);
   border-right: 1px solid var(--aw-theme--ruling);
+  background: var(--aw-theme--background);
 }
 
 .nav-link {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
+  gap: var(--aw-space-3);
+  min-height: 44px;
+  padding: 0 var(--aw-space-3);
   border-radius: 8px;
   color: var(--aw-theme--text-muted);
-  font-size: 15px;
+  font-size: var(--aw-text-base);
   font-weight: 500;
   text-decoration: none;
 
   &:hover {
     color: var(--aw-theme--primary);
+    background: var(--aw-theme--surface);
   }
 
-  &--active {
+  &--active,
+  &--active:hover {
     background: var(--aw-theme--pill);
     color: var(--aw-theme--primary);
+    font-weight: 600;
   }
 }
 
 .nav-icon {
   flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  font-size: 22px;
 }
 
 .content {
-  padding: ($top-bar-height + 3px + 24px) 24px 40px ($nav-width + 32px);
-  max-width: 1000px;
+  padding: ($top-bar-height + $rule-height + 40px) var(--aw-space-6) var(--aw-space-7) ($nav-width + 48px);
 }
 
 @media (max-width: 768px) {
+  .top-bar {
+    padding-left: var(--aw-space-4);
+  }
+
   .nav {
     top: auto;
-    left: 0;
     right: 0;
-    bottom: 0;
-    width: auto;
-    height: $bottom-nav-height;
     flex-direction: row;
     gap: 0;
-    padding: 0;
+    width: auto;
+    height: calc(#{$bottom-nav-height} + env(safe-area-inset-bottom, 0px));
+    padding: 0 0 env(safe-area-inset-bottom, 0px);
     border-right: 0;
     border-top: 1px solid var(--aw-theme--ruling);
   }
 
   .nav-link {
+    position: relative;
     flex: 1 1 0;
     min-width: 0;
     flex-direction: column;
     justify-content: center;
     gap: 2px;
-    padding: 6px 4px;
+    padding: 0 var(--aw-space-1);
     border-radius: 0;
-    font-size: 12px;
+    font-size: var(--aw-text-xs);
 
-    &--active {
+    &:hover {
       background: transparent;
+    }
+
+    &--active,
+    &--active:hover {
+      background: transparent;
+    }
+
+    &--active::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: 50%;
+      width: 32px;
+      height: 3px;
+      border-radius: 0 0 3px 3px;
+      background: var(--aw-theme--primary);
+      transform: translateX(-50%);
     }
   }
 
   .content {
-    max-width: none;
-    padding: ($top-bar-height + 3px + 20px) 16px ($bottom-nav-height + 24px);
+    padding: ($top-bar-height + $rule-height + 24px) var(--aw-space-4)
+      calc(#{$bottom-nav-height} + env(safe-area-inset-bottom, 0px) + 32px);
   }
 }

@@ -1,69 +1,117 @@
 <div class="page">
   <div class="rule"></div>
-  <main class="card">
-    <h1 class="wordmark">Afterword</h1>
-    <p class="tagline">{{ copy.TAGLINE }}</p>
+  <div class="layout">
+    <main class="intro">
+      <div class="brand">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+          <rect width="32" height="32" rx="7" />
+          <path d="M8 10h16M8 16h12M8 22h8" />
+        </svg>
+        <span class="brand-name">Afterword</span>
+      </div>
+      <h1 class="headline">{{ copy.HEADLINE }}</h1>
+      <p class="tagline">{{ copy.TAGLINE }}</p>
 
-    @if (errorMessage) {
-      <aw-alert-banner class="error" [message]="errorMessage" (dismissed)="errorMessage = ''"></aw-alert-banner>
-    }
+      <div class="actions">
+        @if (errorMessage) {
+          <aw-alert-banner [message]="errorMessage" (dismissed)="errorMessage = ''"></aw-alert-banner>
+        }
 
-    <button mat-flat-button class="primary-action" type="button" [disabled]="isSigningIn" (click)="onGoogleSignIn()">
-      @if (isSigningIn && !isDemoOpen) {
-        <mat-spinner diameter="20"></mat-spinner>
-      } @else {
-        {{ copy.GOOGLE }}
-      }
-    </button>
+        @if (!isDemoOpen) {
+          <button mat-flat-button class="primary-action" type="button" [disabled]="isSigningIn" (click)="onGoogleSignIn()">
+            @if (isSigningIn) {
+              <mat-spinner diameter="20"></mat-spinner>
+            } @else {
+              {{ copy.GOOGLE }}
+            }
+          </button>
+          <button mat-stroked-button class="secondary-action" type="button" [disabled]="isSigningIn" (click)="onToggleDemo()">
+            {{ copy.DEMO }}
+          </button>
+          <p class="demo-hint">{{ copy.DEMO_HINT }}</p>
+        } @else {
+          <form class="demo-form" #demoForm="ngForm" novalidate (ngSubmit)="demoForm.valid && onDemoSignIn()">
+            <mat-form-field appearance="outline">
+              <mat-label>Email</mat-label>
+              <input
+                matInput
+                type="email"
+                name="email"
+                autocomplete="username"
+                required
+                email
+                #emailField="ngModel"
+                [(ngModel)]="demoEmail"
+              />
+              @if (emailField.hasError('required')) {
+                <mat-error>Enter your email.</mat-error>
+              } @else if (emailField.hasError('email')) {
+                <mat-error>Enter a valid email address.</mat-error>
+              }
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Password</mat-label>
+              <input
+                matInput
+                type="password"
+                name="password"
+                autocomplete="current-password"
+                required
+                #passwordField="ngModel"
+                [(ngModel)]="demoPassword"
+              />
+              @if (passwordField.hasError('required')) {
+                <mat-error>Enter your password.</mat-error>
+              }
+            </mat-form-field>
+            <button mat-flat-button class="primary-action" type="submit" [disabled]="demoForm.invalid || isSigningIn">
+              @if (isSigningIn) {
+                <mat-spinner diameter="20"></mat-spinner>
+              } @else {
+                {{ copy.DEMO_SUBMIT }}
+              }
+            </button>
+            <button mat-button class="secondary-action" type="button" [disabled]="isSigningIn" (click)="onToggleDemo()">
+              Back
+            </button>
+          </form>
+        }
+      </div>
 
-    @if (!isDemoOpen) {
-      <button mat-stroked-button class="secondary-action" type="button" (click)="onToggleDemo()">
-        {{ copy.DEMO }}
-      </button>
-    } @else {
-      <form class="demo-form" #demoForm="ngForm" novalidate (ngSubmit)="demoForm.valid && onDemoSignIn()">
-        <mat-form-field appearance="outline">
-          <mat-label>Email</mat-label>
-          <input
-            matInput
-            type="email"
-            name="email"
-            autocomplete="username"
-            required
-            email
-            #emailField="ngModel"
-            [(ngModel)]="demoEmail"
-          />
-          @if (emailField.hasError('required')) {
-            <mat-error>Enter your email.</mat-error>
-          } @else if (emailField.hasError('email')) {
-            <mat-error>Enter a valid email address.</mat-error>
+      <section class="steps" [attr.aria-label]="copy.STEPS_LABEL">
+        <p class="aw-kicker">{{ copy.STEPS_LABEL }}</p>
+        <ol class="steps-list">
+          @for (step of steps; track step; let index = $index) {
+            <li class="step">
+              <span class="step-number">{{ index + 1 }}</span>
+              <span class="step-text">{{ step }}</span>
+            </li>
           }
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Password</mat-label>
-          <input
-            matInput
-            type="password"
-            name="password"
-            autocomplete="current-password"
-            required
-            #passwordField="ngModel"
-            [(ngModel)]="demoPassword"
-          />
-          @if (passwordField.hasError('required')) {
-            <mat-error>Enter your password.</mat-error>
+        </ol>
+      </section>
+    </main>
+
+    <aside class="sample" aria-label="A sample briefing">
+      <p class="aw-kicker">{{ copy.SAMPLE_KICKER }}</p>
+      <div class="sample-card">
+        <p class="sample-note">
+          <span class="sample-note-label">{{ copy.SAMPLE_NOTE_LABEL }}</span>
+          {{ copy.SAMPLE_NOTE }}
+        </p>
+        <ol class="sample-list">
+          @for (entry of sampleEntries; track entry.rank) {
+            <li class="sample-entry">
+              <span class="sample-rank" aria-hidden="true">{{ entry.rank }}</span>
+              <div class="sample-body">
+                <p class="sample-reading">{{ entry.readingNote }}</p>
+                <p class="sample-title">{{ entry.title }}</p>
+                <p class="sample-byline">{{ entry.byline }}</p>
+                <p class="sample-why">{{ entry.whyThis }}</p>
+              </div>
+            </li>
           }
-        </mat-form-field>
-        <button mat-stroked-button class="secondary-action" type="submit" [disabled]="demoForm.invalid || isSigningIn">
-          @if (isSigningIn) {
-            <mat-spinner diameter="20"></mat-spinner>
-          } @else {
-            {{ copy.DEMO_SUBMIT }}
-          }
-        </button>
-        <button mat-button class="link-action" type="button" [disabled]="isSigningIn" (click)="onToggleDemo()">Back</button>
-      </form>
-    }
-  </main>
+        </ol>
+      </div>
+    </aside>
+  </div>
 </div>

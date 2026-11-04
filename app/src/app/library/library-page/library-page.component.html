@@ -1,8 +1,10 @@
-<aw-screen-toolbar [title]="copy.TITLE" [subtitle]="copy.SUBTITLE"></aw-screen-toolbar>
+<aw-screen-toolbar [title]="copy.TITLE" [subtitle]="subtitle"></aw-screen-toolbar>
 
 @if (loadError) {
   <aw-alert-banner [message]="loadError"></aw-alert-banner>
-} @else if (hasLoaded) {
+} @else if (!hasLoaded) {
+  <aw-skeleton-list [count]="3" [label]="copy.LOADING"></aw-skeleton-list>
+} @else {
   @if (actionError) {
     <div class="banner-gap">
       <aw-alert-banner [message]="actionError" (dismissed)="actionError = ''"></aw-alert-banner>
@@ -10,18 +12,24 @@
   }
 
   @if (!hasItems) {
-    <div class="empty">
-      <p class="empty-text">{{ copy.EMPTY }}</p>
-      <a mat-stroked-button routerLink="/briefings" class="aw-link-plain">{{ copy.EMPTY_LINK }}</a>
-    </div>
+    <section class="aw-empty">
+      <p class="aw-kicker">{{ copy.EMPTY_KICKER }}</p>
+      <h2 class="aw-empty-title">{{ copy.EMPTY_TITLE }}</h2>
+      <p class="aw-empty-text">{{ copy.EMPTY }} {{ copy.EMPTY_HINT }}</p>
+      <p class="aw-empty-example">{{ copy.EMPTY_EXAMPLE }}</p>
+      <a mat-flat-button routerLink="/briefings" class="aw-link-plain aw-empty-action">
+        <div class="aw-btn-content">
+          <mat-icon>auto_stories</mat-icon>
+          <span>{{ copy.EMPTY_LINK }}</span>
+        </div>
+      </a>
+    </section>
   } @else {
-    <mat-chip-listbox class="filters" aria-label="Filter by kind">
+    <mat-chip-listbox class="filters" aria-label="Filter by kind" [hideSingleSelectionIndicator]="true">
       @for (option of filters; track option.value) {
-        <mat-chip-option
-          [selected]="filter === option.value"
-          (selectionChange)="onFilterChange($event, option.value)"
-          >{{ option.label }}</mat-chip-option
-        >
+        <mat-chip-option [selected]="filter === option.value" (selectionChange)="onFilterChange($event, option.value)">{{
+          option.label
+        }}</mat-chip-option>
       }
     </mat-chip-listbox>
 
@@ -31,41 +39,54 @@
 
     @for (group of groups; track group.key) {
       <section class="group">
-        <h2 class="group-title">{{ group.title }}</h2>
-        <div class="aw-card-grid">
-          @for (item of group.items; track item.id) {
-            <mat-card class="aw-card" appearance="outlined">
-              <mat-card-content>
-                <div class="item">
-                  <mat-icon class="item-icon" [attr.aria-label]="kindNames[item.kind]">{{ kindIcons[item.kind] }}</mat-icon>
-                  <div class="item-body">
-                    <a class="item-title" [href]="item.url" target="_blank" rel="noopener">{{ item.title }}</a>
-                    @if (byline(item)) {
-                      <p class="item-byline">{{ byline(item) }}</p>
-                    }
-                    <p class="item-why">{{ item.whyThis }}</p>
-                  </div>
-                </div>
-                <div class="item-footer">
-                  <p class="item-meta">Saved {{ formatDate(item.savedAt) }}</p>
-                  <button
-                    mat-stroked-button
-                    type="button"
-                    class="remove-button"
-                    [disabled]="isRemoving(item)"
-                    (click)="onRemove(item)"
-                  >
-                    @if (isRemoving(item)) {
-                      <mat-spinner diameter="20"></mat-spinner>
-                    } @else {
-                      {{ copy.REMOVE_BUTTON }}
-                    }
-                  </button>
-                </div>
-              </mat-card-content>
-            </mat-card>
+        <header class="group-header">
+          @if (group.key) {
+            <p class="aw-kicker">{{ copy.GROUP_KICKER }}</p>
           }
-        </div>
+          <h2 class="group-title">{{ group.title }}</h2>
+        </header>
+        <ul class="aw-card-grid">
+          @for (item of group.items; track item.id) {
+            <li>
+              <mat-card class="aw-card" appearance="outlined">
+                <mat-card-content>
+                  <p class="item-meta">
+                    <span class="item-kind">
+                      <mat-icon class="item-kind-icon" aria-hidden="true">{{ kindIcons[item.kind] }}</mat-icon>
+                      {{ kindNames[item.kind] }}
+                    </span>
+                    @if (byline(item)) {
+                      <span class="item-meta-item">{{ byline(item) }}</span>
+                    }
+                  </p>
+                  <h3 class="item-heading">
+                    <a class="item-title" [href]="item.url" target="_blank" rel="noopener">{{ item.title }}</a>
+                  </h3>
+                  <p class="item-why">{{ item.whyThis }}</p>
+                  <div class="item-footer">
+                    <p class="item-saved">{{ copy.SAVED_ON }} {{ formatDate(item.savedAt) }}</p>
+                    <button
+                      mat-button
+                      type="button"
+                      class="remove-button"
+                      [disabled]="isRemoving(item)"
+                      (click)="onRemove(item)"
+                    >
+                      @if (isRemoving(item)) {
+                        <mat-spinner diameter="20"></mat-spinner>
+                      } @else {
+                        <div class="aw-btn-content">
+                          <mat-icon>bookmark_remove</mat-icon>
+                          <span>{{ copy.REMOVE_BUTTON }}</span>
+                        </div>
+                      }
+                    </button>
+                  </div>
+                </mat-card-content>
+              </mat-card>
+            </li>
+          }
+        </ul>
       </section>
     }
   }

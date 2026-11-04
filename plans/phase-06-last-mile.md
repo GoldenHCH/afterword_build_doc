@@ -17,8 +17,8 @@
 - [ ] A go-live runbook: project creation, Blaze, Auth providers, secrets, web config, seed, demo auth user, Vercel env vars, smoke test
 
 ### UI polish `[HACK-21]` `[HACK-16]`
-- [ ] Sign-in, Notes, Briefing, Library: one primary action per screen, consistent spacing and type, loading / empty / error states, right at 375px
-- [ ] Nothing reads as a default template
+- [x] Sign-in, Notes, Briefing, Library: one primary action per screen, consistent spacing and type, loading / empty / error states, right at 375px
+- [x] Nothing reads as a default template (before/after shots in `app/docs/ui-polish/`)
 
 ### Live (needs the owner: Google login, billing, keys)
 - [ ] Firebase project `afterword-hackathon` on Blaze, Firestore, Auth with Email/Password (+ Google), secrets set

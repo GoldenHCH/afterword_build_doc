@@ -1,6 +1,12 @@
 <header class="top-bar">
-  <a class="wordmark" routerLink="/notes">Afterword</a>
-  <button mat-icon-button type="button" aria-label="Sign out" (click)="onSignOut()">
+  <a class="brand" routerLink="/notes" aria-label="Afterword, go to Notes">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+      <rect width="32" height="32" rx="7" />
+      <path d="M8 10h16M8 16h12M8 22h8" />
+    </svg>
+    <span class="brand-name">Afterword</span>
+  </a>
+  <button mat-icon-button type="button" class="sign-out" aria-label="Sign out" matTooltip="Sign out" (click)="onSignOut()">
     <mat-icon>logout</mat-icon>
   </button>
   @if (isLoading$ | async) {
@@ -10,7 +16,7 @@
 
 <nav class="nav" aria-label="Main">
   @for (item of navItems; track item.route) {
-    <a class="nav-link" [routerLink]="item.route" routerLinkActive="nav-link--active">
+    <a class="nav-link" [routerLink]="item.route" routerLinkActive="nav-link--active" ariaCurrentWhenActive="page">
       <mat-icon class="nav-icon">{{ item.icon }}</mat-icon>
       <span class="nav-label">{{ item.label }}</span>
     </a>

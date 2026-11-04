@@ -1,0 +1,10 @@
+<div class="skeleton" role="status" [attr.aria-label]="label">
+  @for (row of rows; track row) {
+    <div class="skeleton-card" aria-hidden="true">
+      <span class="skeleton-line skeleton-line--short"></span>
+      <span class="skeleton-line skeleton-line--title"></span>
+      <span class="skeleton-line"></span>
+      <span class="skeleton-line skeleton-line--mid"></span>
+    </div>
+  }
+</div>
