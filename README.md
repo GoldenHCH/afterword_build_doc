@@ -86,6 +86,18 @@ npx -y yarn@1.22.22 build
 - **Dry run, no Firebase project needed:** `cd functions && npx -y yarn@1.22.22 build && npx -y yarn@1.22.22 seed:dry`. It does the live OpenAlex calls, writes to memory, and prints per-collection counts, the briefing size and a hash of the sorted document ids.
 - **Against a project:** the callable only accepts the demo uid (`demo-researcher`). Locally, `firebase functions:shell` then `seedDemo({}, { auth: { uid: 'demo-researcher' } })`. From the deployed app, call `seedDemo` while signed in as the demo user.
 
+### Demo account sign-in
+
+`seedDemo` only accepts the Firebase Auth user with uid `demo-researcher`, so that user has to exist first. Create it once per project with a password you choose:
+
+```bash
+cd functions
+npx -y yarn@1.22.22 build
+DEMO_PASSWORD='choose-a-password' npx -y yarn@1.22.22 demo:auth
+```
+
+It creates or updates `demo@afterword.fyi` (uid `demo-researcher`, email verified) in the project `GOOGLE_APPLICATION_CREDENTIALS` points at, or in the Auth emulator when `FIREBASE_AUTH_EMULATOR_HOST` is set. The password must be at least 8 characters. In the app, the sign-in page has a "Use the demo account" path for `demo@afterword.fyi` with that password; call `seedDemo` while signed in as that user.
+
 ### Briefing explain and email (phase 03)
 
 `buildBriefingNow` builds the briefing, asks the model for the `whyThis` and `readingNote` lines and the reading order, then emails the result. `weeklyBriefing` does the same for every user with an open note, every Monday at 07:00 (America/Denver).

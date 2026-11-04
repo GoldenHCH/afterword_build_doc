@@ -45,6 +45,11 @@ export interface IModelCompletion {
   latencyMs: number;
 }
 
+export interface IModelCallOptions {
+  maxTokens?: number;
+  timeoutMs?: number;
+}
+
 export interface IAnthropicContentBlock {
   type: string;
   text?: string;
