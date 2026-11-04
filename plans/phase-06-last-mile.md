@@ -22,10 +22,10 @@
 
 ### Live (needs the owner: Google login, billing, keys)
 - [x] Firebase project `afterword-fyi` on Blaze, Firestore, Auth with Email/Password (+ Google), secrets set
-- [ ] `firebase deploy` (functions, firestore, hosting) from `main`; demo auth user created; `seedDemo` run
-- [ ] Newsletter PR #22 merged; Vercel env vars set; connector smoke test with a real assistant client
+- [x] `firebase deploy` (functions, firestore, hosting) from `main`; demo auth user created; demo data seeded with `seed:live` (2026-11-04, project `afterword-fyi`)
+- [x] Newsletter PR #22 merged; Vercel env vars set; connector smoke test with claude.ai on 2026-11-04: `record_work` saved a note to Firestore, `search_library` returned the two saved papers (after PRs #24 and #25). `resolve_work` not yet run
 - [x] UX-lead and sponsor persona reviews done; findings fixed: relevance-first score, posts admitted only by keyword or handle topic (no newest-post filler), wider paper window for stuck/question notes, cached briefing corrected; building/failed states, Library cue, demo-form hint, sign-in card order and copy in the app
-- [ ] README live URL and demo flow verified word for word `[HACK-18]`
+- [x] README live URL and demo flow verified on https://afterword.fyi on 2026-11-04 with a Google account: describe, build, email, save, Library, MCP save and search. Not yet run as the demo account; step 7 now says "in Afterword" because Claude otherwise answers from its own chat memory `[HACK-18]`
 
 ## Done when
 

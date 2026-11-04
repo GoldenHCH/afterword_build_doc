@@ -25,7 +25,7 @@ Live app: https://afterword.fyi. Sign in with "Use the demo account" (`demo@afte
 4. **The email.** Open the inbox for the demo account: the same briefing arrived from `briefing@afterword.fyi`. Each item has a Save link that opens the app on that entry.
 5. **Save two papers.** Click **Save** on two papers. The button turns into **Saved to Library** and a note offers a link to the Library (click the button again to remove the item).
 6. **Library.** Open the Library: both papers are there, grouped under the note they answered.
-7. **Back in the assistant.** Ask "What did I save about intercoder reliability?" The assistant calls `search_library` and answers from the Library. Then "Mark that solved." calls `resolve_work`; the note drops out of next week's briefing.
+7. **Back in the assistant.** Ask "What did I save in Afterword about intercoder reliability?" The assistant calls `search_library` and answers from the Library. Name Afterword in the question: without it, Claude may answer from its own chat memory instead. Then "Mark that solved." calls `resolve_work`; the note drops out of next week's briefing.
 
 ## Build
 
