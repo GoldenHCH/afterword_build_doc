@@ -80,7 +80,7 @@ No files from the event. Everything comes from APIs or is seeded.
 3. Click **Build my briefing now**. Loading → the briefing: papers from Paperclip and posts from X, grouped under the note, in reading order, each with one line on why it matters for this bottleneck.
 4. Switch to the inbox: the same briefing landed as an email.
 5. Save two papers from the briefing. Open the Library: they're there, tagged with the note.
-6. Back in Claude: "What did I save about intercoder reliability?" → the assistant calls `search_library` and answers from the Library. "Mark that solved." → `resolve_work`; the note disappears from next week's briefing.
+6. Back in Claude: "What did I save in Afterword about intercoder reliability?" → the assistant calls `search_library` and answers from the Library. "Mark that solved." → `resolve_work`; the note disappears from next week's briefing.
 
 ## 8. AI approach
 
