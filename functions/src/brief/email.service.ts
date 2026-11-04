@@ -89,18 +89,29 @@ export class EmailService {
     }
 
     const messageId = (body as Partial<IResendSuccessResponse>).id;
+
+    if (typeof messageId !== 'string' || messageId.trim() === '') {
+      logger.error('Resend did not confirm the briefing email', {
+        briefingId,
+        status: response.status,
+        bodyKeys: Object.keys(body),
+      });
+
+      return { sent: false, warning: emailErrors.PROVIDER_UNCONFIRMED };
+    }
+
     logger.info('Briefing email sent', { briefingId, messageId });
     await this._recordSend(briefingId, messageId);
 
     return { sent: true, messageId };
   }
 
-  private async _recordSend(briefingId: string, messageId: string | undefined): Promise<void> {
+  private async _recordSend(briefingId: string, messageId: string): Promise<void> {
     try {
       await this._firestore
         .collection(collections.BRIEFINGS)
         .doc(briefingId)
-        .update({ sentAt: Timestamp.now(), ...(messageId ? { providerMessageId: messageId } : {}) });
+        .update({ sentAt: Timestamp.now(), providerMessageId: messageId });
     } catch (error) {
       logger.error('Briefing was sent but sentAt could not be saved', { briefingId, error: this._messageOf(error) });
     }
@@ -118,7 +129,9 @@ export class EmailService {
 
   private async _readJson(response: Response): Promise<object> {
     try {
-      return ((await response.json()) as object | null) ?? {};
+      const parsed: unknown = await response.json();
+
+      return typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed) ? parsed : {};
     } catch {
       return {};
     }

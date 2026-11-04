@@ -1,10 +1,6 @@
 import { emailConfig, emailCopy, emailErrors, emailKindLabels, emailTheme } from './email.constants';
 import { IEmailRecipient, IRenderedEmail } from './email.interfaces';
 
-type Briefing = Afterword.Firestore.Briefing.IBriefing;
-type Section = Afterword.Firestore.Briefing.IBriefingSection;
-type Entry = Afterword.Firestore.Briefing.IBriefingEntry;
-
 const bodyStyle = `font:17px/26px ${emailTheme.BODY_FONT};color:${emailTheme.TEXT};`;
 const mutedStyle = `font:15px/22px ${emailTheme.BODY_FONT};color:${emailTheme.MUTED};`;
 const linkStyle = `color:${emailTheme.LINK};text-decoration:underline;`;
@@ -33,7 +29,7 @@ export function formatAuthors(authors: string[]): string {
   return authors.length > emailConfig.MAX_AUTHORS ? `${shown} ${emailCopy.ET_AL}` : shown;
 }
 
-export function formatByline(entry: Entry): string {
+export function formatByline(entry: Afterword.Firestore.Briefing.IBriefingEntry): string {
   if (entry.kind === 'post') {
     return entry.sourceHandle ? `@${entry.sourceHandle.replace(/^@/, '')}` : formatAuthors(entry.authors);
   }
@@ -41,7 +37,7 @@ export function formatByline(entry: Entry): string {
   return formatAuthors(entry.authors);
 }
 
-export function kindLabel(noteKind: Section['noteKind']): string {
+export function kindLabel(noteKind: Afterword.Firestore.Briefing.IBriefingSection['noteKind']): string {
   return emailKindLabels[noteKind.toUpperCase() as keyof typeof emailKindLabels] ?? noteKind;
 }
 
@@ -59,11 +55,11 @@ export function shortenSummary(summary: string, maxLength: number): string {
   return `${atWord.replace(/[,;:\s-]+$/, '')}${emailCopy.ELLIPSIS}`;
 }
 
-export function countEntries(briefing: Briefing): number {
+export function countEntries(briefing: Afterword.Firestore.Briefing.IBriefing): number {
   return briefing.sections.reduce((total, section) => total + section.entries.length, 0);
 }
 
-export function buildSubject(briefing: Briefing): string {
+export function buildSubject(briefing: Afterword.Firestore.Briefing.IBriefing): string {
   const total = countEntries(briefing);
   const first = briefing.sections[0];
   const quoted = first ? ` for "${shortenSummary(first.noteSummary, emailConfig.MAX_SUBJECT_SUMMARY_LENGTH)}"` : '';
@@ -73,7 +69,7 @@ export function buildSubject(briefing: Briefing): string {
   return `${emailCopy.SUBJECT_PREFIX}: ${total}${quoted}${more}`;
 }
 
-export function buildSaveUrl(briefing: Briefing, itemId: string, appUrl: string): string {
+export function buildSaveUrl(briefing: Afterword.Firestore.Briefing.IBriefing, itemId: string, appUrl: string): string {
   if (!briefing.id) {
     return appUrl;
   }
@@ -85,7 +81,7 @@ export function firstName(displayName: string): string {
   return displayName.trim().split(/\s+/)[0] || emailCopy.FALLBACK_NAME;
 }
 
-export function sortedEntries(section: Section): Entry[] {
+export function sortedEntries(section: Afterword.Firestore.Briefing.IBriefingSection): Afterword.Firestore.Briefing.IBriefingEntry[] {
   return [...section.entries].sort((left, right) => left.rank - right.rank);
 }
 
@@ -103,7 +99,7 @@ export function describeProviderError(statusCode: number | undefined, providerMe
   return `${emailErrors.PROVIDER_REJECTED}${detail}`;
 }
 
-function renderEntryHtml(briefing: Briefing, entry: Entry, appUrl: string): string {
+function renderEntryHtml(briefing: Afterword.Firestore.Briefing.IBriefing, entry: Afterword.Firestore.Briefing.IBriefingEntry, appUrl: string): string {
   const byline = formatByline(entry);
   const meta = [byline, formatDate(entry.publishedAt.toDate())].filter(Boolean).map(escapeHtml).join(' &middot; ');
   const readingNote = entry.readingNote
@@ -124,7 +120,7 @@ ${readingNote}
 </table>`;
 }
 
-function renderSectionHtml(briefing: Briefing, section: Section, appUrl: string): string {
+function renderSectionHtml(briefing: Afterword.Firestore.Briefing.IBriefing, section: Afterword.Firestore.Briefing.IBriefingSection, appUrl: string): string {
   const entries = sortedEntries(section)
     .map((entry) => renderEntryHtml(briefing, entry, appUrl))
     .join('\n');
@@ -138,7 +134,7 @@ ${entries}
 </tr>`;
 }
 
-function renderHtml(briefing: Briefing, recipient: IEmailRecipient, appUrl: string, subject: string): string {
+function renderHtml(briefing: Afterword.Firestore.Briefing.IBriefing, recipient: IEmailRecipient, appUrl: string, subject: string): string {
   const total = countEntries(briefing);
   const sections = briefing.sections.map((section) => renderSectionHtml(briefing, section, appUrl)).join('\n');
 
@@ -183,7 +179,7 @@ ${sections}
 `;
 }
 
-function renderEntryText(briefing: Briefing, entry: Entry, appUrl: string): string {
+function renderEntryText(briefing: Afterword.Firestore.Briefing.IBriefing, entry: Afterword.Firestore.Briefing.IBriefingEntry, appUrl: string): string {
   const meta = [formatByline(entry), formatDate(entry.publishedAt.toDate())].filter(Boolean).join(' | ');
   const lines = [`${entry.rank}. ${entry.title}`, `   ${meta}`, `   ${safeUrl(entry.url)}`, `   ${entry.whyThis}`];
 
@@ -196,7 +192,7 @@ function renderEntryText(briefing: Briefing, entry: Entry, appUrl: string): stri
   return lines.join('\n');
 }
 
-function renderText(briefing: Briefing, recipient: IEmailRecipient, appUrl: string): string {
+function renderText(briefing: Afterword.Firestore.Briefing.IBriefing, recipient: IEmailRecipient, appUrl: string): string {
   const blocks = briefing.sections.map((section) => {
     const entries = sortedEntries(section)
       .map((entry) => renderEntryText(briefing, entry, appUrl))
@@ -214,7 +210,7 @@ function renderText(briefing: Briefing, recipient: IEmailRecipient, appUrl: stri
   ].join('\n\n') + '\n';
 }
 
-export function renderBriefingEmail(briefing: Briefing, recipient: IEmailRecipient, appUrl: string): IRenderedEmail {
+export function renderBriefingEmail(briefing: Afterword.Firestore.Briefing.IBriefing, recipient: IEmailRecipient, appUrl: string): IRenderedEmail {
   const subject = buildSubject(briefing);
 
   return {
