@@ -7,7 +7,7 @@ import { itemKinds, itemProviders } from '../../shared/item.constants';
 import { IItemDraft } from './item-draft.types';
 import { IPostQuery, IPostSource } from './post-source.interfaces';
 import { xApi } from './x.constants';
-import { IXPost, IXPostsResponse, IXUsersResponse } from './x.interfaces';
+import { IXErrorResponse, IXPost, IXPostsResponse, IXUsersResponse } from './x.interfaces';
 
 export class XPostSource implements IPostSource {
   private readonly _firestore = getFirestore();
@@ -104,10 +104,23 @@ export class XPostSource implements IPostSource {
     });
 
     if (!response.ok) {
-      throw new Error(`X API request failed with status ${response.status} for ${handle}`);
+      const errorDetail = await this._readErrorDetail(response);
+
+      throw new Error(`X API request failed with status ${response.status} for ${handle}${errorDetail}`);
     }
 
     return (await response.json()) as TResponse;
+  }
+
+  private async _readErrorDetail(response: Response): Promise<string> {
+    try {
+      const body = (await response.json()) as IXErrorResponse;
+      const parts = [body.title, body.detail].filter((part): part is string => Boolean(part));
+
+      return parts.length > 0 ? `: ${parts.join(' - ')}` : '';
+    } catch {
+      return '';
+    }
   }
 
   private _toDraft(source: Afterword.Firestore.Source.ISource, post: IXPost): IItemDraft {

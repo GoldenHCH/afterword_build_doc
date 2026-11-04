@@ -16,3 +16,8 @@ export interface IXPost {
 export interface IXPostsResponse {
   data?: IXPost[];
 }
+
+export interface IXErrorResponse {
+  title?: string;
+  detail?: string;
+}
