@@ -1,3 +1,5 @@
+import { createHash } from 'node:crypto';
+
 import { IBriefingEntryMatch } from './library.interfaces';
 
 export function findBriefingEntry(
@@ -13,4 +15,14 @@ export function findBriefingEntry(
   }
 
   return null;
+}
+
+export function libraryDocId(userId: string, itemId: string): string {
+  const hash = createHash('sha1').update(`${userId}:${itemId}`).digest('hex');
+
+  return `lib_${hash}`;
+}
+
+export function isDocumentId(value: unknown): value is string {
+  return typeof value === 'string' && value.trim().length > 0 && !value.includes('/') && value !== '.' && value !== '..';
 }

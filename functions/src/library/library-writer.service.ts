@@ -4,7 +4,7 @@ import * as logger from 'firebase-functions/logger';
 import { collections } from '../constants';
 import { LibraryError } from './library.error';
 import { libraryErrors } from './library.constants';
-import { findBriefingEntry } from './library.helper';
+import { findBriefingEntry, libraryDocId } from './library.helper';
 
 export class LibraryWriterService {
   private readonly _firestore = getFirestore();
@@ -28,19 +28,9 @@ export class LibraryWriterService {
       throw new LibraryError('not-found', libraryErrors.ITEM_NOT_FOUND);
     }
 
-    const existing = await this._firestore
-      .collection(collections.LIBRARY)
-      .where('userId', '==', userId)
-      .where('itemId', '==', itemId)
-      .limit(1)
-      .get();
-
-    if (!existing.empty) {
-      return existing.docs[0].id;
-    }
-
     const { section, entry } = match;
-    const keywords = await this._loadKeywords(section.noteId);
+    const keywords = await this._loadKeywords(userId, section.noteId);
+    const reference = this._firestore.collection(collections.LIBRARY).doc(libraryDocId(userId, itemId));
 
     const libraryItem: Afterword.Firestore.Library.ILibraryItem = {
       kind: entry.kind,
@@ -59,9 +49,21 @@ export class LibraryWriterService {
       savedAt: Timestamp.now(),
     };
 
-    const reference = await this._firestore.collection(collections.LIBRARY).add(libraryItem);
+    const created = await this._firestore.runTransaction(async (transaction) => {
+      const existing = await transaction.get(reference);
 
-    logger.info('Saved item to library', { userId, briefingId, itemId, libraryItemId: reference.id });
+      if (existing.exists) {
+        return false;
+      }
+
+      transaction.set(reference, libraryItem);
+
+      return true;
+    });
+
+    if (created) {
+      logger.info('Saved item to library', { userId, briefingId, itemId, libraryItemId: reference.id });
+    }
 
     return reference.id;
   }
@@ -85,15 +87,19 @@ export class LibraryWriterService {
     logger.info('Removed item from library', { userId, libraryItemId });
   }
 
-  private async _loadKeywords(noteId: string): Promise<string[]> {
+  private async _loadKeywords(userId: string, noteId: string): Promise<string[]> {
     const snapshot = await this._firestore.collection(collections.NOTES).doc(noteId).get();
 
     if (!snapshot.exists) {
       return [];
     }
 
-    const { keywords } = snapshot.data() as Afterword.Firestore.Note.INote;
+    const note = snapshot.data() as Afterword.Firestore.Note.INote;
 
-    return Array.isArray(keywords) ? keywords : [];
+    if (note.userId !== userId) {
+      return [];
+    }
+
+    return Array.isArray(note.keywords) ? note.keywords : [];
   }
 }

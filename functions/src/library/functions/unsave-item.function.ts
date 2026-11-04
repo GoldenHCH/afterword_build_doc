@@ -3,6 +3,7 @@ import { HttpsError, onCall } from 'firebase-functions/v2/https';
 
 import { LibraryError } from '../library.error';
 import { libraryErrors } from '../library.constants';
+import { isDocumentId } from '../library.helper';
 import { LibraryWriterService } from '../library-writer.service';
 
 export const unsaveItem = onCall<Afterword.Types.IUnsaveItemRequest, Promise<Afterword.Types.IUnsaveItemResponse>>(
@@ -14,9 +15,9 @@ export const unsaveItem = onCall<Afterword.Types.IUnsaveItemRequest, Promise<Aft
       throw new HttpsError('unauthenticated', libraryErrors.SIGN_IN);
     }
 
-    const libraryItemId = typeof request.data?.libraryItemId === 'string' ? request.data.libraryItemId.trim() : '';
+    const libraryItemId = request.data?.libraryItemId;
 
-    if (!libraryItemId) {
+    if (!isDocumentId(libraryItemId)) {
       throw new HttpsError('invalid-argument', libraryErrors.LIBRARY_ITEM_ID_REQUIRED);
     }
 

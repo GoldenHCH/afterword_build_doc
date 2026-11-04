@@ -67,3 +67,15 @@ test('null optional fields are left out and keywords are empty without an angle'
   assert.ok(!('detail' in note));
   assert.ok(!('project' in note));
 });
+
+test('wrong-typed optional fields are rejected so the call is retried', () => {
+  assert.equal(parseDescribeWorkResponse(JSON.stringify({ ...validReply, angle: 17 })), null);
+  assert.equal(parseDescribeWorkResponse(JSON.stringify({ ...validReply, detail: ['a'] })), null);
+  assert.equal(parseDescribeWorkResponse(JSON.stringify({ ...validReply, project: {} })), null);
+});
+
+test('an angle with fewer than two distinct keywords is rejected', () => {
+  assert.equal(parseDescribeWorkResponse(JSON.stringify({ ...validReply, keywords: ['only one'] })), null);
+  assert.equal(parseDescribeWorkResponse(JSON.stringify({ ...validReply, keywords: ['Same', 'same ', ' '] })), null);
+  assert.ok(parseDescribeWorkResponse(JSON.stringify({ ...validReply, angle: null, keywords: [] })));
+});
