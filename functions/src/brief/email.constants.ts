@@ -46,6 +46,8 @@ export const emailErrors = {
   MISSING_KEY: 'The briefing is ready, but email sending is not set up yet, so nothing was sent.',
   PROVIDER_REJECTED: 'The email service turned the briefing down, so nothing was sent.',
   PROVIDER_AUTH: 'The email service did not accept our sending credentials, so nothing was sent.',
+  PROVIDER_UNCONFIRMED:
+    'The email service did not confirm the send, so we are not sure it went out. Please check your inbox before trying again.',
   PROVIDER_RATE_LIMITED: 'The email service is busy right now, so nothing was sent. Please try again in a minute.',
   NETWORK: 'We could not reach the email service, so nothing was sent. Please try again in a minute.',
   NO_RECIPIENT: 'This account has no email address, so the briefing was not sent.',
