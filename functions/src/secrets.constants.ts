@@ -21,6 +21,7 @@ function defineOptionalSecret(name: string, isEnabled: boolean): ISecretReader {
 export const RESEND_API_KEY = defineSecret('RESEND_API_KEY');
 export const ANTHROPIC_API_KEY = defineSecret('ANTHROPIC_API_KEY');
 export const MCP_SHARED_KEY = defineSecret('MCP_SHARED_KEY');
+export const OPENALEX_API_KEY = defineSecret('OPENALEX_API_KEY');
 
 export const PAPERCLIP_API_KEY = defineOptionalSecret('PAPERCLIP_API_KEY', contentSources.PAPER === 'paperclip');
 export const X_BEARER_TOKEN = defineOptionalSecret('X_BEARER_TOKEN', contentSources.POST === 'x');

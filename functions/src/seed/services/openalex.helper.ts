@@ -40,6 +40,7 @@ export function buildOpenAlexWorksUrl(
   angle: string,
   fromPublicationDate: Date,
   perPage: number = openAlexQuery.PER_PAGE,
+  apiKey: string = '',
 ): string {
   const searchText = extractContentWords(angle, openAlexQuery.MAX_SEARCH_WORDS).join(' ');
   const filter = [
@@ -54,7 +55,8 @@ export function buildOpenAlexWorksUrl(
     `&filter=${filter}` +
     `&per-page=${perPage}` +
     `&select=${openAlexQuery.SELECT_FIELDS.join(',')}` +
-    `&mailto=${openAlexQuery.MAILTO}`
+    `&mailto=${openAlexQuery.MAILTO}` +
+    (apiKey ? `&${openAlexQuery.API_KEY_PARAMETER}=${encodeURIComponent(apiKey)}` : '')
   );
 }
 

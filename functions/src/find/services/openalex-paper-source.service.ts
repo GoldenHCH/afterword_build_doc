@@ -1,5 +1,6 @@
 import * as logger from 'firebase-functions/logger';
 
+import { OPENALEX_API_KEY } from '../../secrets.constants';
 import { buildOpenAlexWorksUrl, toPaperDraft } from '../../seed/services/openalex.helper';
 import { IOpenAlexWorksResponse } from '../../seed/services/openalex.interfaces';
 import { openAlexPaperSource } from './openalex-paper-source.constants';
@@ -11,11 +12,11 @@ export class OpenAlexPaperSource implements IPaperSource {
   public async search(query: IPaperQuery): Promise<IItemDraft[]> {
     const searchText = query.angle.trim().length > 0 ? query.angle : query.keywords.join(' ');
     const perPage = Math.min(query.limit, openAlexPaperSource.MAX_PER_PAGE);
-    const url = buildOpenAlexWorksUrl(searchText, query.publishedAfter, perPage);
+    const url = buildOpenAlexWorksUrl(searchText, query.publishedAfter, perPage, OPENALEX_API_KEY.value().trim());
     const response = await this._fetchWithRetry(url);
 
     if (!response.ok) {
-      logger.error('OpenAlex request failed', { status: response.status, url });
+      logger.error('OpenAlex request failed', { status: response.status, url: url.replace(/api_key=[^&]*/, 'api_key=REDACTED') });
       throw new Error(`OpenAlex returned ${response.status}`);
     }
 

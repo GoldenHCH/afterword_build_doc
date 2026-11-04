@@ -1,6 +1,7 @@
 export const openAlexQuery = {
   BASE_URL: 'https://api.openalex.org/works',
   MAILTO: 'hello@afterword.fyi',
+  API_KEY_PARAMETER: 'api_key',
   PER_PAGE: 10,
   YEARS_BACK: 3,
   TIMEOUT_MS: 15_000,
