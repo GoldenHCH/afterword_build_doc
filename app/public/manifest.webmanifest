@@ -1,0 +1,10 @@
+{
+  "name": "Afterword",
+  "short_name": "Afterword",
+  "description": "A weekly briefing of the papers and posts that help with what you are stuck on, in reading order.",
+  "start_url": "/notes",
+  "display": "standalone",
+  "background_color": "#fafbfc",
+  "theme_color": "#fafbfc",
+  "icons": [{ "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

@@ -40,7 +40,7 @@ Classes:
 - `.aw-card-icon` - 48x48 circular icon container with primary background and white icon
 - `.aw-card-content` - Flex content area with h4 title and p description
 - `.aw-card-arrow` - Chevron arrow (gray, 24px)
-- `.aw-card-grid` - Container with flex column, 12px gap, max-width 600px
+- `.aw-card-grid` - Container with flex column, 12px gap, max-width `--aw-column` (720px). Use it on a `<ul>`/`<ol>` with each card in an `<li>`; list styles are reset
 
 ## Global Page Header Styles (`styles.scss`)
 
@@ -66,12 +66,20 @@ Classes:
 - `.aw-page-subtitle` - Gray subtitle text
 - `.aw-page-action` - Button container with icon styling
 
+## Empty States, Kickers and Tags (`styles.scss`)
+
+- `[UI-16]` One primary action per screen: the `mat-flat-button` in the screen toolbar (Describe, Build) or the single CTA of an empty state. Per-card actions are `mat-button` (Resolve, Remove) or `mat-stroked-button` (Save); never a second flat button.
+- `[UI-17]` Empty states use `.aw-empty` (hairlines above and below, no dashed box) with `.aw-kicker` (small caps label), `.aw-empty-title` (serif), `.aw-empty-text`, and optionally `.aw-empty-example` (an example of what to tell the assistant) and `.aw-empty-action`. Do not repeat the toolbar's primary button inside the empty state.
+- `[UI-18]` Loading shows `aw-skeleton-list` in place of the content, plus the global progress bar.
+- Keywords are `.aw-tags` / `.aw-tag` (small recessed labels), not Material chips. Material chips are for filters only.
+
 ## Shared Components (`app/src/app/shared/`, barrel `shared/index.ts`)
 
 - `aw-alert-banner` (`AlertBannerComponent`): inputs `message`, `kind: 'error' | 'info' = 'error'`; output `dismissed` (the X shows only when something listens).
 - `aw-screen-toolbar` (`ScreenToolbarComponent`): inputs `title`, `subtitle?`, `backLink?`; `<ng-content>` for right-side actions.
 - `aw-side-panel` (`SidePanelComponent`): inputs `open`, `title`, `closable = true`; output `closed`.
 - `aw-kind-label` (`KindLabelComponent`): input `kind: Afterword.Firestore.Note.NoteKind`.
+- `aw-skeleton-list` (`SkeletonListComponent`): inputs `count = 3`, `label` (announced to screen readers).
 - `LoadingService`: `show()`, `hide()`, `isLoading$`; the shell shows a thin progress bar under the top bar.
 - `formatShortDate(timestamp)` in `shared/helpers/date.helper.ts`.
 
@@ -79,6 +87,8 @@ Classes:
 
 - Flat: no shadows, no gradients, no sparkle or robot iconography, no "AI-powered" copy.
 - The red rule (`--aw-theme--accent`, 3px) appears once per page as the top rule; elsewhere red means an error.
+- Ink left rules (3px) mark the product's own voice: the briefing's "Why this" block and example prompts. The reading-order note is serif italic in ink, above the title.
+- The logo mark is an ink rounded square with three white lines of falling length (a reading list), in the shell, on sign-in and as `public/favicon.svg`.
 - Links are underlined; ink (`--aw-theme--primary`) is the only interactive color.
 - Headings in Source Serif 4 (600), body in the system font stack.
 

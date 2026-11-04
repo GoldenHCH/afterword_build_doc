@@ -1,6 +1,7 @@
 export { AlertBannerComponent } from './components/alert-banner/alert-banner.component';
 export { KindLabelComponent } from './components/kind-label/kind-label.component';
 export { ScreenToolbarComponent } from './components/screen-toolbar/screen-toolbar.component';
+export { SkeletonListComponent } from './components/skeleton-list/skeleton-list.component';
 export { SidePanelComponent } from './components/side-panel/side-panel.component';
 export { formatShortDate } from './helpers/date.helper';
 export { LoadingService } from './services/loading.service';
