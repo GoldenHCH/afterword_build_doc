@@ -45,6 +45,8 @@
         <textarea matInput formControlName="summary" rows="2"></textarea>
         @if (draftForm.controls.summary.hasError('required')) {
           <mat-error>{{ copy.SUMMARY_REQUIRED }}</mat-error>
+        } @else if (draftForm.controls.summary.hasError('maxlength')) {
+          <mat-error>{{ copy.SUMMARY_TOO_LONG }}</mat-error>
         }
       </mat-form-field>
 

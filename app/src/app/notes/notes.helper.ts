@@ -1,6 +1,7 @@
+import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { FirebaseError } from 'firebase/app';
 
-import { describeLimits, humanCallableErrorCodes } from './notes.constants';
+import { codeOnlyMessagePattern, describeLimits, humanCallableErrorCodes } from './notes.constants';
 import { IDraftFormValue } from './notes.interfaces';
 import { INoteDraft } from './notes.types';
 
@@ -18,8 +19,11 @@ export function stripUndefined<T extends object>(value: T): T {
 }
 
 export function callableErrorMessage(error: unknown, fallback: string): string {
-  if (error instanceof FirebaseError && (humanCallableErrorCodes as readonly string[]).includes(error.code)) {
-    return error.message || fallback;
+  const isKnownCode =
+    error instanceof FirebaseError && (humanCallableErrorCodes as readonly string[]).includes(error.code);
+
+  if (isKnownCode && error.message && !codeOnlyMessagePattern.test(error.message.trim())) {
+    return error.message;
   }
 
   return fallback;
@@ -45,4 +49,16 @@ export function formValueToDraft(value: IDraftFormValue): INoteDraft {
     keywords: parseKeywords(value.keywords),
     project: value.project.trim() || undefined,
   });
+}
+
+export function trimmedRequired(control: AbstractControl<string>): ValidationErrors | null {
+  return control.value.trim().length === 0 ? { required: true } : null;
+}
+
+export function trimmedMinLength(minimumLength: number): (control: AbstractControl<string>) => ValidationErrors | null {
+  return (control) => {
+    const length = control.value.trim().length;
+
+    return length > 0 && length < minimumLength ? { minlength: { requiredLength: minimumLength, actualLength: length } } : null;
+  };
 }
