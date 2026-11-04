@@ -53,6 +53,13 @@ export class LibraryWriterService {
       const existing = await transaction.get(reference);
 
       if (existing.exists) {
+        const existingItem = existing.data() as Afterword.Firestore.Library.ILibraryItem;
+
+        if (existingItem.userId !== userId || existingItem.itemId !== itemId) {
+          logger.error('Library id conflict', { userId, itemId, libraryItemId: reference.id });
+          throw new LibraryError('already-exists', libraryErrors.ID_CONFLICT);
+        }
+
         return false;
       }
 

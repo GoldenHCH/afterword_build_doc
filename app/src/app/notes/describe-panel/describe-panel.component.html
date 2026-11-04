@@ -1,6 +1,11 @@
 <aw-side-panel [open]="open" [title]="copy.TITLE" [closable]="!isSubmitting" (closed)="onClose()">
   @if (step === 'describe') {
     <form class="describe-form" [formGroup]="describeForm" (ngSubmit)="onDescribe()">
+      <ol class="describe-steps" aria-label="Steps">
+        <li class="describe-step describe-step--current" aria-current="step">1. Describe</li>
+        <li class="describe-step">2. Check and save</li>
+      </ol>
+      <p class="describe-intro">{{ copy.DESCRIBE_INTRO }}</p>
       <mat-form-field appearance="outline" class="describe-field">
         <mat-label>{{ copy.TEXT_LABEL }}</mat-label>
         <textarea matInput formControlName="text" rows="7"></textarea>
@@ -31,6 +36,11 @@
     </form>
   } @else {
     <form class="describe-form" [formGroup]="draftForm" (ngSubmit)="onSave()">
+      <ol class="describe-steps" aria-label="Steps">
+        <li class="describe-step">1. Describe</li>
+        <li class="describe-step describe-step--current" aria-current="step">2. Check and save</li>
+      </ol>
+      <p class="describe-intro">{{ copy.DRAFT_INTRO }}</p>
       <mat-form-field appearance="outline" class="describe-field">
         <mat-label>{{ copy.KIND_LABEL }}</mat-label>
         <mat-select formControlName="kind">

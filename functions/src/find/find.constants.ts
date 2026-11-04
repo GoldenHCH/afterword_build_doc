@@ -15,6 +15,10 @@ export const findLimits = {
   FETCH_COOLDOWN_HOURS: 24,
 } as const;
 
+export const seededPostWindow = {
+  DAYS_BACK: 180,
+} as const;
+
 export const scoringWeights = {
   RECENCY: 0.4,
   KEYWORD_OVERLAP: 0.4,

@@ -9,6 +9,7 @@ import { RouterLink } from '@angular/router';
 
 import { AlertBannerComponent } from '../../shared/components/alert-banner/alert-banner.component';
 import { ScreenToolbarComponent } from '../../shared/components/screen-toolbar/screen-toolbar.component';
+import { SkeletonListComponent } from '../../shared/components/skeleton-list/skeleton-list.component';
 import { formatShortDate } from '../../shared/helpers/date.helper';
 import { LoadingService } from '../../shared/services/loading.service';
 import { filteredEmptyCopy, itemKindIcons, itemKindNames, libraryCopy, libraryFilters } from '../library.constants';
@@ -31,6 +32,7 @@ type ILibraryItem = Afterword.Firestore.Library.ILibraryItem;
     MatProgressSpinnerModule,
     RouterLink,
     ScreenToolbarComponent,
+    SkeletonListComponent,
   ],
   templateUrl: './library-page.component.html',
   styleUrl: './library-page.component.scss',
@@ -76,6 +78,16 @@ export class LibraryPageComponent {
         this._hideLoading();
       },
     });
+  }
+
+  public get subtitle(): string {
+    if (!this.hasLoaded || this.loadError || !this.hasItems) {
+      return libraryCopy.SUBTITLE;
+    }
+
+    const countLabel = this._items.length === 1 ? libraryCopy.COUNT_ONE : libraryCopy.COUNT_MANY;
+
+    return `${this._items.length} ${countLabel}`;
   }
 
   public get filteredEmptyText(): string {

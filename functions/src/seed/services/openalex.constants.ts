@@ -1,8 +1,10 @@
 export const openAlexQuery = {
   BASE_URL: 'https://api.openalex.org/works',
   MAILTO: 'hello@afterword.fyi',
+  API_KEY_PARAMETER: 'api_key',
   PER_PAGE: 10,
   YEARS_BACK: 3,
+  TIMEOUT_MS: 15_000,
   MAX_SEARCH_WORDS: 10,
   ABSTRACT_WORDS: 60,
   WORK_TYPES: ['article', 'conference-paper', 'preprint', 'book-chapter', 'book', 'review', 'dissertation', 'report'],

@@ -1,3 +1,4 @@
+import { getAuth } from 'firebase-admin/auth';
 import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 import * as logger from 'firebase-functions/logger';
 
@@ -22,7 +23,9 @@ export class EmailService {
       const userSnapshot = await this._firestore.collection(collections.USERS).doc(briefing.userId).get();
       const user = userSnapshot.data() as Afterword.Firestore.User.IUser | undefined;
 
-      if (!user?.email) {
+      const recipientEmail = await this._resolveRecipientEmail(briefing.userId, user?.email);
+
+      if (!recipientEmail) {
         return this._fail(briefingId, emailErrors.NO_RECIPIENT);
       }
 
@@ -34,7 +37,7 @@ export class EmailService {
 
       const rendered = renderBriefingEmail(
         briefing,
-        { email: user.email, displayName: user.displayName },
+        { email: recipientEmail, displayName: user?.displayName ?? '' },
         emailConfig.APP_URL,
       );
       const htmlBytes = Buffer.byteLength(rendered.html, 'utf8');
@@ -43,7 +46,7 @@ export class EmailService {
         logger.warn('Briefing email is large and may be clipped by inboxes', { briefingId, htmlBytes });
       }
 
-      return await this._post(briefingId, apiKey, user.email, rendered);
+      return await this._post(briefingId, apiKey, recipientEmail, rendered);
     } catch (error) {
       logger.error('Briefing email failed unexpectedly', { briefingId, error: this._messageOf(error) });
 
@@ -115,6 +118,20 @@ export class EmailService {
     } catch (error) {
       logger.error('Briefing was sent but sentAt could not be saved', { briefingId, error: this._messageOf(error) });
     }
+  }
+
+  private async _resolveRecipientEmail(userId: string, profileEmail: string | undefined): Promise<string> {
+    try {
+      const authUser = await getAuth().getUser(userId);
+
+      if (authUser.email) {
+        return authUser.email;
+      }
+    } catch (error) {
+      logger.warn('Could not read the Auth email, using the profile email', { userId, error: this._messageOf(error) });
+    }
+
+    return profileEmail ?? '';
   }
 
   private _readApiKey(): string {

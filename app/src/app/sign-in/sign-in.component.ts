@@ -10,7 +10,7 @@ import { first } from 'rxjs';
 
 import { AuthService } from '../core/services/auth.service';
 import { AlertBannerComponent } from '../shared/components/alert-banner/alert-banner.component';
-import { ignoredSignInErrorCodes, signInCopy } from './sign-in.constants';
+import { ignoredSignInErrorCodes, signInCopy, signInSampleEntries, signInSteps } from './sign-in.constants';
 
 @Component({
   selector: 'aw-sign-in',
@@ -33,6 +33,8 @@ export class SignInComponent implements OnInit {
   private readonly _route = inject(ActivatedRoute);
 
   public readonly copy = signInCopy;
+  public readonly steps = signInSteps;
+  public readonly sampleEntries = signInSampleEntries;
   public isDemoOpen = false;
   public isSigningIn = false;
   public errorMessage = '';

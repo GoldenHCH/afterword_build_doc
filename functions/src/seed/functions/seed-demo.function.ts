@@ -2,12 +2,13 @@ import { HttpsError, onCall } from 'firebase-functions/v2/https';
 import * as logger from 'firebase-functions/logger';
 
 import { demoUser } from '../../constants';
+import { OPENALEX_API_KEY } from '../../secrets.constants';
 import { FirestoreSeedWriter } from '../services/firestore-seed-writer.service';
 import { OpenAlexSeedService } from '../services/openalex-seed.service';
 import { SeedService } from '../services/seed.service';
 
 export const seedDemo = onCall<Afterword.Types.ISeedDemoRequest, Promise<Afterword.Types.ISeedDemoResponse>>(
-  { timeoutSeconds: 120 },
+  { secrets: [OPENALEX_API_KEY], timeoutSeconds: 120 },
   async (request) => {
     if (request.auth?.uid !== demoUser.UID) {
       throw new HttpsError('permission-denied', 'Only the demo account can load the demo data.');

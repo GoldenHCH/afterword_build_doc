@@ -2,7 +2,7 @@ import * as logger from 'firebase-functions/logger';
 import { onSchedule } from 'firebase-functions/v2/scheduler';
 
 import { BriefingBuilderService } from '../../find/services/briefing-builder.service';
-import { ANTHROPIC_API_KEY, PAPERCLIP_API_KEY, RESEND_API_KEY, X_BEARER_TOKEN } from '../../secrets.constants';
+import { ANTHROPIC_API_KEY, OPENALEX_API_KEY, RESEND_API_KEY, optionalSourceSecrets } from '../../secrets.constants';
 import { sendBriefingWarnings, weeklyBriefingConfig } from '../send-briefing.constants';
 import { SendBriefingService } from '../send-briefing.service';
 
@@ -10,7 +10,7 @@ export const weeklyBriefing = onSchedule(
   {
     schedule: weeklyBriefingConfig.SCHEDULE,
     timeZone: weeklyBriefingConfig.TIME_ZONE,
-    secrets: [PAPERCLIP_API_KEY, X_BEARER_TOKEN, ANTHROPIC_API_KEY, RESEND_API_KEY],
+    secrets: [ANTHROPIC_API_KEY, OPENALEX_API_KEY, RESEND_API_KEY, ...optionalSourceSecrets],
     timeoutSeconds: weeklyBriefingConfig.TIMEOUT_SECONDS,
   },
   async (): Promise<void> => {
@@ -47,6 +47,8 @@ export const weeklyBriefing = onSchedule(
         message: sendBriefingWarnings.UNEXPECTED,
         error: error instanceof Error ? error.message : String(error),
       });
+
+      throw error;
     }
 
     logger.info('weeklyBriefing finished', summary);

@@ -1,7 +1,37 @@
 .describe-form {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--aw-space-2);
+}
+
+.describe-steps {
+  display: flex;
+  gap: var(--aw-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.describe-step {
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: var(--aw-text-xs);
+  font-weight: 600;
+  line-height: 20px;
+  color: var(--aw-theme--text-muted);
+  background: var(--aw-theme--surface);
+
+  &--current {
+    background: var(--aw-theme--primary);
+    color: #ffffff;
+  }
+}
+
+.describe-intro {
+  margin: var(--aw-space-1) 0 var(--aw-space-3);
+  font-size: var(--aw-text-base);
+  line-height: 1.5;
+  color: var(--aw-theme--text-muted);
 }
 
 .describe-field {
@@ -12,10 +42,18 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
-  margin-top: 8px;
+  gap: var(--aw-space-2);
+  margin-top: var(--aw-space-2);
+  padding-top: var(--aw-space-4);
+  border-top: 1px solid var(--aw-theme--ruling);
 }
 
 .describe-submit {
-  min-width: 120px;
+  min-width: 140px;
+}
+
+@media (max-width: 599.98px) {
+  .describe-submit {
+    flex: 1 1 auto;
+  }
 }

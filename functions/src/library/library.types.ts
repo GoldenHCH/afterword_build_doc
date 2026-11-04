@@ -1,1 +1,1 @@
-export type LibraryFailure = 'not-found' | 'permission-denied';
+export type LibraryFailure = 'not-found' | 'permission-denied' | 'already-exists';

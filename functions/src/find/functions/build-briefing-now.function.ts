@@ -2,13 +2,13 @@ import * as logger from 'firebase-functions/logger';
 import { HttpsError, onCall } from 'firebase-functions/v2/https';
 
 import { SendBriefingService } from '../../brief/send-briefing.service';
-import { ANTHROPIC_API_KEY, PAPERCLIP_API_KEY, RESEND_API_KEY, X_BEARER_TOKEN } from '../../secrets.constants';
+import { ANTHROPIC_API_KEY, OPENALEX_API_KEY, RESEND_API_KEY, optionalSourceSecrets } from '../../secrets.constants';
 import { BriefingBuilderService } from '../services/briefing-builder.service';
 
 export const buildBriefingNow = onCall<
   Afterword.Types.IBuildBriefingNowRequest,
   Promise<Afterword.Types.IBuildBriefingNowResponse>
->({ secrets: [PAPERCLIP_API_KEY, X_BEARER_TOKEN, ANTHROPIC_API_KEY, RESEND_API_KEY], timeoutSeconds: 300 }, async (request) => {
+>({ secrets: [ANTHROPIC_API_KEY, OPENALEX_API_KEY, RESEND_API_KEY, ...optionalSourceSecrets], timeoutSeconds: 300 }, async (request) => {
   const userId = request.auth?.uid;
 
   if (!userId) {
@@ -16,6 +16,7 @@ export const buildBriefingNow = onCall<
   }
 
   let briefingId: string;
+  let sourceWarning: string | undefined;
 
   try {
     const builder = new BriefingBuilderService();
@@ -25,6 +26,8 @@ export const buildBriefingNow = onCall<
     if (briefing.status === 'failed') {
       return { briefingId, warning: briefing.error };
     }
+
+    sourceWarning = briefing.warning;
   } catch (error) {
     logger.error('buildBriefingNow failed', { userId, error: error instanceof Error ? error.message : String(error) });
     throw new HttpsError('internal', 'We could not build your briefing. Please try again in a minute.');
@@ -32,5 +35,7 @@ export const buildBriefingNow = onCall<
 
   const outcome = await new SendBriefingService().explainAndSend(briefingId);
 
-  return outcome.warning ? { briefingId, warning: outcome.warning } : { briefingId };
+  const warning = [sourceWarning, outcome.warning].filter((message): message is string => !!message).join(' ');
+
+  return warning ? { briefingId, warning } : { briefingId };
 });
