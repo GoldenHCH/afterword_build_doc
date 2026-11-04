@@ -1,4 +1,4 @@
-import { explainConfig, explainPatterns, explainPrompts } from './brief.constants';
+import { danglingWords, explainConfig, explainPatterns, explainPrompts } from './brief.constants';
 import {
   IEntryWithText,
   IExplainNoteContext,
@@ -18,6 +18,46 @@ export function trimToWords(text: string, maxWords: number): string {
   const words = text.trim().split(/\s+/).filter((word) => word.length > 0);
 
   return words.slice(0, maxWords).join(' ');
+}
+
+export function trimToSentence(text: string, maxWords: number): string {
+  const words = text.trim().split(/\s+/).filter((word) => word.length > 0);
+
+  if (words.length <= maxWords) {
+    return words.join(' ');
+  }
+
+  const minWords = Math.min(explainConfig.MIN_TRIMMED_WORDS, maxWords);
+
+  for (let count = maxWords; count >= minWords; count -= 1) {
+    if (explainPatterns.SENTENCE_END.test(words[count - 1])) {
+      return words.slice(0, count).join(' ');
+    }
+  }
+
+  for (let count = maxWords; count >= minWords; count -= 1) {
+    if (explainPatterns.CLAUSE_END.test(words[count - 1])) {
+      return endWithPeriod(words.slice(0, count));
+    }
+  }
+
+  return endWithPeriod(words.slice(0, maxWords));
+}
+
+function endWithPeriod(words: string[]): string {
+  const kept = [...words];
+
+  while (kept.length > 1) {
+    const last = kept[kept.length - 1].replace(explainPatterns.TRAILING_PUNCTUATION, '').toLowerCase();
+
+    if (!danglingWords.has(last) && last.length > 0) {
+      break;
+    }
+
+    kept.pop();
+  }
+
+  return `${kept.join(' ').replace(explainPatterns.TRAILING_PUNCTUATION, '')}.`;
 }
 
 export function buildExplainPrompt(note: IExplainNoteContext, entriesWithText: IEntryWithText[]): string {
@@ -149,8 +189,8 @@ export function applyExplanation(
     return {
       ...entry,
       rank: index + 1,
-      whyThis: cleanSentence(explanation.whyThis, explainConfig.WHY_THIS_MAX_WORDS),
-      readingNote: cleanSentence(explanation.readingNote, explainConfig.READING_NOTE_MAX_WORDS),
+      whyThis: cleanSentence(explanation.whyThis, explainConfig.WHY_THIS_ACCEPT_MAX_WORDS),
+      readingNote: cleanSentence(explanation.readingNote, explainConfig.READING_NOTE_ACCEPT_MAX_WORDS),
     };
   });
 
@@ -158,5 +198,5 @@ export function applyExplanation(
 }
 
 function cleanSentence(text: string, maxWords: number): string {
-  return trimToWords(text.replace(explainPatterns.DASH, ' - '), maxWords);
+  return trimToSentence(text.replace(explainPatterns.DASH, ' - '), maxWords);
 }

@@ -93,21 +93,10 @@ export function matchPostKeywords(note: IScorableNote, item: IScorableItem, hand
 }
 
 export function selectPostCandidates(candidates: IScoredCandidate[], limit: number): IScoredCandidate[] {
-  const posts = candidates.filter((candidate) => candidate.item.kind === itemKinds.POST);
-  const matching = posts
-    .filter((candidate) => candidate.matchedKeywords.length > 0)
+  return candidates
+    .filter((candidate) => candidate.item.kind === itemKinds.POST && candidate.matchedKeywords.length > 0)
     .sort((first, second) => second.score - first.score)
     .slice(0, limit);
-
-  if (matching.length > 0) {
-    return matching;
-  }
-
-  const newestFirst = [...posts].sort(
-    (first, second) => second.item.publishedAt.toMillis() - first.item.publishedAt.toMillis(),
-  );
-
-  return newestFirst.slice(0, 1);
 }
 
 export function sourceRankScore(position: number, total: number): number {

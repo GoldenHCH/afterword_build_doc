@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import { applyExplanation, parseExplainResponse, validateExplainResponse } from './explain.helper';
+import { applyExplanation, parseExplainResponse, trimToSentence, validateExplainResponse } from './explain.helper';
 
 const buildEntry = (itemId: string, rank: number): Afterword.Firestore.Briefing.IBriefingEntry =>
   ({
@@ -61,7 +61,7 @@ test('an order that misses an itemId is rejected', () => {
 });
 
 test('long lines are trimmed to the word limits instead of rejected', () => {
-  const longLine = Array.from({ length: 40 }, (_, index) => `word${index}`).join(' ');
+  const longLine = Array.from({ length: 60 }, (_, index) => `word${index}`).join(' ');
   const response = {
     entries: [{ ...explained('a'), whyThis: longLine, readingNote: `Start here — ${longLine}` }, explained('b'), explained('c')],
     order: ['a', 'b', 'c'],
@@ -72,8 +72,9 @@ test('long lines are trimmed to the word limits instead of rejected', () => {
   const [first] = applyExplanation(section, response).entries;
   const readingNote = first.readingNote ?? '';
 
-  assert.equal(first.whyThis.split(' ').length, 25);
-  assert.equal(readingNote.split(' ').length, 12);
+  assert.equal(first.whyThis.split(' ').length, 40);
+  assert.ok(first.whyThis.endsWith('.'));
+  assert.equal(readingNote.split(' ').length, 20);
   assert.ok(!readingNote.includes('—'));
 });
 
@@ -84,4 +85,20 @@ test('a fenced json block parses and prose without json does not', () => {
   assert.deepEqual(parseExplainResponse(body), JSON.parse(body));
   assert.equal(parseExplainResponse('Sorry, I cannot do that.'), null);
   assert.equal(parseExplainResponse('{"entries": "nope", "order": []}'), null);
+});
+
+test('trimToSentence keeps a short line, cuts at the last sentence end, then the last clause, and never ends on a conjunction', () => {
+  assert.equal(trimToSentence('Gives you a codebook template.', 10), 'Gives you a codebook template.');
+  assert.equal(
+    trimToSentence('Shows how to report kappa for interviews. It also covers sampling and the rest of the story', 12),
+    'Shows how to report kappa for interviews.',
+  );
+  assert.equal(
+    trimToSentence('Shows how to report kappa for interviews, so you can anticipate reviewer pushback and then', 14),
+    'Shows how to report kappa for interviews.',
+  );
+  assert.equal(
+    trimToSentence('Defines the measure you need so you can anticipate and plan the next round of coding', 9),
+    'Defines the measure you need so you can anticipate.',
+  );
 });

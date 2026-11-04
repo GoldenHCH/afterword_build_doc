@@ -184,8 +184,9 @@ test('buildReadingNote puts rank one first and the rest after it', () => {
   assert.equal(buildReadingNote(2), 'Then this');
 });
 
-test('selectPostCandidates admits at least one seeded post for every seeded note, by match or by recency fallback', () => {
+test('selectPostCandidates admits posts only by keyword or handle topic, per seeded note', () => {
   const sources = sourcesJson as unknown as Afterword.Firestore.Source.ISource[];
+  const admittedByNote = new Map<string, number>();
 
   for (const seedNote of notesJson) {
     const chosenHandles = new Set(pickSources(seedNote, sources).map((source) => normaliseHandle(source.handle)));
@@ -211,11 +212,17 @@ test('selectPostCandidates admits at least one seeded post for every seeded note
 
     const admitted = selectPostCandidates(candidates, 3);
 
-    assert.ok(admitted.length >= 1, `note ${seedNote.key} admits no post`);
+    assert.ok(
+      admitted.every((candidate) => candidate.matchedKeywords.length > 0),
+      `note ${seedNote.key} admits a post with no keyword or topic match`,
+    );
+    admittedByNote.set(seedNote.key, admitted.length);
   }
+
+  assert.ok([...admittedByNote.values()].some((count) => count > 0), 'no seeded note admits any post');
 });
 
-test('selectPostCandidates keeps only matching posts when any match, else the single newest post', () => {
+test('selectPostCandidates keeps only matching posts and returns none when nothing matches', () => {
   const post = (itemId: string, matched: string[], daysOld: number): Parameters<typeof selectPostCandidates>[0][number] => ({
     itemId,
     item: { kind: 'post', publishedAt: daysAgo(daysOld) } as unknown as Afterword.Firestore.Item.IItem,
@@ -227,11 +234,6 @@ test('selectPostCandidates keeps only matching posts when any match, else the si
     selectPostCandidates([post('old-match', ['a'], 30), post('new-miss', [], 1)], 3).map((candidate) => candidate.itemId),
     ['old-match'],
   );
-  assert.deepEqual(
-    selectPostCandidates([post('older', [], 9), post('newest', [], 2), post('oldest', [], 40)], 3).map(
-      (candidate) => candidate.itemId,
-    ),
-    ['newest'],
-  );
+  assert.deepEqual(selectPostCandidates([post('older', [], 9), post('newest', [], 2), post('oldest', [], 40)], 3), []);
   assert.deepEqual(selectPostCandidates([], 3), []);
 });

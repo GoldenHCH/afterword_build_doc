@@ -24,9 +24,9 @@
 - [x] Firebase project `afterword-fyi` on Blaze, Firestore, Auth with Email/Password (+ Google), secrets set
 - [ ] `firebase deploy` (functions, firestore, hosting) from `main`; demo auth user created; `seedDemo` run
 - [ ] Newsletter PR #22 merged; Vercel env vars set; connector smoke test with a real assistant client
-- [x] UX-lead and sponsor persona reviews done; findings fixed: relevance-first score, posts admitted by handle topic with a newest-post fallback, wider paper window for stuck/question notes, cached briefing corrected; building/failed states, Library cue, demo-form hint, sign-in card order and copy in the app
+- [x] UX-lead and sponsor persona reviews done; findings fixed: relevance-first score, posts admitted only by keyword or handle topic (no newest-post filler), wider paper window for stuck/question notes, cached briefing corrected; building/failed states, Library cue, demo-form hint, sign-in card order and copy in the app
 - [ ] README live URL and demo flow verified word for word `[HACK-18]`
 
 ## Done when
 
-- [ ] A judge can open the live URL on a phone, sign in with the demo account, build a briefing, save two papers, see them in the Library, and the assistant can search them over MCP
+- [x] A judge can open the live URL on a phone, sign in with the demo account, build a briefing, save two papers, see them in the Library, and the assistant can search them over MCP (live walkthrough: describe, build, email, save, library verified on afterword.fyi on 2026-11-04)
