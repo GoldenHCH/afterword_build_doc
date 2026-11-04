@@ -9,7 +9,9 @@
     "build": "tsc",
     "build:watch": "tsc --watch",
     "seed:dry": "node dist/seed/dry-run.js",
-    "test": "node --test dist/find/services/*.test.js"
+    "email:preview": "node dist/brief/email-preview.js",
+    "explain:dry": "node dist/brief/explain-dry-run.js",
+    "test": "node --test dist/find/services/*.test.js dist/brief/*.test.js"
   },
   "dependencies": {
     "firebase-admin": "14.5.0",

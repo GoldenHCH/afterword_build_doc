@@ -98,6 +98,7 @@ declare namespace Afterword.Firestore {
       status: BriefingStatus;
       builtAt: Timestamp;
       sentAt?: Timestamp;
+      providerMessageId?: string;
       error?: string;
       sections: IBriefingSection[];
     }
