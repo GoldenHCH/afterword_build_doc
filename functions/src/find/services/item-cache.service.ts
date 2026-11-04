@@ -2,9 +2,8 @@ import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 
 import { collections } from '../../constants';
 import { itemDocId } from '../../shared/item-id.helper';
+import { briefingBuilder } from './briefing-builder.constants';
 import { IItemDraft } from './item-draft.types';
-
-const MAX_BATCH_WRITES = 400;
 
 export class ItemCacheService {
   private readonly _firestore = getFirestore();
@@ -13,10 +12,10 @@ export class ItemCacheService {
     const fetchedAt = Timestamp.now();
     const itemIds = drafts.map((draft) => itemDocId(draft.kind, draft.externalId));
 
-    for (let start = 0; start < drafts.length; start += MAX_BATCH_WRITES) {
+    for (let start = 0; start < drafts.length; start += briefingBuilder.MAX_BATCH_WRITES) {
       const batch = this._firestore.batch();
 
-      drafts.slice(start, start + MAX_BATCH_WRITES).forEach((draft, offset) => {
+      drafts.slice(start, start + briefingBuilder.MAX_BATCH_WRITES).forEach((draft, offset) => {
         const reference = this._firestore.collection(collections.ITEMS).doc(itemIds[start + offset]);
         batch.set(reference, { ...draft, fetchedAt }, { merge: true });
       });

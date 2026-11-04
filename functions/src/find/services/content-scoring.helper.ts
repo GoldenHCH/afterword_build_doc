@@ -1,7 +1,22 @@
 import { scoringWeights } from '../find.constants';
-import { INoteCandidates, IScorableItem, IScorableNote } from './briefing-builder.interfaces';
+import { briefingBuilder } from './briefing-builder.constants';
+import { INoteCandidates, IScorableItem, IScorableNote, IScoredCandidate } from './briefing-builder.interfaces';
 
-const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
+export function normaliseHandle(handle: string): string {
+  return handle.replace(/^@/, '').toLowerCase();
+}
+
+export function buildWhyThis(candidate: IScoredCandidate): string {
+  if (candidate.matchedKeywords.length > 0) {
+    return `Matches: ${candidate.matchedKeywords.join(', ')}`;
+  }
+
+  if (candidate.item.sourceHandle) {
+    return `Recent from @${normaliseHandle(candidate.item.sourceHandle)}`;
+  }
+
+  return 'Recent paper';
+}
 
 export function matchedKeywords(note: IScorableNote, item: IScorableItem): string[] {
   const haystack = `${item.title} ${item.text}`.toLowerCase();
@@ -15,7 +30,7 @@ export function scoreItem(
   sourceWeight: number,
   now: Date = new Date(),
 ): number {
-  const ageInDays = (now.getTime() - item.publishedAt.toMillis()) / MILLISECONDS_PER_DAY;
+  const ageInDays = (now.getTime() - item.publishedAt.toMillis()) / briefingBuilder.MILLISECONDS_PER_DAY;
   const recency = Math.min(1, Math.max(0, 1 - ageInDays / scoringWeights.RECENCY_HORIZON_DAYS));
   const keywordOverlap =
     note.keywords.length === 0 ? 0 : matchedKeywords(note, item).length / note.keywords.length;

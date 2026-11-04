@@ -27,6 +27,20 @@ test('scoreItem counts keyword overlap case-insensitively across title and text'
   assert.equal(scoreItem(note, none, 0, now), 0);
 });
 
+test('scoreItem combines all three weights', () => {
+  const item = { title: 'Transformer', text: '', publishedAt: daysAgo(182.5) };
+
+  assert.ok(Math.abs(scoreItem(note, item, 0.7, now) - 0.54) < 1e-9);
+});
+
+test('scoreItem clamps recency to 1 for future items and to 0 beyond the horizon', () => {
+  const future = { title: 'Unrelated', text: '', publishedAt: daysAgo(-30) };
+  const ancient = { title: 'Unrelated', text: '', publishedAt: daysAgo(500) };
+
+  assert.ok(Math.abs(scoreItem(note, future, 0, now) - 0.4) < 1e-9);
+  assert.equal(scoreItem(note, ancient, 0, now), 0);
+});
+
 test('dedupeAcrossNotes keeps an item under the note where it scores highest, first note on ties', () => {
   const result = dedupeAcrossNotes([
     {

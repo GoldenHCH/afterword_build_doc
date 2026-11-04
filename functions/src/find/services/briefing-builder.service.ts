@@ -4,19 +4,20 @@ import * as logger from 'firebase-functions/logger';
 import { collections } from '../../constants';
 import { itemKinds } from '../../shared/item.constants';
 import { findLimits, scoringWeights } from '../find.constants';
-import { IGatheredItem, INoteCandidates, IScoredCandidate } from './briefing-builder.interfaces';
-import { dedupeAcrossNotes, matchedKeywords, pickSources, scoreItem } from './content-scoring.helper';
+import { briefingBuilder, briefingErrors } from './briefing-builder.constants';
+import { IGatheredItem, INoteCandidates, IScoredCandidate, ISourceResult } from './briefing-builder.interfaces';
+import {
+  buildWhyThis,
+  dedupeAcrossNotes,
+  matchedKeywords,
+  normaliseHandle,
+  pickSources,
+  scoreItem,
+} from './content-scoring.helper';
 import { IItemDraft } from './item-draft.types';
 import { ItemCacheService } from './item-cache.service';
 import { createPaperSource } from './paper-source.factory';
 import { createPostSource } from './post-source.factory';
-
-const MILLISECONDS_PER_HOUR = 60 * 60 * 1000;
-const MILLISECONDS_PER_DAY = 24 * MILLISECONDS_PER_HOUR;
-
-const NO_NOTES_ERROR = 'You have no open notes yet, so there was nothing to look for. Add a note and try again.';
-const NO_ITEMS_ERROR =
-  'We could not find any papers or posts for your open notes right now. Please try again in a few minutes.';
 
 export class BriefingBuilderService {
   private readonly _firestore = getFirestore();
@@ -56,7 +57,7 @@ export class BriefingBuilderService {
             status: 'failed',
             builtAt: Timestamp.now(),
             sections,
-            error: notes.length === 0 ? NO_NOTES_ERROR : NO_ITEMS_ERROR,
+            error: notes.length === 0 ? briefingErrors.NO_NOTES : briefingErrors.NO_ITEMS,
           };
 
     const reference = await this._firestore.collection(collections.BRIEFINGS).add(briefing);
@@ -95,7 +96,7 @@ export class BriefingBuilderService {
     now: Date,
   ): Promise<IGatheredItem[]> {
     const noteId = note.id as string;
-    const cooldownMillis = findLimits.FETCH_COOLDOWN_HOURS * MILLISECONDS_PER_HOUR;
+    const cooldownMillis = findLimits.FETCH_COOLDOWN_HOURS * briefingBuilder.MILLISECONDS_PER_HOUR;
     const cachedItemIds = note.lastFetchedItemIds ?? [];
 
     if (
@@ -104,17 +105,26 @@ export class BriefingBuilderService {
       cachedItemIds.length > 0
     ) {
       const cachedItems = await this._itemCache.loadByIds(cachedItemIds);
-      logger.info('Reusing cached items for note', { noteId, items: cachedItems.length });
 
-      return cachedItems.map((item) => ({ itemId: item.id as string, item }));
+      if (cachedItems.length >= cachedItemIds.length) {
+        logger.info('Reusing cached items for note', { noteId, items: cachedItems.length });
+
+        return cachedItems.map((item) => ({ itemId: item.id as string, item }));
+      }
+
+      logger.warn('Cached items incomplete, fetching again', {
+        noteId,
+        expected: cachedItemIds.length,
+        found: cachedItems.length,
+      });
     }
 
     const publishedAfter = new Date(now.getTime());
     publishedAfter.setFullYear(publishedAfter.getFullYear() - findLimits.PAPER_YEARS_BACK);
-    const since = new Date(now.getTime() - findLimits.POST_DAYS_BACK * MILLISECONDS_PER_DAY);
+    const since = new Date(now.getTime() - findLimits.POST_DAYS_BACK * briefingBuilder.MILLISECONDS_PER_DAY);
     const handles = pickSources(note, sources).map((source) => source.handle);
 
-    const [paperDrafts, postDrafts] = await Promise.all([
+    const [paperResult, postResult] = await Promise.all([
       this._runSource('papers', noteId, () =>
         createPaperSource().search({
           angle: note.angle ?? note.summary,
@@ -128,7 +138,7 @@ export class BriefingBuilderService {
       ),
     ]);
 
-    const drafts = [...paperDrafts, ...postDrafts];
+    const drafts = [...paperResult.drafts, ...postResult.drafts];
     const itemIds = await this._itemCache.upsert(drafts);
     const fetchedAt = Timestamp.fromDate(now);
     const uniqueItems = new Map<string, IGatheredItem>();
@@ -137,7 +147,7 @@ export class BriefingBuilderService {
       uniqueItems.set(itemIds[index], { itemId: itemIds[index], item: { ...draft, id: itemIds[index], fetchedAt } });
     });
 
-    if (uniqueItems.size > 0) {
+    if (paperResult.succeeded && postResult.succeeded && uniqueItems.size > 0) {
       await this._firestore
         .collection(collections.NOTES)
         .doc(noteId)
@@ -147,14 +157,18 @@ export class BriefingBuilderService {
     return [...uniqueItems.values()];
   }
 
-  private async _runSource(label: string, noteId: string, fetchDrafts: () => Promise<IItemDraft[]>): Promise<IItemDraft[]> {
+  private async _runSource(
+    label: string,
+    noteId: string,
+    fetchDrafts: () => Promise<IItemDraft[]>,
+  ): Promise<ISourceResult> {
     const startedAt = Date.now();
 
     try {
       const drafts = await fetchDrafts();
       logger.info('Source fetched', { source: label, noteId, items: drafts.length, ms: Date.now() - startedAt });
 
-      return drafts;
+      return { drafts, succeeded: true };
     } catch (error) {
       logger.error('Source failed', {
         source: label,
@@ -163,7 +177,7 @@ export class BriefingBuilderService {
         ms: Date.now() - startedAt,
       });
 
-      return [];
+      return { drafts: [], succeeded: false };
     }
   }
 
@@ -204,20 +218,4 @@ export class BriefingBuilderService {
 
     return entry;
   }
-}
-
-function normaliseHandle(handle: string): string {
-  return handle.replace(/^@/, '').toLowerCase();
-}
-
-function buildWhyThis(candidate: IScoredCandidate): string {
-  if (candidate.matchedKeywords.length > 0) {
-    return `Matches: ${candidate.matchedKeywords.join(', ')}`;
-  }
-
-  if (candidate.item.sourceHandle) {
-    return `Recent from @${normaliseHandle(candidate.item.sourceHandle)}`;
-  }
-
-  return 'Recent paper';
 }

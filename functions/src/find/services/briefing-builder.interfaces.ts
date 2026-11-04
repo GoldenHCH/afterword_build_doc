@@ -1,3 +1,5 @@
+import { IItemDraft } from './item-draft.types';
+
 export interface IScorableNote {
   keywords: string[];
 }
@@ -18,6 +20,11 @@ export interface IScoredCandidate {
 export interface INoteCandidates<TCandidate> {
   noteId: string;
   candidates: TCandidate[];
+}
+
+export interface ISourceResult {
+  drafts: IItemDraft[];
+  succeeded: boolean;
 }
 
 export interface IGatheredItem {
