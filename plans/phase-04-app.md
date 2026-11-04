@@ -25,11 +25,11 @@
 - [x] Empty state: "Nothing here yet. Tell your assistant what you're stuck on, or describe it here." with the Describe button. Load failure → alert banner
 
 ### Briefing page (`app/src/app/briefings/`)
-- [ ] `briefings.service.ts`: latest briefing for me; by id; `buildNow()` calls `buildBriefingNow`
-- [ ] Header: "Your briefing", built date, **Build my briefing now** (`mat-flat-button`, inline spinner while running `[UI-02]`, navigates to the new briefing when done); a `warning` in the response shows as an info banner, not an error
-- [ ] One section per note: `noteSummary` with the kind label; entries in `rank` order as cards — rank, kind icon (paper / post), linked title (new tab), authors or @handle, date, `whyThis`, `readingNote` in italics, **Save** toggle (`mat-stroked-button`, becomes "Saved" with a check)
-- [ ] `?save=<itemId>` (the email's Save link) saves on load and scrolls to that entry
-- [ ] No briefing yet → one sentence and the Build button. `status: failed` → its `error` in an alert banner plus the Build button. Page loads through `LoadingService` `[UI-01]`
+- [x] `briefings.service.ts`: latest briefing for me; by id; `buildNow()` calls `buildBriefingNow`
+- [x] Header: "Your briefing", built date, **Build my briefing now** (`mat-flat-button`, inline spinner while running `[UI-02]`, navigates to the new briefing when done); a `warning` in the response shows as an info banner, not an error
+- [x] One section per note: `noteSummary` with the kind label; entries in `rank` order as cards — rank, kind icon (paper / post), linked title (new tab), authors or @handle, date, `whyThis`, `readingNote` in italics, **Save** toggle (`mat-stroked-button`, becomes "Saved" with a check)
+- [x] `?save=<itemId>` (the email's Save link) saves on load and scrolls to that entry
+- [x] No briefing yet → one sentence and the Build button. `status: failed` → its `error` in an alert banner plus the Build button. Page loads through `LoadingService` `[UI-01]`
 
 ### Library page (`app/src/app/library/`)
 - [x] `library.service.ts`: live query of `library` where `userId == me`, newest first; `save(briefingId, itemId)` and `unsave(libraryItemId)` call the callables
@@ -39,7 +39,7 @@
 
 ### Polish that is on the demo path
 - [ ] Every page: loading, empty, error `[HACK-15]`; checked at 375px `[HACK-16]`
-- [ ] README: live URL, demo account, demo flow step by step, the `?save=` shortcut `[HACK-18]`
+- [x] README: live URL, demo account, demo flow step by step, the `?save=` shortcut `[HACK-18]`
 
 ## Done when
 

@@ -1,0 +1,150 @@
+:host {
+  display: block;
+}
+
+.build-button {
+  min-width: 236px;
+}
+
+.build-mobile {
+  display: none;
+}
+
+.state-text {
+  margin: 0 0 16px;
+  max-width: 600px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--aw-theme--text-muted);
+}
+
+.section {
+  margin: 0 0 32px;
+}
+
+.section-header {
+  max-width: 600px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--aw-theme--ruling);
+}
+
+.section-title {
+  margin: 6px 0 0;
+  font-family: var(--aw-font-heading);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.entry-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.entry-card {
+  scroll-margin-top: 72px;
+}
+
+.entry {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.entry-rank {
+  flex: 0 0 auto;
+  min-width: 24px;
+  font-family: var(--aw-font-heading);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--aw-theme--text-muted);
+}
+
+.entry-body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.entry-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  margin: 0 0 4px;
+  font-size: 13px;
+  color: var(--aw-theme--text-muted);
+}
+
+.entry-kind-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+}
+
+.entry-meta-date::before {
+  content: '·';
+  margin-right: 8px;
+}
+
+.entry-title {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.entry-why {
+  margin: 0 0 8px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--aw-theme--text);
+}
+
+.entry-reading-note {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--aw-theme--text-muted);
+}
+
+.entry-actions {
+  margin-top: 12px;
+}
+
+.save-button {
+  min-width: 108px;
+
+  &--saved {
+    background: var(--aw-theme--pill);
+  }
+}
+
+@media (max-width: 599.98px) {
+  .build-desktop {
+    display: none;
+  }
+
+  .build-mobile {
+    display: block;
+    margin: -8px 0 20px;
+
+    .build-button {
+      width: 100%;
+    }
+  }
+
+  .entry {
+    gap: 12px;
+  }
+
+  .entry-rank {
+    min-width: 20px;
+    font-size: 20px;
+  }
+}
