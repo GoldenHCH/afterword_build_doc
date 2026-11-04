@@ -4,10 +4,13 @@
 
 <!-- Replace this section at kickoff. Keep it to a few lines — details live in brief/. -->
 
-**[Product Name]** is an Angular 21+ (standalone components), Angular Material, SCSS application backed by Firebase Cloud Functions (TypeScript) and Firestore, built for **[Hackathon Name]**.
+**Afterword for Paperclip** is a Paperclip plugin (TypeScript: Node worker + React 19 UI via `@paperclipai/plugin-sdk`) that reads what a researcher and their agents are working on in Paperclip issues and surfaces the five most relevant recent papers from OpenAlex on the issue itself, built for **[Hackathon Name]** in one night.
+
+The plugin code lives in its own repo scaffolded by `paperclipai plugin init`; this repo holds the brief, plans and rules.
 
 **Key files:**
 - `brief/brief.md` — challenge, judging rubric, required features, demo script. Read it before touching any feature.
+- `brief/paperclip-plugin-notes.md` — verified Paperclip SDK facts and repo paths. The docs site is unreachable from cloud sessions; read this instead.
 - `plans/00-general.md` — phases and which one is blocking.
 
 ---
@@ -27,13 +30,11 @@ Rules use the format `[CATEGORY-##]`. **Read only the files relevant to your tas
 | `rules/hackathon.md` | HACK | Always — scope, speed, testing stance, last mile |
 | `rules/ai.md` | AI | Any feature that calls a model, or deciding where AI belongs |
 | `rules/typescript.md` | CMT, TS, PKG, ERR, file organization, shared types | Any TypeScript work |
-| `rules/angular.md` | ANG, MAT | Frontend components or templates |
-| `rules/scss.md` | SCSS, theme variables | Styling work |
-| `rules/ui.md` | UI, cards, page headers, forms, side panels | UI components or patterns |
-| `rules/firebase.md` | FB | Cloud Functions or Firestore |
+| `rules/ui.md` | UI, cards, page headers, forms, side panels | Plugin UI components. Ignore the Angular Material specifics; the patterns (cards, states, headers) still apply to the React slots |
+| `rules/angular.md`, `rules/scss.md`, `rules/firebase.md` | — | Not used for this build (Paperclip plugin, not Angular/Firebase). Do not load |
 | `rules/git.md` | GIT | Commits or PRs |
 
-**Example**: a Cloud Function task → read `rules/hackathon.md` + `rules/typescript.md` + `rules/firebase.md`. Skip the rest.
+**Example**: a worker task → read `rules/hackathon.md` + `rules/typescript.md` + `rules/ai.md` + `brief/paperclip-plugin-notes.md`. A UI slot task → `rules/hackathon.md` + `rules/typescript.md` + `rules/ui.md` + the notes. Skip the rest.
 
 ---
 
