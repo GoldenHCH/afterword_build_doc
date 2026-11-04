@@ -19,6 +19,7 @@ var(--aw-theme--primary-hover, #142c6e)  // Ink, hovered or pressed
 var(--aw-theme--accent, #c4343f)         // Rule-red: one 3px top rule per page; otherwise errors only
 var(--aw-theme--error, #a12a33)          // Error text and icons
 var(--aw-theme--error-bg, #fbeeef)       // Error background
+var(--aw-theme--error-border, #efc9cc)   // Error banner border (the left edge stays accent red)
 var(--aw-theme--surface, #f1f3f6)        // Recessed surface
 var(--aw-theme--border, #6a7c96)         // Control borders (inputs, stroked buttons)
 var(--aw-theme--ruling, #c7d5ea)         // Hairlines and card borders

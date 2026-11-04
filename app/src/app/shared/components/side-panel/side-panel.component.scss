@@ -98,5 +98,5 @@
 .panel-body {
   flex: 1 1 auto;
   overflow-y: auto;
-  padding: var(--aw-space-4) 20px calc(var(--aw-space-5) + env(safe-area-inset-bottom, 0px));
+  padding: var(--aw-space-4) 20px var(--aw-space-5);
 }

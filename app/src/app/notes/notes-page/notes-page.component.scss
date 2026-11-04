@@ -47,6 +47,7 @@
 
 .note-footer {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: var(--aw-space-3);
@@ -56,8 +57,10 @@
 }
 
 .note-meta {
+  flex: 1 1 160px;
   min-width: 0;
   margin: 0;
+  overflow-wrap: anywhere;
   font-size: var(--aw-text-sm);
   line-height: 1.45;
   color: var(--aw-theme--text-muted);
@@ -78,5 +81,6 @@
 
 .resolve-button {
   flex: 0 0 auto;
+  margin-left: auto;
   min-width: 112px;
 }

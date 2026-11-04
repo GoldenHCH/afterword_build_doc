@@ -22,7 +22,7 @@
 }
 
 .alert--error {
-  border-color: #efc9cc;
+  border-color: var(--aw-theme--error-border);
   border-left-color: var(--aw-theme--accent);
   background: var(--aw-theme--error-bg);
   color: var(--aw-theme--error);

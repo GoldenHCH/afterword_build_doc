@@ -133,8 +133,8 @@ $bottom-nav-height: 64px;
     flex-direction: row;
     gap: 0;
     width: auto;
-    height: calc(#{$bottom-nav-height} + env(safe-area-inset-bottom, 0px));
-    padding: 0 0 env(safe-area-inset-bottom, 0px);
+    height: $bottom-nav-height;
+    padding: 0;
     border-right: 0;
     border-top: 1px solid var(--aw-theme--ruling);
   }
@@ -173,7 +173,6 @@ $bottom-nav-height: 64px;
   }
 
   .content {
-    padding: ($top-bar-height + $rule-height + 24px) var(--aw-space-4)
-      calc(#{$bottom-nav-height} + env(safe-area-inset-bottom, 0px) + 32px);
+    padding: ($top-bar-height + $rule-height + 24px) var(--aw-space-4) ($bottom-nav-height + 32px);
   }
 }
