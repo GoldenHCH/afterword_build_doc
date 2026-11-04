@@ -9,7 +9,7 @@ Stack: Angular 21 (standalone) with Angular Material in `app/`, Firebase Cloud F
 ## What is live and what is seeded
 
 - **Papers:** live from OpenAlex. Paperclip sits behind the same seam and is switched on with `contentSources.PAPER` in `functions/src/find/find.constants.ts`.
-- **Posts:** the seeded list of researcher X accounts and posts (`contentSources.POST` is `seed`). The live X API source exists but is off. Seeded posts are filtered by a fixed window (`seededPostCutoff` in `functions/src/find/find.constants.ts`) rather than the briefing's 14-day window, so the demo briefing is never empty.
+- **Posts:** the seeded list of researcher X accounts and posts (`contentSources.POST` is `seed`). The live X API source exists but is off. Seeded posts are filtered by a fixed window (`seededPostWindow` in `functions/src/find/find.constants.ts`, used by the briefing builder when `contentSources.POST` is `seed`) rather than the 14-day window used for live X, so the demo briefing is never empty.
 - **Explanations and email:** the model writes the one-line "why this" and the reading order, and Resend sends the email. If either is down, the briefing still builds with deterministic fallback lines and a blue warning.
 - **Source failures:** if a source times out or errors, the briefing is still built from the others and says which source was unreachable.
 

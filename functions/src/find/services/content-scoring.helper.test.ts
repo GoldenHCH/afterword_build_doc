@@ -81,7 +81,14 @@ test('buildWhyThis names the note angle and the shared keywords without a model'
   );
   assert.equal(
     buildWhyThis({ ...candidate, matchedKeywords: [] }, noteWithAngle),
-    'Recent paper',
+    'Recent paper for your note on How to report intercoder reliability for reflexive analysis of interviews...',
+  );
+  assert.equal(
+    buildWhyThis(
+      { ...candidate, matchedKeywords: [], item: { sourceHandle: '@Some_Handle' } as Afterword.Firestore.Item.IItem },
+      { summary: 'Stuck on coding' },
+    ),
+    'Recent from @some_handle, for your note on Stuck on coding',
   );
 });
 

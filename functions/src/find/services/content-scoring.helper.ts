@@ -29,10 +29,13 @@ export function buildWhyThis(candidate: IScoredCandidate, note: IFallbackNote): 
   }
 
   if (candidate.item.sourceHandle) {
-    return `Recent from @${normaliseHandle(candidate.item.sourceHandle)}`;
+    return fallbackLines.RECENT_POST_TEMPLATE.replace('{{HANDLE}}', () => normaliseHandle(candidate.item.sourceHandle ?? '')).replace(
+      '{{ANGLE}}',
+      () => describeNoteAngle(note),
+    );
   }
 
-  return 'Recent paper';
+  return fallbackLines.RECENT_PAPER_TEMPLATE.replace('{{ANGLE}}', () => describeNoteAngle(note));
 }
 
 export function buildReadingNote(rank: number): string {

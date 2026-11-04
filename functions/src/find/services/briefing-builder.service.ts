@@ -3,7 +3,7 @@ import * as logger from 'firebase-functions/logger';
 
 import { collections } from '../../constants';
 import { itemKinds } from '../../shared/item.constants';
-import { findLimits, scoringWeights } from '../find.constants';
+import { contentSources, findLimits, scoringWeights, seededPostWindow } from '../find.constants';
 import { briefingBuilder, briefingErrors, briefingWarnings, sourceLabels } from './briefing-builder.constants';
 import {
   IGatheredItem,
@@ -134,7 +134,8 @@ export class BriefingBuilderService {
 
     const publishedAfter = new Date(now.getTime());
     publishedAfter.setFullYear(publishedAfter.getFullYear() - findLimits.PAPER_YEARS_BACK);
-    const since = new Date(now.getTime() - findLimits.POST_DAYS_BACK * briefingBuilder.MILLISECONDS_PER_DAY);
+    const postDaysBack = contentSources.POST === 'seed' ? seededPostWindow.DAYS_BACK : findLimits.POST_DAYS_BACK;
+    const since = new Date(now.getTime() - postDaysBack * briefingBuilder.MILLISECONDS_PER_DAY);
     const handles = pickSources(note, sources).map((source) => source.handle);
 
     const [paperResult, postResult] = await Promise.all([

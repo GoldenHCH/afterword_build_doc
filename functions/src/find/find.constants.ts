@@ -15,9 +15,8 @@ export const findLimits = {
   FETCH_COOLDOWN_HOURS: 24,
 } as const;
 
-export const seededPostCutoff = {
+export const seededPostWindow = {
   DAYS_BACK: 180,
-  MILLISECONDS_PER_DAY: 24 * 60 * 60 * 1000,
 } as const;
 
 export const scoringWeights = {

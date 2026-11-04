@@ -1,7 +1,6 @@
 import { getFirestore } from 'firebase-admin/firestore';
 
 import { collections } from '../../constants';
-import { seededPostCutoff } from '../find.constants';
 import { itemKinds, itemProviders } from '../../shared/item.constants';
 import { IItemDraft } from './item-draft.types';
 import { IPostQuery, IPostSource } from './post-source.interfaces';
@@ -17,11 +16,11 @@ export class SeededPostSource implements IPostSource {
       .get();
 
     const allowedHandles = new Set(query.handles);
-    const cutoffMillis = Date.now() - seededPostCutoff.DAYS_BACK * seededPostCutoff.MILLISECONDS_PER_DAY;
+    const sinceMillis = query.since.getTime();
     const items = snapshot.docs.map((document) => document.data() as Afterword.Firestore.Item.IItem);
 
     return items
-      .filter((item) => item.publishedAt.toMillis() >= cutoffMillis)
+      .filter((item) => item.publishedAt.toMillis() >= sinceMillis)
       .filter((item) => allowedHandles.size === 0 || (item.sourceHandle !== undefined && allowedHandles.has(item.sourceHandle)))
       .sort((first, second) => second.publishedAt.toMillis() - first.publishedAt.toMillis())
       .slice(0, query.limit)
