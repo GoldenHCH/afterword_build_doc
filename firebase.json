@@ -7,6 +7,7 @@
     {
       "source": "functions",
       "codebase": "default",
+      "predeploy": ["npx -y yarn@1.22.22 --cwd \"$RESOURCE_DIR\" build"],
       "ignore": ["node_modules", ".git", "firebase-debug.log", "firebase-debug.*.log", "*.local"]
     }
   ]
