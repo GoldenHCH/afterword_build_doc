@@ -96,7 +96,22 @@ It serves on http://localhost:4200. `ng serve` uses `src/environments/environmen
 - **Sign-in:** "Continue with Google" needs the Google provider enabled in the Firebase console; "Use the demo account" signs in as `demo@afterword.fyi` (uid `demo-researcher`) with the password set when the demo auth user was created.
 - **Build and deploy:** `npx -y yarn@1.22.22 build` emits `app/dist/afterword/browser`, which `firebase deploy --only hosting` serves; its predeploy step runs the build.
 
+## Demo flow
+
+Live app: https://afterword-hackathon.web.app. Sign in with "Use the demo account" (`demo@afterword.fyi`, uid `demo-researcher`; setup under Demo account sign-in below), which has 3 open notes and one seeded briefing.
+
+1. **Tell the assistant what you're stuck on.** In Claude (or Cursor), say "I'm stuck on intercoder reliability in my thematic analysis of interviews." The assistant calls `record_work` and answers "Saved to Afterword."
+2. **Notes.** Open the app. The Notes page lists the open note with its angle and keywords. The **Describe instead** box does the same job without the assistant.
+3. **Build my briefing now.** On the Briefing page, click the button. It shows a spinner for a minute or two while it fetches papers (Paperclip, with OpenAlex as the fallback) and X posts, scores them and writes the explanations, then opens the new briefing: items grouped under each note, numbered in reading order, each with one line on why it matters for that bottleneck. A blue note above the briefing means a warning: the briefing is real, but the model explanations or the email fell back (for example the model or Resend was down). It is not a failure; the briefing is still usable. A red banner means the build itself failed.
+4. **The email.** Open the inbox for the demo account: the same briefing arrived from `briefing@afterword.fyi`. Each item has a Save link that opens the app on that entry.
+5. **Save two papers.** Click **Save** on two papers. The button turns into **Saved** (click it again to remove the item).
+6. **Library.** Open the Library: both papers are there, grouped under the note they answered.
+7. **Back in the assistant.** Ask "What did I save about intercoder reliability?" The assistant calls `search_library` and answers from the Library. Then "Mark that solved." calls `resolve_work`; the note drops out of next week's briefing.
+
 ## Demo shortcuts
+
+- **Save link from the email:** `/briefings/<briefingId>?save=<itemId>` saves that item once the page loads, scrolls to the entry and removes the parameter from the URL. If you are signed out, sign in first and the link carries on. Example: https://afterword-hackathon.web.app/briefings/briefing_demo_seed?save=<itemId> (an `itemId` is in the seeded briefing's entries).
+- **Seeded briefing fallback:** if the live build is slow or fails on stage, open `/briefings/briefing_demo_seed`: 3 sections and 17 entries, already `ready`, with hand-written explanations. `buildBriefingNow` itself returns the seeded briefing with a `warning` when the model or email step is down.
 
 `seedDemo` loads the demo account: the user, 3 notes, 10 X sources, the cached posts and papers, about 15 more papers fetched live from OpenAlex, and one `ready` briefing. It is safe to run twice (deterministic document ids, `set` with merge).
 

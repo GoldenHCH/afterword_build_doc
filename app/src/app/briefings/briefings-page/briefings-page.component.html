@@ -1,2 +1,114 @@
-<aw-screen-toolbar title="Briefing"></aw-screen-toolbar>
-<p>Your weekly reading, in the order that will help most.</p>
+<ng-template #buildButton>
+  <button mat-flat-button type="button" class="build-button" [disabled]="isBuildDisabled" (click)="onBuild()">
+    @if (isBuilding) {
+      <mat-spinner diameter="20" aria-label="Building your briefing"></mat-spinner>
+    } @else {
+      <div class="aw-btn-content">
+        <mat-icon>auto_stories</mat-icon>
+        <span>{{ copy.BUILD_LABEL }}</span>
+      </div>
+    }
+  </button>
+</ng-template>
+
+<aw-screen-toolbar [title]="copy.TITLE" [subtitle]="subtitle">
+  <div class="build-desktop">
+    <ng-container [ngTemplateOutlet]="buildButton"></ng-container>
+  </div>
+</aw-screen-toolbar>
+
+<div class="build-mobile">
+  <ng-container [ngTemplateOutlet]="buildButton"></ng-container>
+</div>
+
+@if (isBuildDisabled) {
+  <p class="state-text" role="status">{{ isBuilding ? copy.BUILD_PROGRESS : copy.BUILDING }}</p>
+}
+
+@if (infoMessage) {
+  <aw-alert-banner kind="info" [message]="infoMessage" (dismissed)="infoMessage = ''"></aw-alert-banner>
+}
+
+@if (actionError) {
+  <aw-alert-banner [message]="actionError" (dismissed)="actionError = ''"></aw-alert-banner>
+}
+
+@if (isLoaded) {
+  @if (loadError) {
+    <aw-alert-banner [message]="loadError"></aw-alert-banner>
+  } @else if (!briefing) {
+    <p class="state-text">{{ routeId ? copy.NOT_FOUND : copy.NO_BRIEFING }}</p>
+  } @else if (briefing.status === 'failed') {
+    <aw-alert-banner [message]="briefing.error || copy.FAILED_FALLBACK"></aw-alert-banner>
+  } @else if (briefing.status === 'ready') {
+    @if (sections.length === 0) {
+      <p class="state-text">{{ copy.NO_ENTRIES }}</p>
+    }
+
+    @let savedByItemId = (savedByItemId$ | async) ?? emptySaved;
+
+    @for (section of sections; track section.noteId) {
+      <section class="section">
+        <header class="section-header">
+          <aw-kind-label [kind]="section.noteKind"></aw-kind-label>
+          <h2 class="section-title">{{ section.noteSummary }}</h2>
+        </header>
+
+        <ol class="aw-card-grid entry-list">
+          @for (entry of section.entries; track entry.itemId) {
+            @let savedItem = savedByItemId.get(entry.itemId);
+            <li>
+              <mat-card class="aw-card entry-card" appearance="outlined" [id]="entryId(entry.itemId)">
+                <mat-card-content>
+                  <div class="entry">
+                    <span class="entry-rank">{{ entry.rank }}</span>
+                    <div class="entry-body">
+                      <p class="entry-meta">
+                        <mat-icon class="entry-kind-icon" [attr.aria-label]="kindLabel(entry)" aria-hidden="false">{{
+                          kindIcons[entry.kind]
+                        }}</mat-icon>
+                        @if (byline(entry)) {
+                          <span>{{ byline(entry) }}</span>
+                        }
+                        @if (publishedOn(entry)) {
+                          <span class="entry-meta-date">{{ publishedOn(entry) }}</span>
+                        }
+                      </p>
+                      <h3 class="entry-title">
+                        <a [href]="entry.url" target="_blank" rel="noopener">{{ entry.title }}</a>
+                      </h3>
+                      <p class="entry-why">{{ entry.whyThis }}</p>
+                      @if (entry.readingNote) {
+                        <p class="entry-reading-note">{{ entry.readingNote }}</p>
+                      }
+                      <div class="entry-actions">
+                        <button
+                          mat-stroked-button
+                          type="button"
+                          class="save-button"
+                          [class.save-button--saved]="!!savedItem"
+                          [attr.aria-pressed]="!!savedItem"
+                          [disabled]="pendingItemIds.has(entry.itemId)"
+                          (click)="onToggleSave(entry, savedItem)"
+                        >
+                          @if (pendingItemIds.has(entry.itemId)) {
+                            <mat-spinner diameter="20" aria-label="Updating"></mat-spinner>
+                          } @else {
+                            <div class="aw-btn-content">
+                              <mat-icon>{{ savedItem ? 'check' : 'bookmark_border' }}</mat-icon>
+                              <span>{{ savedItem ? copy.SAVED : copy.SAVE }}</span>
+                            </div>
+                          }
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </mat-card-content>
+              </mat-card>
+            </li>
+          }
+        </ol>
+      </section>
+    }
+  }
+}
