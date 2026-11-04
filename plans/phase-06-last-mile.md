@@ -7,9 +7,9 @@
 ## Checklist
 
 ### Audit and reviews (no live project needed) `[HACK-19]` `[HACK-20]`
-- [ ] Audit against every brief requirement (`prompts/05-audit.md`), ranked fix list
-- [ ] Staff-architect persona review: structure, bugs, exposed keys, unvalidated input, missing auth checks
-- [ ] Fix the blocking findings from both
+- [x] Audit against every brief requirement (`prompts/05-audit.md`), ranked fix list
+- [x] Staff-architect persona review: structure, bugs, exposed keys, unvalidated input, missing auth checks
+- [x] Fix the blocking findings from both
 
 ### Deploy readiness `[HACK-14]`
 - [x] Firestore indexes match every query the app and the functions run; rules cover every collection the app touches

@@ -47,6 +47,8 @@ export const weeklyBriefing = onSchedule(
         message: sendBriefingWarnings.UNEXPECTED,
         error: error instanceof Error ? error.message : String(error),
       });
+
+      throw error;
     }
 
     logger.info('weeklyBriefing finished', summary);

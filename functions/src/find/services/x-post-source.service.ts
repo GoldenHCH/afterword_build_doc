@@ -101,6 +101,7 @@ export class XPostSource implements IPostSource {
   private async _get<TResponse>(path: string, handle: string): Promise<TResponse> {
     const response = await fetch(`${xApi.BASE_URL}${path}`, {
       headers: { Authorization: `Bearer ${X_BEARER_TOKEN.value()}` },
+      signal: AbortSignal.timeout(xApi.TIMEOUT_MS),
     });
 
     if (!response.ok) {

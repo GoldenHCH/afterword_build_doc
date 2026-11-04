@@ -4,9 +4,16 @@ import * as logger from 'firebase-functions/logger';
 import { collections } from '../../constants';
 import { itemKinds } from '../../shared/item.constants';
 import { findLimits, scoringWeights } from '../find.constants';
-import { briefingBuilder, briefingErrors } from './briefing-builder.constants';
-import { IGatheredItem, INoteCandidates, IScoredCandidate, ISourceResult } from './briefing-builder.interfaces';
+import { briefingBuilder, briefingErrors, briefingWarnings, sourceLabels } from './briefing-builder.constants';
 import {
+  IGatheredItem,
+  IGatheredNote,
+  INoteCandidates,
+  IScoredCandidate,
+  ISourceResult,
+} from './briefing-builder.interfaces';
+import {
+  buildReadingNote,
   buildWhyThis,
   dedupeAcrossNotes,
   matchedKeywords,
@@ -34,7 +41,7 @@ export class BriefingBuilderService {
 
     const scoredGroups: INoteCandidates<IScoredCandidate>[] = notes.map((note, index) => ({
       noteId: note.id as string,
-      candidates: gathered[index].map(({ itemId, item }) => {
+      candidates: gathered[index].items.map(({ itemId, item }) => {
         const sourceWeight =
           item.kind === itemKinds.PAPER
             ? scoringWeights.PAPER_SOURCE_WEIGHT
@@ -44,14 +51,20 @@ export class BriefingBuilderService {
       }),
     }));
 
+    const failedSources = [...new Set(gathered.flatMap((entry) => entry.failedSources))];
     const dedupedGroups = dedupeAcrossNotes(scoredGroups);
     const sections = notes.map((note, index) => this._buildSection(note, dedupedGroups[index].candidates));
     const keptCount = sections.reduce((total, section) => total + section.entries.length, 0);
     logger.info('Briefing items kept', { userId, kept: keptCount });
 
+    const warning =
+      failedSources.length > 0
+        ? `${briefingWarnings.SOURCES_UNAVAILABLE_PREFIX}${failedSources.join(', ')}${briefingWarnings.SOURCES_UNAVAILABLE_SUFFIX}`
+        : undefined;
+
     const briefing: Afterword.Firestore.Briefing.IBriefing =
       keptCount > 0
-        ? { userId, status: 'ready', builtAt: Timestamp.now(), sections }
+        ? { userId, status: 'ready', builtAt: Timestamp.now(), sections, ...(warning ? { warning } : {}) }
         : {
             userId,
             status: 'failed',
@@ -94,7 +107,7 @@ export class BriefingBuilderService {
     note: Afterword.Firestore.Note.INote,
     sources: Afterword.Firestore.Source.ISource[],
     now: Date,
-  ): Promise<IGatheredItem[]> {
+  ): Promise<IGatheredNote> {
     const noteId = note.id as string;
     const cooldownMillis = findLimits.FETCH_COOLDOWN_HOURS * briefingBuilder.MILLISECONDS_PER_HOUR;
     const cachedItemIds = note.lastFetchedItemIds ?? [];
@@ -109,7 +122,7 @@ export class BriefingBuilderService {
       if (cachedItems.length >= cachedItemIds.length) {
         logger.info('Reusing cached items for note', { noteId, items: cachedItems.length });
 
-        return cachedItems.map((item) => ({ itemId: item.id as string, item }));
+        return { items: cachedItems.map((item) => ({ itemId: item.id as string, item })), failedSources: [] };
       }
 
       logger.warn('Cached items incomplete, fetching again', {
@@ -125,7 +138,7 @@ export class BriefingBuilderService {
     const handles = pickSources(note, sources).map((source) => source.handle);
 
     const [paperResult, postResult] = await Promise.all([
-      this._runSource('papers', noteId, () =>
+      this._runSource(sourceLabels.PAPERS, noteId, () =>
         createPaperSource().search({
           angle: note.angle ?? note.summary,
           keywords: note.keywords,
@@ -133,7 +146,7 @@ export class BriefingBuilderService {
           publishedAfter,
         }),
       ),
-      this._runSource('posts', noteId, () =>
+      this._runSource(sourceLabels.POSTS, noteId, () =>
         createPostSource().recent({ handles, since, limit: findLimits.POSTS_PER_NOTE_QUERY }),
       ),
     ]);
@@ -154,7 +167,9 @@ export class BriefingBuilderService {
         .update({ lastFetchedAt: fetchedAt, lastFetchedItemIds: [...uniqueItems.keys()] });
     }
 
-    return [...uniqueItems.values()];
+    const failedSources = [paperResult, postResult].filter((result) => !result.succeeded).map((result) => result.label);
+
+    return { items: [...uniqueItems.values()], failedSources };
   }
 
   private async _runSource(
@@ -168,7 +183,7 @@ export class BriefingBuilderService {
       const drafts = await fetchDrafts();
       logger.info('Source fetched', { source: label, noteId, items: drafts.length, ms: Date.now() - startedAt });
 
-      return { drafts, succeeded: true };
+      return { drafts, succeeded: true, label };
     } catch (error) {
       logger.error('Source failed', {
         source: label,
@@ -177,7 +192,7 @@ export class BriefingBuilderService {
         ms: Date.now() - startedAt,
       });
 
-      return { drafts: [], succeeded: false };
+      return { drafts: [], succeeded: false, label };
     }
   }
 
@@ -193,12 +208,16 @@ export class BriefingBuilderService {
       .filter((candidate) => candidate.item.kind === itemKinds.POST)
       .slice(0, findLimits.POSTS_KEPT_PER_NOTE);
 
-    const entries = [...papers, ...posts].map((candidate, index) => this._buildEntry(candidate, index + 1));
+    const entries = [...papers, ...posts].map((candidate, index) => this._buildEntry(candidate, index + 1, note));
 
     return { noteId: note.id as string, noteSummary: note.summary, noteKind: note.kind, entries };
   }
 
-  private _buildEntry(candidate: IScoredCandidate, rank: number): Afterword.Firestore.Briefing.IBriefingEntry {
+  private _buildEntry(
+    candidate: IScoredCandidate,
+    rank: number,
+    note: Afterword.Firestore.Note.INote,
+  ): Afterword.Firestore.Briefing.IBriefingEntry {
     const { item } = candidate;
     const entry: Afterword.Firestore.Briefing.IBriefingEntry = {
       itemId: candidate.itemId,
@@ -209,7 +228,8 @@ export class BriefingBuilderService {
       publishedAt: item.publishedAt,
       rank,
       score: candidate.score,
-      whyThis: buildWhyThis(candidate),
+      whyThis: buildWhyThis(candidate, note),
+      readingNote: buildReadingNote(rank),
     };
 
     if (item.sourceHandle) {

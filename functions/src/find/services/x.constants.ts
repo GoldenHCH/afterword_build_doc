@@ -4,4 +4,5 @@ export const xApi = {
   MIN_POSTS_PER_USER: 5,
   MAX_POSTS_PER_USER: 100,
   TITLE_WORD_COUNT: 12,
+  TIMEOUT_MS: 15_000,
 } as const;

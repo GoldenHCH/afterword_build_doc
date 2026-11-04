@@ -1,14 +1,31 @@
 import { scoringWeights } from '../find.constants';
-import { briefingBuilder } from './briefing-builder.constants';
-import { INoteCandidates, IScorableItem, IScorableNote, IScoredCandidate } from './briefing-builder.interfaces';
+import { briefingBuilder, fallbackLines } from './briefing-builder.constants';
+import {
+  IFallbackNote,
+  INoteCandidates,
+  IScorableItem,
+  IScorableNote,
+  IScoredCandidate,
+} from './briefing-builder.interfaces';
 
 export function normaliseHandle(handle: string): string {
   return handle.replace(/^@/, '').toLowerCase();
 }
 
-export function buildWhyThis(candidate: IScoredCandidate): string {
+export function describeNoteAngle(note: IFallbackNote): string {
+  const source = note.angle && note.angle.trim().length > 0 ? note.angle : note.summary;
+  const words = source.trim().replace(/[?.!]+$/, '').split(/\s+/).filter((word) => word.length > 0);
+  const kept = words.slice(0, fallbackLines.ANGLE_MAX_WORDS).join(' ');
+
+  return words.length > fallbackLines.ANGLE_MAX_WORDS ? `${kept}...` : kept;
+}
+
+export function buildWhyThis(candidate: IScoredCandidate, note: IFallbackNote): string {
   if (candidate.matchedKeywords.length > 0) {
-    return `Matches: ${candidate.matchedKeywords.join(', ')}`;
+    return fallbackLines.MATCHES_TEMPLATE.replace('{{ANGLE}}', () => describeNoteAngle(note)).replace(
+      '{{KEYWORDS}}',
+      () => candidate.matchedKeywords.join(', '),
+    );
   }
 
   if (candidate.item.sourceHandle) {
@@ -16,6 +33,10 @@ export function buildWhyThis(candidate: IScoredCandidate): string {
   }
 
   return 'Recent paper';
+}
+
+export function buildReadingNote(rank: number): string {
+  return rank === 1 ? fallbackLines.START_HERE : fallbackLines.THEN_THIS;
 }
 
 export function matchedKeywords(note: IScorableNote, item: IScorableItem): string[] {

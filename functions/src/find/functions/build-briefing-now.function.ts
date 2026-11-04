@@ -16,6 +16,7 @@ export const buildBriefingNow = onCall<
   }
 
   let briefingId: string;
+  let sourceWarning: string | undefined;
 
   try {
     const builder = new BriefingBuilderService();
@@ -25,6 +26,8 @@ export const buildBriefingNow = onCall<
     if (briefing.status === 'failed') {
       return { briefingId, warning: briefing.error };
     }
+
+    sourceWarning = briefing.warning;
   } catch (error) {
     logger.error('buildBriefingNow failed', { userId, error: error instanceof Error ? error.message : String(error) });
     throw new HttpsError('internal', 'We could not build your briefing. Please try again in a minute.');
@@ -32,5 +35,7 @@ export const buildBriefingNow = onCall<
 
   const outcome = await new SendBriefingService().explainAndSend(briefingId);
 
-  return outcome.warning ? { briefingId, warning: outcome.warning } : { briefingId };
+  const warning = [sourceWarning, outcome.warning].filter((message): message is string => !!message).join(' ');
+
+  return warning ? { briefingId, warning } : { briefingId };
 });
