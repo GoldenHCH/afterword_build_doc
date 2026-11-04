@@ -37,3 +37,6 @@ yarn-error.log*
 # OS
 .DS_Store
 /functions/dist/
+
+# Email preview output
+/functions/tmp/
