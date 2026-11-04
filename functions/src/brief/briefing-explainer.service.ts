@@ -6,7 +6,7 @@ import { ItemCacheService } from '../find/services/item-cache.service';
 import { ANTHROPIC_API_KEY } from '../secrets.constants';
 import { AnthropicClientService } from './anthropic-client.service';
 import { explainConfig, explainErrors, explainWarnings } from './brief.constants';
-import { IEntryWithText, IExplainOutcome } from './brief.interfaces';
+import { IEntryWithText, IExplainOutcome, IModelCompletion } from './brief.interfaces';
 import {
   applyExplanation,
   buildExplainPrompt,
@@ -14,8 +14,6 @@ import {
   parseExplainResponse,
   validateExplainResponse,
 } from './explain.helper';
-
-type Section = Afterword.Firestore.Briefing.IBriefingSection;
 
 export class BriefingExplainerService {
   private readonly _firestore = getFirestore();
@@ -85,11 +83,11 @@ export class BriefingExplainerService {
 
   private async _explainSection(
     briefingId: string,
-    section: Section,
+    section: Afterword.Firestore.Briefing.IBriefingSection,
     notesById: Map<string, Afterword.Firestore.Note.INote>,
     textsByItemId: Map<string, string>,
     apiKey: string,
-  ): Promise<Section> {
+  ): Promise<Afterword.Firestore.Briefing.IBriefingSection> {
     const logContext = { briefingId, noteId: section.noteId, entries: section.entries.length };
 
     try {
@@ -119,7 +117,16 @@ export class BriefingExplainerService {
       const userContent = buildExplainPrompt(note, entriesWithText);
 
       for (let attempt = 1; attempt <= explainConfig.MAX_ATTEMPTS; attempt++) {
-        const completion = await this._anthropic.complete(apiKey, system, userContent);
+        let completion: IModelCompletion;
+
+        try {
+          completion = await this._anthropic.complete(apiKey, system, userContent);
+        } catch (error) {
+          logger.warn('Section model call failed', { ...logContext, attempt, error: this._messageOf(error) });
+
+          continue;
+        }
+
         const response = parseExplainResponse(completion.text);
         const problem = response ? validateExplainResponse(response, section) : 'reply was not valid JSON';
 
@@ -147,7 +154,7 @@ export class BriefingExplainerService {
     }
   }
 
-  private async _loadNotes(sections: Section[]): Promise<Map<string, Afterword.Firestore.Note.INote>> {
+  private async _loadNotes(sections: Afterword.Firestore.Briefing.IBriefingSection[]): Promise<Map<string, Afterword.Firestore.Note.INote>> {
     const noteIds = [...new Set(sections.map((section) => section.noteId))];
     const references = noteIds.map((noteId) => this._firestore.collection(collections.NOTES).doc(noteId));
     const snapshots = await this._firestore.getAll(...references);
@@ -162,7 +169,7 @@ export class BriefingExplainerService {
     );
   }
 
-  private async _loadTexts(sections: Section[]): Promise<Map<string, string>> {
+  private async _loadTexts(sections: Afterword.Firestore.Briefing.IBriefingSection[]): Promise<Map<string, string>> {
     const itemIds = [...new Set(sections.flatMap((section) => section.entries.map((entry) => entry.itemId)))];
     const items = await this._itemCache.loadByIds(itemIds);
 

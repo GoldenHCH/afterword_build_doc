@@ -3,10 +3,7 @@ import { test } from 'node:test';
 
 import { applyExplanation, parseExplainResponse, validateExplainResponse } from './explain.helper';
 
-type Section = Afterword.Firestore.Briefing.IBriefingSection;
-type Entry = Afterword.Firestore.Briefing.IBriefingEntry;
-
-const buildEntry = (itemId: string, rank: number): Entry =>
+const buildEntry = (itemId: string, rank: number): Afterword.Firestore.Briefing.IBriefingEntry =>
   ({
     itemId,
     kind: 'paper',
@@ -17,9 +14,9 @@ const buildEntry = (itemId: string, rank: number): Entry =>
     rank,
     score: 1 - rank / 10,
     whyThis: `Matches: ${itemId}`,
-  }) as unknown as Entry;
+  }) as unknown as Afterword.Firestore.Briefing.IBriefingEntry;
 
-const section: Section = {
+const section: Afterword.Firestore.Briefing.IBriefingSection = {
   noteId: 'note_one',
   noteSummary: 'Stuck on intercoder reliability',
   noteKind: 'stuck',

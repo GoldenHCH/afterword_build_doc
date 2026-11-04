@@ -52,3 +52,8 @@ export const explainErrors = {
   TIMED_OUT: 'The Anthropic request timed out',
   EMPTY_REPLY: 'The Anthropic reply had no text',
 } as const;
+
+export const explainPatterns = {
+  FENCE: /```(?:json)?\s*([\s\S]*?)```/i,
+  DASH: /\s*[\u2013\u2014]\s*/g,
+} as const;
