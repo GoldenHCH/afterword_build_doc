@@ -22,16 +22,6 @@ import { seedConfig } from '../seed.constants';
 import { OpenAlexSeedService } from './openalex-seed.service';
 import { ISeedWriter } from './seed-writer.interfaces';
 
-type FirestoreItem = Afterword.Firestore.Item.IItem;
-type FirestoreNote = Afterword.Firestore.Note.INote;
-type FirestoreSource = Afterword.Firestore.Source.ISource;
-type FirestoreUser = Afterword.Firestore.User.IUser;
-type FirestoreBriefing = Afterword.Firestore.Briefing.IBriefing;
-type FirestoreBriefingSection = Afterword.Firestore.Briefing.IBriefingSection;
-type FirestoreBriefingEntry = Afterword.Firestore.Briefing.IBriefingEntry;
-
-const millisecondsPerDay = 24 * 60 * 60 * 1000;
-
 export class SeedService {
   private readonly _notes = notesJson as ISeedNote[];
   private readonly _sources = sourcesJson as ISeedSource[];
@@ -45,7 +35,7 @@ export class SeedService {
 
   public async run(): Promise<ISeedResult> {
     const now = new Date();
-    const items = new Map<string, FirestoreItem>();
+    const items = new Map<string, Afterword.Firestore.Item.IItem>();
 
     this._collectPostItems(items, now);
     this._collectBriefingItems(items, now);
@@ -89,7 +79,7 @@ export class SeedService {
     return result;
   }
 
-  private _buildUser(now: Date): FirestoreUser {
+  private _buildUser(now: Date): Afterword.Firestore.User.IUser {
     return {
       email: demoUser.EMAIL,
       displayName: demoUser.DISPLAY_NAME,
@@ -97,9 +87,9 @@ export class SeedService {
     };
   }
 
-  private _buildNotes(now: Date): FirestoreNote[] {
+  private _buildNotes(now: Date): Afterword.Firestore.Note.INote[] {
     return this._notes.map((note, index) => {
-      const createdAt = new Date(now.getTime() - seedConfig.NOTE_AGE_DAYS[index % seedConfig.NOTE_AGE_DAYS.length] * millisecondsPerDay);
+      const createdAt = new Date(now.getTime() - seedConfig.NOTE_AGE_DAYS[index % seedConfig.NOTE_AGE_DAYS.length] * seedConfig.MILLISECONDS_PER_DAY);
 
       return {
         id: this._noteId(note.key),
@@ -117,7 +107,7 @@ export class SeedService {
     });
   }
 
-  private _buildSources(now: Date): FirestoreSource[] {
+  private _buildSources(now: Date): Afterword.Firestore.Source.ISource[] {
     return this._sources.map((source) => ({
       id: source.handle,
       kind: 'x_account',
@@ -129,7 +119,7 @@ export class SeedService {
     }));
   }
 
-  private _collectPostItems(items: Map<string, FirestoreItem>, now: Date): void {
+  private _collectPostItems(items: Map<string, Afterword.Firestore.Item.IItem>, now: Date): void {
     const displayNames = new Map(this._sources.map((source) => [source.handle, source.displayName]));
 
     for (const post of this._posts) {
@@ -150,7 +140,7 @@ export class SeedService {
     }
   }
 
-  private _collectBriefingItems(items: Map<string, FirestoreItem>, now: Date): void {
+  private _collectBriefingItems(items: Map<string, Afterword.Firestore.Item.IItem>, now: Date): void {
     for (const section of this._briefing.sections) {
       for (const entry of section.entries) {
         items.set(itemDocId(entry.kind, entry.externalId), {
@@ -169,7 +159,7 @@ export class SeedService {
     }
   }
 
-  private async _collectOpenAlexItems(items: Map<string, FirestoreItem>, now: Date): Promise<void> {
+  private async _collectOpenAlexItems(items: Map<string, Afterword.Firestore.Item.IItem>, now: Date): Promise<void> {
     const draftsPerNote = await Promise.all(this._notes.map((note) => this._openAlexSeedService.searchPapers(note.angle)));
 
     for (const drafts of draftsPerNote) {
@@ -192,8 +182,8 @@ export class SeedService {
     }
   }
 
-  private _buildBriefing(now: Date): FirestoreBriefing {
-    const sections = this._briefing.sections.map((section): FirestoreBriefingSection => {
+  private _buildBriefing(now: Date): Afterword.Firestore.Briefing.IBriefing {
+    const sections = this._briefing.sections.map((section): Afterword.Firestore.Briefing.IBriefingSection => {
       const note = this._notes.find((candidate) => candidate.key === section.noteKey);
 
       if (!note) {
@@ -216,7 +206,7 @@ export class SeedService {
     };
   }
 
-  private _buildBriefingEntry(entry: ISeedBriefingEntry): FirestoreBriefingEntry {
+  private _buildBriefingEntry(entry: ISeedBriefingEntry): Afterword.Firestore.Briefing.IBriefingEntry {
     return {
       itemId: itemDocId(entry.kind, entry.externalId),
       rank: entry.rank,
