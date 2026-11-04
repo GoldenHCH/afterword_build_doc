@@ -2,7 +2,9 @@
 
 Afterword turns what a researcher is stuck on this week into a briefing of the papers and posts that move it forward, in reading order, and a saved library their AI can reach over MCP.
 
-**Live:** https://afterword-fyi.web.app
+**Live:** https://afterword.fyi
+
+Papers come from OpenAlex today (Paperclip sits behind the same seam, off until a key is set); X posts are a curated snapshot of real posts.
 
 Stack: Angular 21 (standalone) with Angular Material in `app/`, Firebase Cloud Functions v2 (TypeScript) and Firestore in `functions/`, an MCP connector in a separate repo (see MCP connector below). The path from an empty Google account to the live demo is [`docs/go-live.md`](docs/go-live.md).
 
@@ -15,7 +17,7 @@ Stack: Angular 21 (standalone) with Angular Material in `app/`, Firebase Cloud F
 
 ## Demo flow
 
-Live app: https://afterword-fyi.web.app. Sign in with "Use the demo account" (`demo@afterword.fyi`, uid `demo-researcher`; setup under Demo account sign-in below), which has 3 open notes and one seeded briefing.
+Live app: https://afterword.fyi. Sign in with "Use the demo account" (`demo@afterword.fyi`, uid `demo-researcher`; setup under Demo account sign-in below), which has 3 open notes and one seeded briefing.
 
 1. **Tell the assistant what you're stuck on.** In Claude (or Cursor), say "I'm stuck on how many interviews I need before I can claim saturation in my qualitative study." The assistant calls `record_work` and answers "Saved to Afterword."
 2. **Notes.** Open the app. The Notes page now lists the new saturation note next to the 3 seeded ones, with its angle and keywords. The **Describe instead** box does the same job without the assistant.
@@ -56,7 +58,7 @@ It serves on http://localhost:4200. `ng serve` uses `src/environments/environmen
 
 ## Demo shortcuts
 
-- **Save link from the email:** `/briefings/<briefingId>?save=<itemId>` saves that item once the page loads, scrolls to the entry and removes the parameter from the URL. If you are signed out, sign in first and the link carries on. Example: https://afterword-fyi.web.app/briefings/briefing_demo_seed?save=<itemId> (an `itemId` is in the seeded briefing's entries).
+- **Save link from the email:** `/briefings/<briefingId>?save=<itemId>` saves that item once the page loads, scrolls to the entry and removes the parameter from the URL. If you are signed out, sign in first and the link carries on. Example: https://afterword.fyi/briefings/briefing_demo_seed?save=<itemId> (an `itemId` is in the seeded briefing's entries).
 - **Seeded briefing fallback:** if the live build is slow, fails, or the button is never pressed on stage, open `/briefings/briefing_demo_seed`: 3 sections and 17 entries, already `ready`, with hand-written explanations. When the model or email step is down, `buildBriefingNow` still returns the newly built briefing with fallback text and a `warning`; the seeded briefing is the fallback only if the build itself fails or the button is never pressed.
 
 `seedDemo` loads the demo account: the user, 3 notes, 10 X sources, the cached posts and papers, about 15 more papers fetched live from OpenAlex, and one `ready` briefing. It is safe to run twice (deterministic document ids, `set` with merge).

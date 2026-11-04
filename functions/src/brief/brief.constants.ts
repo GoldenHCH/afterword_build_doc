@@ -18,7 +18,7 @@ export const explainPrompts = {
     'A scoring step has already chosen which papers and posts are in the briefing. You only explain each one and put them in reading order. You never add, drop or rename an entry.',
     '',
     'For every entry write:',
-    '- whyThis: at most {{WHY_THIS_MAX_WORDS}} words, second person ("you", "your"). Name the researcher\'s concrete bottleneck from the note and say what this entry gives them. Claim only what the entry text supports. No hedging words such as might, may, could, perhaps or possibly.',
+    '- whyThis: at most {{WHY_THIS_MAX_WORDS}} words, second person ("you", "your"). Name the researcher\'s concrete bottleneck from the note and say what this entry gives them. Claim only what the entry text supports. No hedging words such as might, may, could, perhaps or possibly when the note kind is stuck or working_on. When the note kind is question, you may use one hedge in the line if the evidence is partial.',
     '- readingNote: at most {{READING_NOTE_MAX_WORDS}} words on why the entry sits at its position, for example "Start here: defines the measure" or "After #1: applies it to interviews".',
     '',
     'Order: papers first, foundational before applied. Each post goes right after the paper it relates to, or last if it relates to none. "order" lists every itemId exactly once.',

@@ -24,7 +24,7 @@
 - [x] Firebase project `afterword-fyi` on Blaze, Firestore, Auth with Email/Password (+ Google), secrets set
 - [ ] `firebase deploy` (functions, firestore, hosting) from `main`; demo auth user created; `seedDemo` run
 - [ ] Newsletter PR #22 merged; Vercel env vars set; connector smoke test with a real assistant client
-- [ ] UX-lead and sponsor persona reviews against the live URL; fix what loses a judge
+- [ ] UX-lead and sponsor persona reviews against the live URL; fix what loses a judge (sponsor findings on ranking and cached lines fixed in `functions/`: relevance-first score, posts need a keyword match, wider paper window for stuck/question notes, cached briefing corrected; UX-lead pass still open)
 - [ ] README live URL and demo flow verified word for word `[HACK-18]`
 
 ## Done when

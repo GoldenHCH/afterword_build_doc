@@ -18,7 +18,9 @@ import {
   dedupeAcrossNotes,
   matchedKeywords,
   normaliseHandle,
+  paperYearsBack,
   pickSources,
+  sourceRankScore,
   scoreItem,
 } from './content-scoring.helper';
 import { IItemDraft } from './item-draft.types';
@@ -41,13 +43,20 @@ export class BriefingBuilderService {
 
     const scoredGroups: INoteCandidates<IScoredCandidate>[] = notes.map((note, index) => ({
       noteId: note.id as string,
-      candidates: gathered[index].items.map(({ itemId, item }) => {
+      candidates: gathered[index].items.map(({ itemId, item, sourceRank }) => {
         const sourceWeight =
           item.kind === itemKinds.PAPER
             ? scoringWeights.PAPER_SOURCE_WEIGHT
             : (sourceWeights.get(normaliseHandle(item.sourceHandle ?? '')) ?? 0);
 
-        return { itemId, item, score: scoreItem(note, item, sourceWeight, now), matchedKeywords: matchedKeywords(note, item) };
+        const scorable = { ...item, sourceRank };
+
+        return {
+          itemId,
+          item,
+          score: scoreItem(note, scorable, sourceWeight, now),
+          matchedKeywords: matchedKeywords(note, scorable),
+        };
       }),
     }));
 
@@ -122,7 +131,17 @@ export class BriefingBuilderService {
       if (cachedItems.length >= cachedItemIds.length) {
         logger.info('Reusing cached items for note', { noteId, items: cachedItems.length });
 
-        return { items: cachedItems.map((item) => ({ itemId: item.id as string, item })), failedSources: [] };
+        const cachedPaperCount = cachedItems.filter((item) => item.kind === itemKinds.PAPER).length;
+        let cachedPaperPosition = 0;
+
+        return {
+          items: cachedItems.map((item) => ({
+            itemId: item.id as string,
+            item,
+            sourceRank: item.kind === itemKinds.PAPER ? sourceRankScore(cachedPaperPosition++, cachedPaperCount) : 0,
+          })),
+          failedSources: [],
+        };
       }
 
       logger.warn('Cached items incomplete, fetching again', {
@@ -133,7 +152,7 @@ export class BriefingBuilderService {
     }
 
     const publishedAfter = new Date(now.getTime());
-    publishedAfter.setFullYear(publishedAfter.getFullYear() - findLimits.PAPER_YEARS_BACK);
+    publishedAfter.setFullYear(publishedAfter.getFullYear() - paperYearsBack(note.kind));
     const postDaysBack = contentSources.POST === 'seed' ? seededPostWindow.DAYS_BACK : findLimits.POST_DAYS_BACK;
     const since = new Date(now.getTime() - postDaysBack * briefingBuilder.MILLISECONDS_PER_DAY);
     const handles = pickSources(note, sources).map((source) => source.handle);
@@ -158,7 +177,12 @@ export class BriefingBuilderService {
     const uniqueItems = new Map<string, IGatheredItem>();
 
     drafts.forEach((draft, index) => {
-      uniqueItems.set(itemIds[index], { itemId: itemIds[index], item: { ...draft, id: itemIds[index], fetchedAt } });
+      const sourceRank = index < paperResult.drafts.length ? sourceRankScore(index, paperResult.drafts.length) : 0;
+      uniqueItems.set(itemIds[index], {
+        itemId: itemIds[index],
+        item: { ...draft, id: itemIds[index], fetchedAt },
+        sourceRank,
+      });
     });
 
     if (paperResult.succeeded && postResult.succeeded && uniqueItems.size > 0) {
@@ -206,7 +230,7 @@ export class BriefingBuilderService {
       .filter((candidate) => candidate.item.kind === itemKinds.PAPER)
       .slice(0, findLimits.PAPERS_KEPT_PER_NOTE);
     const posts = byScoreDescending
-      .filter((candidate) => candidate.item.kind === itemKinds.POST)
+      .filter((candidate) => candidate.item.kind === itemKinds.POST && candidate.matchedKeywords.length > 0)
       .slice(0, findLimits.POSTS_KEPT_PER_NOTE);
 
     const entries = [...papers, ...posts].map((candidate, index) => this._buildEntry(candidate, index + 1, note));

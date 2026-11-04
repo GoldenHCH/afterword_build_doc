@@ -4,6 +4,12 @@ export const briefingBuilder = {
   MAX_BATCH_WRITES: 400,
 } as const;
 
+export const keywordMatching = {
+  MIN_STEM_LENGTH: 3,
+  SUFFIXES: ['ations', 'ation', 'ing', 'ers', 'er', 'ed', 'es', 'ly', 's'],
+  KEEP_S_AFTER: ['ss', 'is', 'us'],
+} as const;
+
 export const sourceLabels = {
   PAPERS: 'papers',
   POSTS: 'X posts',

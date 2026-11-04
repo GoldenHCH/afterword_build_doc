@@ -1,5 +1,5 @@
-import { scoringWeights } from '../find.constants';
-import { briefingBuilder, fallbackLines } from './briefing-builder.constants';
+import { findLimits, foundationalNoteKinds, scoringWeights } from '../find.constants';
+import { briefingBuilder, fallbackLines, keywordMatching } from './briefing-builder.constants';
 import {
   IFallbackNote,
   INoteCandidates,
@@ -42,10 +42,49 @@ export function buildReadingNote(rank: number): string {
   return rank === 1 ? fallbackLines.START_HERE : fallbackLines.THEN_THIS;
 }
 
-export function matchedKeywords(note: IScorableNote, item: IScorableItem): string[] {
-  const haystack = `${item.title} ${item.text}`.toLowerCase();
+export function stemWord(word: string): string {
+  let stem = word.toLowerCase();
 
-  return note.keywords.filter((keyword) => haystack.includes(keyword.toLowerCase()));
+  for (const suffix of keywordMatching.SUFFIXES) {
+    const keepsS = suffix === 's' && keywordMatching.KEEP_S_AFTER.some((ending) => stem.endsWith(ending));
+
+    if (!keepsS && stem.endsWith(suffix) && stem.length - suffix.length >= keywordMatching.MIN_STEM_LENGTH) {
+      stem = stem.slice(0, stem.length - suffix.length);
+      break;
+    }
+  }
+
+  return stem.length > keywordMatching.MIN_STEM_LENGTH && stem.endsWith('e') ? stem.slice(0, -1) : stem;
+}
+
+export function toStems(text: string): string[] {
+  const words = text
+    .toLowerCase()
+    .replace(/['\u2019]s\b/g, '')
+    .split(/[^a-z0-9]+/)
+    .filter((word) => word.length > 0);
+
+  return words.map((word) => stemWord(word));
+}
+
+export function matchedKeywords(note: IScorableNote, item: IScorableItem): string[] {
+  const haystack = new Set(toStems(`${item.title} ${item.text}`));
+
+  return note.keywords.filter((keyword) => {
+    const keywordStems = toStems(keyword);
+
+    return keywordStems.length > 0 && keywordStems.every((stem) => haystack.has(stem));
+  });
+}
+
+export function sourceRankScore(position: number, total: number): number {
+  return total <= 0 ? 0 : (total - position) / total;
+}
+
+export function paperYearsBack(noteKind: string): number {
+  return foundationalNoteKinds.includes(noteKind)
+    ? findLimits.PAPER_YEARS_BACK_FOUNDATIONAL
+    : findLimits.PAPER_YEARS_BACK;
 }
 
 export function scoreItem(
@@ -58,11 +97,13 @@ export function scoreItem(
   const recency = Math.min(1, Math.max(0, 1 - ageInDays / scoringWeights.RECENCY_HORIZON_DAYS));
   const keywordOverlap =
     note.keywords.length === 0 ? 0 : matchedKeywords(note, item).length / note.keywords.length;
+  const sourceRank = Math.min(1, Math.max(0, item.sourceRank ?? 0));
 
   return (
     scoringWeights.RECENCY * recency +
     scoringWeights.KEYWORD_OVERLAP * keywordOverlap +
-    scoringWeights.SOURCE * sourceWeight
+    scoringWeights.SOURCE * sourceWeight +
+    scoringWeights.SOURCE_RANK * sourceRank
   );
 }
 

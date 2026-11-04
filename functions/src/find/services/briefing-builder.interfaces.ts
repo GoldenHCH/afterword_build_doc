@@ -8,6 +8,7 @@ export interface IScorableItem {
   title: string;
   text: string;
   publishedAt: { toMillis(): number };
+  sourceRank?: number;
 }
 
 export interface IFallbackNote {
@@ -36,6 +37,7 @@ export interface ISourceResult {
 export interface IGatheredItem {
   itemId: string;
   item: Afterword.Firestore.Item.IItem;
+  sourceRank: number;
 }
 
 export interface IGatheredNote {
