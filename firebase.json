@@ -7,13 +7,19 @@
     {
       "source": "functions",
       "codebase": "default",
-      "predeploy": ["npx -y yarn@1.22.22 --cwd \"$RESOURCE_DIR\" build"],
+      "predeploy": [
+        "npx -y yarn@1.22.22 --cwd \"$RESOURCE_DIR\" install --frozen-lockfile",
+        "npx -y yarn@1.22.22 --cwd \"$RESOURCE_DIR\" build"
+      ],
       "ignore": ["node_modules", ".git", "firebase-debug.log", "firebase-debug.*.log", "*.local"]
     }
   ],
   "hosting": {
     "public": "app/dist/afterword/browser",
-    "predeploy": ["npx -y yarn@1.22.22 --cwd app build"],
+    "predeploy": [
+      "npx -y yarn@1.22.22 --cwd app install --frozen-lockfile",
+      "npx -y yarn@1.22.22 --cwd app build"
+    ],
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       { "source": "/seedDemo", "function": "seedDemo" },

@@ -12,9 +12,9 @@
 - [ ] Fix the blocking findings from both
 
 ### Deploy readiness `[HACK-14]`
-- [ ] Firestore indexes match every query the app and the functions run; rules cover every collection the app touches
-- [ ] Hosting rewrites reach the functions (region, names); `firebase deploy` works end to end from a clean checkout
-- [ ] A go-live runbook: project creation, Blaze, Auth providers, secrets, web config, seed, demo auth user, Vercel env vars, smoke test
+- [x] Firestore indexes match every query the app and the functions run; rules cover every collection the app touches
+- [x] Hosting rewrites reach the functions (region, names); `firebase deploy` works end to end from a clean checkout (manifest checked offline; the real deploy needs the project)
+- [x] A go-live runbook (`docs/go-live.md`): project creation, Blaze, Auth providers, secrets, web config, seed, demo auth user, Vercel env vars, smoke test
 
 ### UI polish `[HACK-21]` `[HACK-16]`
 - [ ] Sign-in, Notes, Briefing, Library: one primary action per screen, consistent spacing and type, loading / empty / error states, right at 375px

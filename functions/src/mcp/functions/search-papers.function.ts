@@ -3,7 +3,7 @@ import { onRequest } from 'firebase-functions/v2/https';
 
 import { findLimits } from '../../find/find.constants';
 import { createPaperSource } from '../../find/services/paper-source.factory';
-import { MCP_SHARED_KEY, PAPERCLIP_API_KEY } from '../../secrets.constants';
+import { MCP_SHARED_KEY, optionalSourceSecrets } from '../../secrets.constants';
 import { itemKinds } from '../../shared/item.constants';
 import { yearsBefore } from '../../seed/services/openalex.helper';
 import { isAuthorizedKey } from '../mcp-auth.helper';
@@ -11,7 +11,7 @@ import { parseSearchPapersRequest } from '../mcp-request.helper';
 import { mcpAuth, mcpErrors } from '../mcp.constants';
 
 export const searchPapers = onRequest(
-  { secrets: [PAPERCLIP_API_KEY, MCP_SHARED_KEY], timeoutSeconds: 60 },
+  { secrets: [MCP_SHARED_KEY, ...optionalSourceSecrets], timeoutSeconds: 60 },
   async (request, response) => {
     if (request.method !== 'POST') {
       response.status(405).json({ error: mcpErrors.METHOD_NOT_ALLOWED });
