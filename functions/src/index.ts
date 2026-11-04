@@ -10,3 +10,5 @@ export { weeklyBriefing } from './brief/functions/weekly-briefing.function';
 export { describeWork } from './notes/functions/describe-work.function';
 export { saveItem } from './library/functions/save-item.function';
 export { unsaveItem } from './library/functions/unsave-item.function';
+export { searchPapers } from './mcp/functions/search-papers.function';
+export { searchLibrary } from './mcp/functions/search-library.function';
