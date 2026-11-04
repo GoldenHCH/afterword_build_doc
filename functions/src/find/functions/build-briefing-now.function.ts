@@ -2,13 +2,13 @@ import * as logger from 'firebase-functions/logger';
 import { HttpsError, onCall } from 'firebase-functions/v2/https';
 
 import { SendBriefingService } from '../../brief/send-briefing.service';
-import { ANTHROPIC_API_KEY, RESEND_API_KEY, optionalSourceSecrets } from '../../secrets.constants';
+import { ANTHROPIC_API_KEY, OPENALEX_API_KEY, RESEND_API_KEY, optionalSourceSecrets } from '../../secrets.constants';
 import { BriefingBuilderService } from '../services/briefing-builder.service';
 
 export const buildBriefingNow = onCall<
   Afterword.Types.IBuildBriefingNowRequest,
   Promise<Afterword.Types.IBuildBriefingNowResponse>
->({ secrets: [ANTHROPIC_API_KEY, RESEND_API_KEY, ...optionalSourceSecrets], timeoutSeconds: 300 }, async (request) => {
+>({ secrets: [ANTHROPIC_API_KEY, OPENALEX_API_KEY, RESEND_API_KEY, ...optionalSourceSecrets], timeoutSeconds: 300 }, async (request) => {
   const userId = request.auth?.uid;
 
   if (!userId) {
