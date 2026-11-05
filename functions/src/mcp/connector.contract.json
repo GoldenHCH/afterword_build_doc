@@ -1,0 +1,22 @@
+{
+  "keyHeader": "x-afterword-key",
+  "searchPapers": {
+    "path": "searchPapers",
+    "angle": { "minLength": 3, "maxLength": 500 },
+    "keywords": { "maxCount": 8, "maxLength": 60 },
+    "limit": { "default": 5, "max": 10 }
+  },
+  "searchLibrary": {
+    "path": "searchLibrary",
+    "query": { "maxLength": 300 },
+    "limit": { "default": 10, "max": 50 }
+  },
+  "notes": {
+    "collection": "notes",
+    "kinds": ["working_on", "stuck", "question"],
+    "statuses": ["open", "resolved"],
+    "sources": ["mcp", "app"],
+    "requiredFields": ["userId", "kind", "summary", "keywords", "status", "source", "createdAt"],
+    "optionalFields": ["detail", "angle", "project", "resolvedAt", "lastFetchedAt", "lastFetchedItemIds"]
+  }
+}

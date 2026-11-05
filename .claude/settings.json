@@ -1,4 +1,7 @@
 {
+  "permissions": {
+    "additionalDirectories": ["/Users/goldenhuang/Desktop/Newsletter-for-Researchers"]
+  },
   "enabledPlugins": {
     "superpowers@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
