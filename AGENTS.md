@@ -12,6 +12,22 @@
 
 ---
 
+## Sibling Repo: the MCP Connector and afterword.fyi
+
+Afterword ships from two repos. This one holds the plan, the Angular app (`app/`), the Cloud Functions and Firestore. [GoldenHCH/Newsletter-for-Researchers](https://github.com/GoldenHCH/Newsletter-for-Researchers), checked out at `/Users/goldenhuang/Desktop/Newsletter-for-Researchers`, holds the MCP connector (`api/mcp.js`: `record_work`, `find_papers`, `search_library`, …), its OAuth, and the Vercel project that serves https://afterword.fyi. Sessions here can read and edit it (`additionalDirectories` in `.claude/settings.json`). Its own rules are in its `CLAUDE.md`: npm and vitest, not yarn.
+
+| To change… | Edit |
+|------------|------|
+| What the assistant's tools do or say | `api/mcp.js` in the connector repo |
+| The papers `find_papers` returns, or what `search_library` finds | `functions/src/mcp/` here (`searchPapers`, `searchLibrary`) |
+| The header, the request caps, or the note document's fields and values | `functions/src/mcp/connector.contract.json` here, its TS constants (`yarn test` fails until they match), and the connector's copies in the same sitting (its next Vercel build fails until they match) |
+| A new app route | `app/src/app/app.routes.ts` here and the `rewrites` in the connector repo's `vercel.json` |
+
+- Functions and Firestore deploy from here with `firebase deploy`. The app at afterword.fyi is built from this repo's `main` by the connector repo's Vercel build, so an app change goes live only when that project redeploys.
+- The connector writes notes straight into Firestore `notes/` with `source: "mcp"` and calls `searchPapers` / `searchLibrary` over HTTP with the `MCP_SHARED_KEY` secret. Both sides must hold the same key.
+
+---
+
 ## Hackathon Mode
 
 This is a hackathon build. Ship the demo, not the test suite. Read `rules/hackathon.md` first — it overrides any stricter rule elsewhere.
